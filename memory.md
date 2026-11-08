@@ -42,12 +42,12 @@
 | Task plan                  | ✅ Baseline v1.0 | `tasks.md`                                         |
 | Repo scaffolding           | ✅ Done          | Phase 0 complete — committed & pushed to main      |
 | Backend                    | ✅ Done          | Phase 1 complete (T-1.1–T-1.10, 117 tests passing) |
-| Authentication & Users     | 🔄 In progress   | Backend complete (T-2.1–T-2.9, 181 tests passing); Frontend T-2.10–T-2.14 next |
+| Authentication & Users     | 🔄 In progress   | T-2.1–T-2.11 complete (181 backend tests + 7 client tests passing); T-2.12 (Core UI components) next |
 | Testing                    | ⬜ Not started   |                                                    |
 | Documentation (user/dev)   | ⬜ Not started   |                                                    |
 | Demo video                 | ⬜ Not started   |                                                    |
 
-**Current phase:** Phase 2 🔄 in progress (Backend T-2.1–T-2.9 done).
+**Current phase:** Phase 2 🔄 in progress (T-2.1–T-2.11 done).
 **Next action:** T-2.4 (Refresh / logout / `GET /auth/me`), T-2.5 (`requireAuth`, `requireRole`, ownership helpers).
 
 ---
@@ -217,7 +217,20 @@ _(Full details in `rules.md`.)_
   - Added integration test suite `server/tests/seed/seed.test.js` validating first-time creation and multi-run idempotency.
 - **Testing:** 26 test suites, 181/181 tests passing green.
 - **Git:** Staged, committed with conventional commits, and pushed directly to `origin/main`.
-- **Next:** Frontend Phase 2: T-2.10 (App shell, layouts per role, ProtectedRoute, 403/404 pages).
+- **Next:** Frontend Phase 2: T-2.12 (Core UI components), T-2.13 (Auth pages), T-2.14 (Profile page).
+
+### Session 5 — Nov 8 2026 — Phase 2: T-2.10 & T-2.11 Complete
+- **Goal:** Build the React application shell, providers, role-based layouts, route guard, error pages, Axios client with single-flight refresh interceptor, and AuthContext.
+- **Done:**
+  - `T-2.11`: Implemented `client/src/lib/axios.js` with in-memory JWT storage (`setAccessToken`, `getAccessToken`), automatic `Authorization: Bearer` header injection, and single-flight 401 refresh token interceptor with request queue.
+  - Implemented `client/src/context/AuthContext.jsx` with session bootstrapping on mount (`/auth/refresh`), login, register, logout, and token expiry listener.
+  - `T-2.10`: Built `ProtectedRoute` (`client/src/components/ProtectedRoute.jsx`) with loading spinner, unauthenticated redirect to `/login` preserving target location, and unauthorized role redirect to 403.
+  - Built error and landing pages: `ForbiddenPage` (403), `NotFoundPage` (404), `HomePage`, and role dashboard placeholders (`AdminDashboardPage`, `ExhibitorDashboardPage`, `AttendeeDashboardPage`).
+  - Built role layouts: `PublicLayout`, `AdminLayout`, `ExhibitorLayout`, `AttendeeLayout` with responsive sidebars, offcanvas mobile navigation, and user menus.
+  - Configured `client/vite.config.js` with test environment and `/api` dev proxy.
+- **Testing:** 7/7 Vitest tests passing in client; production build compiles cleanly without errors (`dist/index.html` + chunks generated). 181 backend Jest tests pass.
+- **Git:** Staged, committed with conventional commits, and pushed directly to `origin/main`.
+- **Next:** T-2.12 (Core UI components: Button, Input, PasswordInput with strength meter, Card, Badge, Modal, Toast, Skeleton, EmptyState).
 
 
 ---
