@@ -30,6 +30,8 @@ import ProfilePage from '../pages/account/ProfilePage.jsx';
 import AdminDashboardPage from '../pages/admin/AdminDashboardPage.jsx';
 import ExhibitorDashboardPage from '../pages/exhibitor/ExhibitorDashboardPage.jsx';
 import AttendeeDashboardPage from '../pages/attendee/AttendeeDashboardPage.jsx';
+import ExposListPage from '../pages/expos/ExposListPage.jsx';
+import ExpoDetailPage from '../pages/expos/ExpoDetailPage.jsx';
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -50,6 +52,8 @@ export default function App() {
             {/* Public Layout Routes */}
             <Route element={<PublicLayout />}>
               <Route path="/" element={<HomePage />} />
+              <Route path="/expos" element={<ExposListPage />} />
+              <Route path="/expos/:idOrSlug" element={<ExpoDetailPage />} />
               <Route path="/login" element={<LoginPage />} />
               <Route path="/register" element={<RegisterPage />} />
               <Route path="/forgot-password" element={<ForgotPasswordPage />} />

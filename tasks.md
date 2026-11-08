@@ -102,7 +102,7 @@
 
 ### Frontend
 
-- [ ] **T-3.10** Public home + expos list (search, filters) + expo detail shell with tabs — **M** _(FR-ATT-01)_
+- [x] **T-3.10** Public home + expos list (search, filters) + expo detail shell with tabs — **M** _(FR-ATT-01)_
 - [ ] **T-3.11** Admin: expo list + create/edit form (banner upload, dates, venue) + delete confirm (type title) — **L** 🧪 _(FR-EXPO-01/02)_
 - [ ] **T-3.12** `FloorPlan` SVG component — **view** mode (pan/zoom, legend, status colours, a11y labels) — **L** _(design §8)_
 - [ ] **T-3.13** `FloorPlan` **edit** mode (add/drag/resize/delete, grid snap, side panel, save) — **XL** _(FR-EXPO-03/04)_
