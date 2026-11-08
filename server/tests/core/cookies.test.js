@@ -5,7 +5,7 @@
  */
 
 import { describe, it, expect } from '@jest/globals';
-import { parseCookies, serialiseCookie } from '../src/core/cookies.js';
+import { parseCookies, serialiseCookie } from '../../src/core/cookies.js';
 
 describe('core/cookies.js — parseCookies', () => {
   it('parses a simple cookie string', () => {

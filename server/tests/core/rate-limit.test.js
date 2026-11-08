@@ -5,8 +5,8 @@
  */
 
 import { describe, it, expect, beforeEach } from '@jest/globals';
-import { createRateLimit, purgeExpiredEntries } from '../src/core/rate-limit.js';
-import { RateLimitError } from '../src/core/errors.js';
+import { createRateLimit, purgeExpiredEntries } from '../../src/core/rate-limit.js';
+import { RateLimitError } from '../../src/core/errors.js';
 
 function makeCtx(ip = '127.0.0.1') {
   return {

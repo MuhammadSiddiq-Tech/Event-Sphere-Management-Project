@@ -5,7 +5,7 @@
  */
 
 import { describe, it, expect } from '@jest/globals';
-import { serveStatic } from '../src/core/static.js';
+import { serveStatic } from '../../src/core/static.js';
 
 function makeCtx(path) {
   const written = { status: null, body: null };

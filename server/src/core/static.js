@@ -38,7 +38,8 @@ export async function serveStatic(ctx, next) {
 
   // Prevent path traversal — resolve and check prefix
   const filePath = resolve(join(uploadDir, requestedFile));
-  if (!filePath.startsWith(uploadDir + '/') && filePath !== uploadDir) {
+  const normalizedUploadDir = uploadDir.endsWith('\\') || uploadDir.endsWith('/') ? uploadDir : uploadDir + '\\';
+  if (!filePath.startsWith(normalizedUploadDir) && filePath !== uploadDir) {
     ctx.res.writeHead(403);
     ctx.res.end('Forbidden');
     return;

@@ -38,6 +38,7 @@
     "extensionsToTreatAsEsm": [],
     "moduleFileExtensions": ["js", "mjs"],
     "testMatch": ["**/tests/**/*.test.js", "**/*.test.js"],
+    "setupFiles": ["<rootDir>/tests/setup.js"],
     "coverageThreshold": {
       "global": {
         "lines": 70

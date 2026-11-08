@@ -5,7 +5,7 @@
  */
 
 import { describe, it, expect } from '@jest/globals';
-import { secureHeaders, cors, sanitiseBody, normaliseQuery } from '../src/core/security.js';
+import { secureHeaders, cors, sanitiseBody, normaliseQuery } from '../../src/core/security.js';
 
 function makeCtx(overrides = {}) {
   const headers = {};

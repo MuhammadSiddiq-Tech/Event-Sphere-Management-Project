@@ -5,7 +5,7 @@
  */
 
 import { describe, it, expect } from '@jest/globals';
-import { compose } from '../src/core/pipeline.js';
+import { compose } from '../../src/core/pipeline.js';
 
 /** Build a minimal ctx mock */
 function makeCtx() {
@@ -51,7 +51,7 @@ describe('core/pipeline.js — compose', () => {
 
   it('catches thrown errors and routes to errorHandler', async () => {
     const ctx = makeCtx();
-    const { ApiError } = await import('../src/core/errors.js');
+    const { ApiError } = await import('../../src/core/errors.js');
     const throwing = async () => { throw new ApiError(400, 'TEST_CODE', 'test error'); };
     const handler = compose([throwing]);
     await handler(ctx); // should not throw
@@ -63,7 +63,7 @@ describe('core/pipeline.js — compose', () => {
 
   it('handles async errors from nested next() calls', async () => {
     const ctx = makeCtx();
-    const { ApiError } = await import('../src/core/errors.js');
+    const { ApiError } = await import('../../src/core/errors.js');
     const a = async (_ctx, next) => { await next(); };
     const b = async () => { throw new ApiError(409, 'CONFLICT', 'conflict'); };
     const handler = compose([a, b]);

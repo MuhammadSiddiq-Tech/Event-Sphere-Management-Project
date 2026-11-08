@@ -5,7 +5,7 @@
  */
 
 import { describe, it, expect } from '@jest/globals';
-import { buildCtx } from '../src/core/context.js';
+import { buildCtx } from '../../src/core/context.js';
 
 /** Build a minimal mock req/res */
 function makeMocks(method = 'GET', url = '/test?foo=bar') {

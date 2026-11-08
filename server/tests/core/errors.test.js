@@ -14,7 +14,7 @@ import {
   ConflictError,
   RateLimitError,
   errorHandler,
-} from '../src/core/errors.js';
+} from '../../src/core/errors.js';
 
 function makeCtx() {
   const written = { status: null, body: null };

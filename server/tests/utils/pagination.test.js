@@ -4,7 +4,7 @@
  */
 
 import { describe, it, expect } from '@jest/globals';
-import { parsePagination, buildPaginationMeta } from '../src/utils/pagination.js';
+import { parsePagination, buildPaginationMeta } from '../../src/utils/pagination.js';
 
 describe('utils/pagination — parsePagination', () => {
   it('uses defaults when no query params provided', () => {

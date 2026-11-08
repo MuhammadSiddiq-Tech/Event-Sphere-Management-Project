@@ -31,7 +31,7 @@ function makeCtx(method, path) {
 
 describe('core/router.js', () => {
   it('extracts named params from a path', async () => {
-    const { router } = await import('../src/core/router.js');
+    const { router } = await import('../../src/core/router.js');
     let captured = {};
     router.get('/test-items/:id/sub/:subId', (ctx) => { captured = ctx.params; });
 
@@ -42,7 +42,7 @@ describe('core/router.js', () => {
   });
 
   it('returns null and writes 404 for unknown path', async () => {
-    const { router } = await import('../src/core/router.js');
+    const { router } = await import('../../src/core/router.js');
     const { ctx, written } = makeCtx('GET', '/no-such-path-exists-xyz');
     const match = router.match(ctx);
     expect(match).toBeNull();
@@ -50,7 +50,7 @@ describe('core/router.js', () => {
   });
 
   it('returns null and writes 405 with Allow header for wrong method', async () => {
-    const { router } = await import('../src/core/router.js');
+    const { router } = await import('../../src/core/router.js');
     // Register a GET route for a unique path
     router.get('/method-test-unique', async () => {});
     const { ctx, written } = makeCtx('DELETE', '/method-test-unique');
@@ -61,7 +61,7 @@ describe('core/router.js', () => {
   });
 
   it('returns handlers array on a matching route', async () => {
-    const { router } = await import('../src/core/router.js');
+    const { router } = await import('../../src/core/router.js');
     const handler = async () => {};
     router.post('/handler-test/:id', handler);
     const { ctx } = makeCtx('POST', '/handler-test/42');
@@ -71,7 +71,7 @@ describe('core/router.js', () => {
   });
 
   it('URL-decodes path params', async () => {
-    const { router } = await import('../src/core/router.js');
+    const { router } = await import('../../src/core/router.js');
     router.get('/decode-test/:slug', async () => {});
     const { ctx } = makeCtx('GET', '/decode-test/hello%20world');
     router.match(ctx);
