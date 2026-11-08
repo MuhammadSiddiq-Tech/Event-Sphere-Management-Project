@@ -49,7 +49,7 @@
 - [x] **T-1.2** Utilities: `ApiError` hierarchy, response helpers (`ctx.json`), pagination helper — **S** 🧪
 - [x] **T-1.3** Middleware: `validate(zod)`, `errorHandler`, `notFound`, request-ID + `pino-http`, log redaction — **M** 🧪
 - [x] **T-1.4** Security middleware (in-house `core/security.js`, `core/rate-limit.js`): secure headers, CORS + preflight, NoSQL-key sanitiser, query normaliser, gzip via `zlib`, rate limiters (pluggable store) — **M** 🧪 (NFR-SEC-04)
-- [ ] **T-1.5** `constants` module (`ROLES`, `BOOTH_STATUS`, `APPLICATION_STATUS`, `SESSION_TYPE`, …) — **S**
+- [x] **T-1.5** `constants` module (`ROLES`, `BOOTH_STATUS`, `APPLICATION_STATUS`, `SESSION_TYPE`, …) — **S**
 - [ ] **T-1.6** Mailer service (Nodemailer) + base templates; dev transport to MailHog — **M**
 - [ ] **T-1.7** Upload middleware (`busboy` multipart, MIME + magic-byte check, size caps, random names); storage adapter (local/Cloudinary) — **M** 🧪
 - [ ] **T-1.8** OpenAPI scaffold + `/api/docs` (non-prod) — **S** 📄

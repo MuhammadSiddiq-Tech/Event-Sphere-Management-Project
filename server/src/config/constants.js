@@ -11,6 +11,13 @@ export const ROLES = Object.freeze({
 });
 
 /** @enum {string} */
+export const BOOTH_SIZE = Object.freeze({
+  SMALL: 'small',
+  MEDIUM: 'medium',
+  LARGE: 'large',
+});
+
+/** @enum {string} */
 export const BOOTH_STATUS = Object.freeze({
   AVAILABLE: 'available',
   RESERVED: 'reserved',
