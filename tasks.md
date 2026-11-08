@@ -12,7 +12,7 @@
 | Phase | Title                                         | Milestone | Status                     |
 | ----: | --------------------------------------------- | --------- | -------------------------- |
 |     0 | Project setup & tooling                       | M1        | ✅ Done                    |
-|     1 | Backend foundation                            | M1        | 🔄 In progress (T-1.10 ✅) |
+|     1 | Backend foundation                            | M1        | ✅ Done                    |
 |     2 | Authentication & users                        | M1        | ⬜                         |
 |     3 | Expos, floor plan, booths                     | M2        | ⬜                         |
 |     4 | Exhibitor profiles & applications             | M2        | ⬜                         |
@@ -53,7 +53,7 @@
 - [x] **T-1.6** Mailer service (Nodemailer) + base templates; dev transport to MailHog — **M**
 - [x] **T-1.7** Upload middleware (`busboy` multipart, MIME + magic-byte check, size caps, random names); storage adapter (local/Cloudinary) — **M** 🧪
 - [x] **T-1.8** OpenAPI scaffold + `/api/docs` (non-prod) — **S** 📄
-- [ ] **T-1.9** Test harness: Jest + Supertest + mongodb-memory-server (replica set), factories — **M**
+- [x] **T-1.9** Test harness: Jest + Supertest + mongodb-memory-server (replica set), factories — **M**
 - [x] **T-1.10** **HTTP core — do first, unblocks T-1.2–T-1.8:** `core/router.js` (params, 404/405), `pipeline.js` (async onion + central error boundary), `context.js` (`ctx` + `json/noContent/setCookie`), `body.js` (JSON + 415 + limits), `cookies.js`, `static.js` (traversal-safe), `compress.js` — **L** 🧪 _(D-013, rules 3.1.7–3.1.9)_
 
 **Exit:** health check, error envelope, validation, and test harness verified.
