@@ -231,11 +231,11 @@ describe('T-3.10: Public Expos Pages', () => {
       const floorPlanTab = screen.getByRole('tab', { name: /floor plan/i });
       fireEvent.click(floorPlanTab);
 
-      // Check booth counts and table rows
+      // Check booth codes and legend in floor plan
       await waitFor(() => {
         expect(screen.getByText('A-101')).toBeInTheDocument();
         expect(screen.getByText('A-102')).toBeInTheDocument();
-        expect(screen.getByText('Total Booths')).toBeInTheDocument();
+        expect(screen.getByText(/Total:/i)).toBeInTheDocument();
       });
     });
 

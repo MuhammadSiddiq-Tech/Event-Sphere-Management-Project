@@ -20,6 +20,7 @@ import {
 import { useQuery } from '@tanstack/react-query';
 import { fetchExpoById, fetchExpoBySlug, fetchExpoBooths } from '../../api/expos.js';
 import { StatusPill, Skeleton } from '../../components/ui/index.js';
+import { FloorPlan } from '../../components/floorplan/index.js';
 import { formatExpoDateRange, formatDate, relativeDays } from '../../lib/dateUtils.js';
 
 /** Determine if the idOrSlug param looks like a MongoDB ObjectId */
@@ -302,10 +303,13 @@ export default function ExpoDetailPage() {
 }
 
 /**
- * Floor Plan Tab — a lightweight "view" placeholder that shows booth count stats
- * and a mini status breakdown. Full SVG floor plan is T-3.12.
+ * Floor Plan Tab — interactive SVG component with pan/zoom, legend, status colors,
+ * booth details drawer, and an accessible table alternative view.
+ * T-3.12. Design §8.
  */
 function FloorPlanTab({ expoId, booths, isLoading }) {
+  const [viewFormat, setViewFormat] = useState('svg'); // 'svg' | 'table'
+
   if (isLoading) {
     return (
       <div className="text-center py-5">
@@ -327,93 +331,76 @@ function FloorPlanTab({ expoId, booths, isLoading }) {
     );
   }
 
-  // Count by status
-  const counts = booths.reduce(
-    (acc, b) => {
-      acc[b.status] = (acc[b.status] || 0) + 1;
-      return acc;
-    },
-    {}
-  );
-
-  const statusMeta = [
-    { key: 'available', label: 'Available', className: 'booth-available', icon: 'bi-check-circle' },
-    { key: 'reserved', label: 'Reserved', className: 'booth-reserved', icon: 'bi-hourglass-split' },
-    { key: 'allocated', label: 'Allocated', className: 'booth-allocated', icon: 'bi-building' },
-    { key: 'blocked', label: 'Blocked', className: 'booth-blocked', icon: 'bi-slash-circle' },
-  ];
-
   return (
     <div>
-      <Alert variant="info" className="d-flex align-items-center gap-2 mb-4">
-        <i className="bi bi-info-circle-fill" aria-hidden="true" />
-        <span>
-          Interactive floor plan with pan/zoom and booth details is coming in a future update.
-          Below is a summary of booth availability.
-        </span>
-      </Alert>
-
-      {/* Booth availability summary */}
-      <Row className="g-3 mb-4">
-        {statusMeta.map(({ key, label, className, icon }) => (
-          counts[key] > 0 && (
-            <Col key={key} xs={6} sm={3}>
-              <div className={`rounded-3 p-3 text-center border ${className}`}>
-                <i className={`bi ${icon} fs-4 d-block mb-1`} aria-hidden="true" />
-                <div className="fw-bold fs-5">{counts[key]}</div>
-                <div className="small">{label}</div>
-              </div>
-            </Col>
-          )
-        ))}
-        <Col xs={6} sm={3}>
-          <div className="rounded-3 p-3 text-center border bg-light">
-            <i className="bi bi-grid fs-4 d-block mb-1 text-muted" aria-hidden="true" />
-            <div className="fw-bold fs-5">{booths.length}</div>
-            <div className="small text-muted">Total Booths</div>
-          </div>
-        </Col>
-      </Row>
-
-      {/* Booth listing table */}
-      <div className="bg-white rounded-3 shadow-sm overflow-hidden">
-        <div className="table-responsive">
-          <table className="table table-hover mb-0" aria-label="Booth list">
-            <thead className="table-light">
-              <tr>
-                <th scope="col">Code</th>
-                <th scope="col">Size</th>
-                <th scope="col">Status</th>
-                <th scope="col" className="d-none d-md-table-cell">Price / Day</th>
-                <th scope="col" className="d-none d-sm-table-cell">Label</th>
-              </tr>
-            </thead>
-            <tbody>
-              {booths.map((booth) => {
-                const statusMeta2 = statusMeta.find((s) => s.key === booth.status);
-                return (
-                  <tr key={booth.id || booth._id}>
-                    <td className="fw-mono fw-semibold">{booth.code}</td>
-                    <td className="text-capitalize text-muted">{booth.size || 'medium'}</td>
-                    <td>
-                      <span
-                        className={`badge rounded-pill border ${statusMeta2?.className ?? ''} d-inline-flex align-items-center gap-1 px-2 py-1 small fw-semibold`}
-                      >
-                        {statusMeta2 && <i className={`bi ${statusMeta2.icon}`} aria-hidden="true" />}
-                        <span className="text-capitalize">{booth.status}</span>
-                      </span>
-                    </td>
-                    <td className="d-none d-md-table-cell text-muted">
-                      {booth.pricePerDay > 0 ? `$${booth.pricePerDay.toLocaleString()}` : '—'}
-                    </td>
-                    <td className="d-none d-sm-table-cell text-muted small">{booth.label || '—'}</td>
-                  </tr>
-                );
-              })}
-            </tbody>
-          </table>
+      {/* Format Switcher */}
+      <div className="d-flex justify-content-between align-items-center mb-3">
+        <div>
+          <h2 className="h5 fw-bold mb-0">Floor Plan &amp; Booth Availability</h2>
+          <p className="text-muted small mb-0">
+            Click on any booth or use the zoom &amp; pan controls to explore the venue layout.
+          </p>
+        </div>
+        <div className="btn-group btn-group-sm" role="group" aria-label="Floor plan view format">
+          <button
+            type="button"
+            className={`btn ${viewFormat === 'svg' ? 'btn-primary' : 'btn-outline-secondary'}`}
+            onClick={() => setViewFormat('svg')}
+            aria-pressed={viewFormat === 'svg'}
+          >
+            <i className="bi bi-diagram-3 me-1" />
+            Interactive Map
+          </button>
+          <button
+            type="button"
+            className={`btn ${viewFormat === 'table' ? 'btn-primary' : 'btn-outline-secondary'}`}
+            onClick={() => setViewFormat('table')}
+            aria-pressed={viewFormat === 'table'}
+          >
+            <i className="bi bi-table me-1" />
+            Table View
+          </button>
         </div>
       </div>
+
+      {viewFormat === 'svg' ? (
+        <FloorPlan booths={booths} mode="view" height={520} />
+      ) : (
+        <div className="bg-white rounded-3 shadow-sm overflow-hidden border">
+          <div className="table-responsive">
+            <table className="table table-hover mb-0" aria-label="Booth list">
+              <thead className="table-light small">
+                <tr>
+                  <th scope="col">Code</th>
+                  <th scope="col">Size</th>
+                  <th scope="col">Dimensions</th>
+                  <th scope="col">Status</th>
+                  <th scope="col">Price / Day</th>
+                  <th scope="col">Label</th>
+                </tr>
+              </thead>
+              <tbody>
+                {booths.map((booth) => (
+                  <tr key={booth.id || booth._id}>
+                    <td className="fw-mono fw-semibold">{booth.code}</td>
+                    <td className="text-capitalize text-muted small">{booth.size || 'medium'}</td>
+                    <td className="small text-muted">
+                      {booth.geometry?.w || 2} × {booth.geometry?.h || 2} m
+                    </td>
+                    <td>
+                      <StatusPill status={booth.status} />
+                    </td>
+                    <td className="text-muted small">
+                      {booth.pricePerDay > 0 ? `$${booth.pricePerDay.toLocaleString()}` : 'Free'}
+                    </td>
+                    <td className="text-muted small">{booth.label || '—'}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
