@@ -68,4 +68,48 @@ export const boothsController = {
     const booth = await boothService.reserve(ctx.user, boothId);
     ctx.json(200, booth);
   },
+
+  /**
+   * POST /api/v1/booths/:id/assign
+   * Admin assigns booth to exhibitor.
+   * T-3.7. FR-EXH-03.
+   */
+  async assign(ctx) {
+    const boothId = ctx.params.boothId || ctx.params.id;
+    const booth = await boothService.assign(ctx.user, boothId, ctx.body.exhibitorId);
+    ctx.json(200, booth);
+  },
+
+  /**
+   * POST /api/v1/booths/:id/unassign
+   * Admin unassigns booth from exhibitor.
+   * T-3.7. FR-EXH-03.
+   */
+  async unassign(ctx) {
+    const boothId = ctx.params.boothId || ctx.params.id;
+    const booth = await boothService.unassign(ctx.user, boothId);
+    ctx.json(200, booth);
+  },
+
+  /**
+   * POST /api/v1/booths/:id/release
+   * Exhibitor or Admin releases a reserved/allocated booth back to available.
+   * T-3.7. BR-5.
+   */
+  async release(ctx) {
+    const boothId = ctx.params.boothId || ctx.params.id;
+    const booth = await boothService.release(ctx.user, boothId);
+    ctx.json(200, booth);
+  },
+
+  /**
+   * PATCH /api/v1/booths/:id/details
+   * Exhibitor edits showcase, products, and staff for their booth.
+   * T-3.7. FR-EXP-05.
+   */
+  async updateDetails(ctx) {
+    const boothId = ctx.params.boothId || ctx.params.id;
+    const booth = await boothService.updateDetails(ctx.user, boothId, ctx.body);
+    ctx.json(200, booth);
+  },
 };

@@ -16,6 +16,27 @@ import { BOOTH_STATUS, BOOTH_SIZE } from '../config/constants.js';
 const BOOTH_STATUS_VALUES = Object.values(BOOTH_STATUS);
 const BOOTH_SIZE_VALUES = Object.values(BOOTH_SIZE);
 
+/** Staff member assigned to work at a booth. */
+const staffMemberSchema = new mongoose.Schema(
+  {
+    name: { type: String, required: true, trim: true, maxlength: 80 },
+    email: { type: String, trim: true, lowercase: true, maxlength: 120 },
+    phone: { type: String, trim: true, maxlength: 30 },
+    title: { type: String, trim: true, maxlength: 80 },
+  },
+  { _id: false }
+);
+
+/** Exhibitor-editable booth showcase & staff details. FR-EXP-05. */
+const boothDetailsSchema = new mongoose.Schema(
+  {
+    showcase: { type: String, trim: true, maxlength: 2000, default: '' },
+    products: { type: [String], default: [] },
+    staff: { type: [staffMemberSchema], default: [] },
+  },
+  { _id: false }
+);
+
 /** Rectangular geometry in integer grid units. */
 const geometrySchema = new mongoose.Schema(
   {
@@ -93,6 +114,11 @@ const boothSchema = new mongoose.Schema(
       type: Date,
       default: null,
     },
+    /** Showcase, products, and booth staff details (editable by exhibitor holder). FR-EXP-05. */
+    details: {
+      type: boothDetailsSchema,
+      default: () => ({ showcase: '', products: [], staff: [] }),
+    },
   },
   {
     timestamps: true,
@@ -115,5 +141,6 @@ boothSchema.index({ expo: 1, status: 1 });
 
 // ─── Exhibitor → booth lookup ─────────────────────────────────────────────────
 boothSchema.index({ expo: 1, reservedBy: 1 });
+boothSchema.index({ expo: 1, assignedTo: 1 });
 
 export const Booth = mongoose.model('Booth', boothSchema);

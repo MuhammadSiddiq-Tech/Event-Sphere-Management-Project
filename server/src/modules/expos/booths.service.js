@@ -10,8 +10,9 @@ import mongoose from 'mongoose';
 import { Booth } from '../../models/booth.model.js';
 import { Expo } from '../../models/expo.model.js';
 import { Application } from '../../models/application.model.js';
+import { User } from '../../models/user.model.js';
 import { NotFoundError, ConflictError, ForbiddenError } from '../../core/errors.js';
-import { EXPO_STATUS, BOOTH_STATUS, APPLICATION_STATUS } from '../../config/constants.js';
+import { EXPO_STATUS, BOOTH_STATUS, APPLICATION_STATUS, ROLES } from '../../config/constants.js';
 import { parsePagination, buildPaginationMeta } from '../../utils/pagination.js';
 
 /**
@@ -418,5 +419,206 @@ export const boothService = {
     await application.save();
 
     return reservedBooth.toJSON();
+  },
+
+  /**
+   * Admin assigns a booth to an exhibitor (marks booth allocated).
+   * T-3.7. FR-EXH-03, BR-4, BR-5.
+   * @param {Object} adminUser - ctx.user (admin)
+   * @param {string} boothId
+   * @param {string} exhibitorId
+   * @returns {Promise<Object>}
+   */
+  async assign(adminUser, boothId, exhibitorId) {
+    const booth = await Booth.findById(boothId);
+    if (!booth) {
+      throw new NotFoundError('Booth');
+    }
+
+    const expo = await Expo.findOne({ _id: booth.expo, isDeleted: { $ne: true } });
+    if (!expo) {
+      throw new NotFoundError('Expo');
+    }
+
+    if (booth.status === BOOTH_STATUS.BLOCKED) {
+      throw new ConflictError('Cannot assign a blocked booth. Unblock it first.');
+    }
+
+    // Verify target exhibitor exists and is an exhibitor
+    const exhibitor = await User.findById(exhibitorId);
+    if (!exhibitor || exhibitor.role !== ROLES.EXHIBITOR || !exhibitor.isActive) {
+      throw new NotFoundError('Exhibitor user not found or inactive');
+    }
+
+    // Rule BR-4: Exhibitor must not already hold another booth in the same expo
+    const existingHeldBooth = await Booth.findOne({
+      expo: expo._id,
+      _id: { $ne: boothId },
+      $or: [{ reservedBy: exhibitorId }, { assignedTo: exhibitorId }],
+    });
+
+    if (existingHeldBooth) {
+      throw new ConflictError(
+        'Exhibitor already holds a booth in this expo. Maximum 1 booth allowed (Rule BR-4).'
+      );
+    }
+
+    // Unlink previous holder's application if different
+    const prevHolder = booth.assignedTo || booth.reservedBy;
+    if (prevHolder && prevHolder.toString() !== exhibitorId) {
+      await Application.findOneAndUpdate(
+        { expo: expo._id, exhibitor: prevHolder, assignedBooth: booth._id },
+        { $set: { assignedBooth: null } }
+      );
+    }
+
+    booth.status = BOOTH_STATUS.ALLOCATED;
+    booth.assignedTo = exhibitorId;
+    booth.assignedAt = new Date();
+    booth.reservedBy = null;
+    booth.reservedAt = null;
+    await booth.save();
+
+    // Link target exhibitor's application
+    await Application.findOneAndUpdate(
+      { expo: expo._id, exhibitor: exhibitorId },
+      { $set: { assignedBooth: booth._id, status: APPLICATION_STATUS.APPROVED } }
+    );
+
+    return booth.toJSON();
+  },
+
+  /**
+   * Admin unassigns a booth (returns booth to available).
+   * T-3.7. FR-EXH-03, BR-5.
+   * @param {Object} adminUser
+   * @param {string} boothId
+   * @returns {Promise<Object>}
+   */
+  async unassign(adminUser, boothId) {
+    const booth = await Booth.findById(boothId);
+    if (!booth) {
+      throw new NotFoundError('Booth');
+    }
+
+    const expo = await Expo.findOne({ _id: booth.expo, isDeleted: { $ne: true } });
+    if (!expo) {
+      throw new NotFoundError('Expo');
+    }
+
+    if (booth.status !== BOOTH_STATUS.ALLOCATED && booth.status !== BOOTH_STATUS.RESERVED) {
+      throw new ConflictError('Booth is not currently allocated or reserved.');
+    }
+
+    const prevHolder = booth.assignedTo || booth.reservedBy;
+    if (prevHolder) {
+      await Application.findOneAndUpdate(
+        { expo: expo._id, exhibitor: prevHolder, assignedBooth: booth._id },
+        { $set: { assignedBooth: null } }
+      );
+    }
+
+    booth.status = BOOTH_STATUS.AVAILABLE;
+    booth.assignedTo = null;
+    booth.assignedAt = null;
+    booth.reservedBy = null;
+    booth.reservedAt = null;
+    await booth.save();
+
+    return booth.toJSON();
+  },
+
+  /**
+   * Release a booth (holder exhibitor releases own booth, or admin releases it).
+   * T-3.7. BR-5: available -> reserved/allocated -> available (release).
+   * @param {Object} user - ctx.user
+   * @param {string} boothId
+   * @returns {Promise<Object>}
+   */
+  async release(user, boothId) {
+    const booth = await Booth.findById(boothId);
+    if (!booth) {
+      throw new NotFoundError('Booth');
+    }
+
+    const expo = await Expo.findOne({ _id: booth.expo, isDeleted: { $ne: true } });
+    if (!expo) {
+      throw new NotFoundError('Expo');
+    }
+
+    if (booth.status === BOOTH_STATUS.AVAILABLE) {
+      throw new ConflictError('Booth is already available.');
+    }
+
+    if (booth.status === BOOTH_STATUS.BLOCKED) {
+      throw new ConflictError('Cannot release a blocked booth.');
+    }
+
+    const userId = user._id ? user._id.toString() : String(user.id);
+    const isHolder =
+      (booth.reservedBy && booth.reservedBy.toString() === userId) ||
+      (booth.assignedTo && booth.assignedTo.toString() === userId);
+
+    if (user.role !== ROLES.ADMIN && !isHolder) {
+      throw new ForbiddenError('You do not have permission to release this booth.');
+    }
+
+    const holder = booth.reservedBy || booth.assignedTo || userId;
+    await Application.findOneAndUpdate(
+      { expo: expo._id, exhibitor: holder, assignedBooth: booth._id },
+      { $set: { assignedBooth: null } }
+    );
+
+    booth.status = BOOTH_STATUS.AVAILABLE;
+    booth.reservedBy = null;
+    booth.reservedAt = null;
+    booth.assignedTo = null;
+    booth.assignedAt = null;
+    booth.details = { showcase: '', products: [], staff: [] };
+    await booth.save();
+
+    return booth.toJSON();
+  },
+
+  /**
+   * Exhibitor edits showcase, products, and staff for their booth.
+   * T-3.7. FR-EXP-05.
+   * @param {Object} user - ctx.user (exhibitor)
+   * @param {string} boothId
+   * @param {Object} detailsData
+   * @returns {Promise<Object>}
+   */
+  async updateDetails(user, boothId, detailsData) {
+    const booth = await Booth.findById(boothId);
+    if (!booth) {
+      throw new NotFoundError('Booth');
+    }
+
+    const expo = await Expo.findOne({ _id: booth.expo, isDeleted: { $ne: true } });
+    if (!expo) {
+      throw new NotFoundError('Expo');
+    }
+
+    const userId = user._id ? user._id.toString() : String(user.id);
+    const isHolder =
+      (booth.reservedBy && booth.reservedBy.toString() === userId) ||
+      (booth.assignedTo && booth.assignedTo.toString() === userId);
+
+    if (user.role !== ROLES.ADMIN && !isHolder) {
+      throw new ForbiddenError(
+        'Only the exhibitor who holds this booth can edit its details (FR-EXP-05).'
+      );
+    }
+
+    if (!booth.details) {
+      booth.details = { showcase: '', products: [], staff: [] };
+    }
+
+    if (detailsData.showcase !== undefined) booth.details.showcase = detailsData.showcase;
+    if (detailsData.products !== undefined) booth.details.products = detailsData.products;
+    if (detailsData.staff !== undefined) booth.details.staff = detailsData.staff;
+
+    await booth.save();
+    return booth.toJSON();
   },
 };

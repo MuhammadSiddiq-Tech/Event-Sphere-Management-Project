@@ -26,6 +26,8 @@ import {
   expoIdSchema,
   boothIdSchema,
   reserveBoothSchema,
+  assignBoothSchema,
+  updateBoothDetailsSchema,
 } from './booths.schema.js';
 import { boothsController } from './booths.controller.js';
 
@@ -105,4 +107,82 @@ router.post(
   requireRole('exhibitor'),
   validate(boothIdSchema),
   boothsController.reserve
+);
+
+// ─── Admin Assign / Unassign endpoints (T-3.7, FR-EXH-03) ─────────────────────
+
+// POST /api/v1/booths/:id/assign
+router.post(
+  '/api/v1/booths/:id/assign',
+  requireAuth,
+  requireRole('admin'),
+  validate(reserveBoothSchema),
+  validate(assignBoothSchema),
+  boothsController.assign
+);
+
+// POST /api/v1/expos/:id/booths/:boothId/assign
+router.post(
+  '/api/v1/expos/:id/booths/:boothId/assign',
+  requireAuth,
+  requireRole('admin'),
+  validate(boothIdSchema),
+  validate(assignBoothSchema),
+  boothsController.assign
+);
+
+// POST /api/v1/booths/:id/unassign
+router.post(
+  '/api/v1/booths/:id/unassign',
+  requireAuth,
+  requireRole('admin'),
+  validate(reserveBoothSchema),
+  boothsController.unassign
+);
+
+// POST /api/v1/expos/:id/booths/:boothId/unassign
+router.post(
+  '/api/v1/expos/:id/booths/:boothId/unassign',
+  requireAuth,
+  requireRole('admin'),
+  validate(boothIdSchema),
+  boothsController.unassign
+);
+
+// ─── Booth Release endpoint (T-3.7, BR-5) ─────────────────────────────────────
+
+// POST /api/v1/booths/:id/release
+router.post(
+  '/api/v1/booths/:id/release',
+  requireAuth,
+  validate(reserveBoothSchema),
+  boothsController.release
+);
+
+// POST /api/v1/expos/:id/booths/:boothId/release
+router.post(
+  '/api/v1/expos/:id/booths/:boothId/release',
+  requireAuth,
+  validate(boothIdSchema),
+  boothsController.release
+);
+
+// ─── Booth Details Update endpoint (T-3.7, FR-EXP-05) ─────────────────────────
+
+// PATCH /api/v1/booths/:id/details
+router.patch(
+  '/api/v1/booths/:id/details',
+  requireAuth,
+  validate(reserveBoothSchema),
+  validate(updateBoothDetailsSchema),
+  boothsController.updateDetails
+);
+
+// PATCH /api/v1/expos/:id/booths/:boothId/details
+router.patch(
+  '/api/v1/expos/:id/booths/:boothId/details',
+  requireAuth,
+  validate(boothIdSchema),
+  validate(updateBoothDetailsSchema),
+  boothsController.updateDetails
 );

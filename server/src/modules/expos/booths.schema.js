@@ -100,3 +100,37 @@ export const reserveBoothParamsSchema = z.object({
 export const expoIdSchema = { params: expoIdParamsSchema };
 export const boothIdSchema = { params: boothIdParamsSchema };
 export const reserveBoothSchema = { params: reserveBoothParamsSchema };
+
+// ─── Assign / Details schemas (T-3.7) ─────────────────────────────────────────
+
+export const assignBoothBodySchema = z.object({
+  exhibitorId: z.string().regex(/^[a-f\d]{24}$/i, 'Invalid exhibitor ID'),
+});
+
+export const assignBoothSchema = {
+  body: assignBoothBodySchema,
+};
+
+export const updateBoothDetailsBodySchema = z
+  .object({
+    showcase: z.string().max(2000).optional(),
+    products: z.array(z.string().min(1).max(100)).max(50).optional(),
+    staff: z
+      .array(
+        z.object({
+          name: z.string().min(1, 'Staff name is required').max(80),
+          email: z.string().email('Invalid staff email').optional().or(z.literal('')),
+          phone: z.string().max(30).optional().or(z.literal('')),
+          title: z.string().max(80).optional().or(z.literal('')),
+        })
+      )
+      .max(20)
+      .optional(),
+  })
+  .refine((data) => Object.keys(data).length > 0, {
+    message: 'At least one field (showcase, products, or staff) must be provided',
+  });
+
+export const updateBoothDetailsSchema = {
+  body: updateBoothDetailsBodySchema,
+};

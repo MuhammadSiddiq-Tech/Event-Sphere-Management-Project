@@ -96,7 +96,7 @@
 - [x] **T-3.4** `Booth` model (unique `{expo, code}`, geometry, status) — **S** 🧪
 - [x] **T-3.5** Booth CRUD + bulk `PUT /expos/:id/booths` (overlap validation, atomic save) — **L** 🧪 _(FR-EXPO-03)_
 - [x] **T-3.6** **Atomic reserve** endpoint (`status:'available'` in filter; BR-3 approved-only; max 1 booth per expo) — **M** 🧪 _(FR-EXP-04, BR-3/4)_
-- [ ] **T-3.7** Booth assign/unassign (admin) + release; booth detail edit (exhibitor-owner) — **M** 🧪 _(FR-EXH-03, FR-EXP-05)_
+- [x] **T-3.7** Booth assign/unassign (admin) + release; booth detail edit (exhibitor-owner) — **M** 🧪 _(FR-EXH-03, FR-EXP-05)_
 - [ ] **T-3.8** **Concurrency test**: N parallel reserves → exactly one success, rest 409 — **S** 🧪 _(rules 6.4)_
 - [ ] **T-3.9** Expo status transition job (`published → ongoing → completed`) — **S** 🧪
 
