@@ -10,6 +10,7 @@ import { requestHandler } from './app.js';
 import { connectDb, disconnectDb } from './config/db.js';
 import { env } from './config/env.js';
 import { logger } from './config/logger.js';
+import { startAllJobs, stopAllJobs } from './jobs/index.js';
 
 // ─── Create HTTP server ───────────────────────────────────────────────────────
 const httpServer = createServer(requestHandler);
@@ -29,6 +30,7 @@ export const io = new SocketIOServer(httpServer, {
 // ─── Startup ──────────────────────────────────────────────────────────────────
 async function start() {
   await connectDb();
+  startAllJobs();
 
   httpServer.listen(env.PORT, () => {
     logger.info(`🚀 EventSphere API listening on http://localhost:${env.PORT}`);
@@ -46,6 +48,7 @@ async function shutdown(signal) {
   if (isShuttingDown) return;
   isShuttingDown = true;
   logger.info({ signal }, 'Shutting down…');
+  stopAllJobs();
 
   httpServer.close(async () => {
     await disconnectDb();
