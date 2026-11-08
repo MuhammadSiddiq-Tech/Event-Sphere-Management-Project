@@ -42,13 +42,13 @@
 | Task plan                  | ✅ Baseline v1.0 | `tasks.md`                                         |
 | Repo scaffolding           | ✅ Done          | Phase 0 complete — committed & pushed to main      |
 | Backend                    | ✅ Done          | Phase 1 complete (T-1.1–T-1.10, 117 tests passing) |
-| Frontend                   | 🔄 Next          | Phase 2 Auth & Users                               |
+| Authentication & Users     | 🔄 In progress   | T-2.1, T-2.2, T-2.3 done (129 tests passing); T-2.4 next |
 | Testing                    | ⬜ Not started   |                                                    |
 | Documentation (user/dev)   | ⬜ Not started   |                                                    |
 | Demo video                 | ⬜ Not started   |                                                    |
 
-**Current phase:** Phase 1 ✅ complete (T-1.1–T-1.10) → Phase 2 🔄 ready to start.
-**Next action:** Phase 2 Authentication & Users (T-2.1 User model, T-2.2 Register endpoint).
+**Current phase:** Phase 2 🔄 in progress (T-2.1, T-2.2, T-2.3 done).
+**Next action:** T-2.4 (Refresh / logout / `GET /auth/me`), T-2.5 (`requireAuth`, `requireRole`, ownership helpers).
 
 ---
 
@@ -189,10 +189,10 @@ _(Full details in `rules.md`.)_
 
 ### Session 2 — Nov 8 2026 — Phase 0 + T-1.10 scaffold and test verification
 - **Goal:** Complete repo scaffolding, client/server setup, in-house native HTTP core, and verify test harness.
-- **Done:** T-0.1 to T-0.9 (monorepo, Vite React Bootstrap client, plain Node.js server, Zod env validation, docker-compose), T-1.10 (native HTTP core), T-1.1 (Mongo connection with retry, graceful shutdown, and `/health`), T-1.2 (ApiError hierarchy, response helpers success/error envelopes, pagination helper), T-1.3 (Zod validation middleware, errorHandler, notFound, request-ID correlation, and pino log redaction), T-1.4 (security headers, strict CORS & preflight, NoSQL injection sanitiser, query normaliser, gzip/brotli compression, sliding window rate limiter), T-1.5 (frozen constants and enums module matching PRD/Architecture), T-1.6 (Nodemailer service with non-blocking error handling and responsive templates), T-1.7 (upload middleware via busboy and storage adapter), T-1.8 (OpenAPI 3.0 specification scaffold and Swagger UI at `/api/docs`), and T-1.9 (integration test harness and entity factories for users, exhibitors, expos, and booths). **Phase 1 is 100% complete.**
-- **Testing:** 19 test suites, 117/117 tests passing green.
+- **Done:** Phase 1 complete (T-1.1 to T-1.10). Phase 2 started: T-2.1 (User model with bcrypt hashing, passwordHash select:false, toJSON transform), T-2.2 (Register endpoint: roles exhibitor/attendee only, consent required, duplicate email 409, bcrypt cost 12), and T-2.3 (Login endpoint: JWT access token, rotating refresh token stored in httpOnly cookie, reuse detection family logic).
+- **Testing:** 21 test suites, 129/129 tests passing green.
 - **Git:** Staged, committed with conventional commits, and pushed directly to `origin/main` (`MuhammadSiddiq-Tech/Event-Sphere-Management-Project`).
-- **Next:** Phase 2 Authentication & Users (T-2.1 User model, T-2.2 Register endpoint).
+- **Next:** Phase 2 Auth: T-2.4 (Refresh / logout / `GET /auth/me`), T-2.5 (`requireAuth`, `requireRole`, ownership helper).
 - **Goal:** Apply owner's stack choice: React + Bootstrap, plain Node.js without Express; rest unchanged.
 - **Done:** Updated all six docs (architecture §4/§5.3/§11/ADRs, design §5/§6.1/§11, rules §3/§4/§5, tasks Phase 0–1, prd header, this file).
 - **Decisions:** D-013, D-014, D-015; D-008 revised.

@@ -20,8 +20,7 @@ import { renderSwaggerUi } from './docs/swaggerUi.js';
 import openapiSpec from './docs/openapi.json' with { type: 'json' };
 
 // ─── Import and register all route modules ───────────────────────────────────
-// Routes are registered as a side-effect of import (calling router.get/post/…)
-// import './modules/auth/auth.routes.js'; // Phase 2
+import './modules/auth/auth.routes.js';
 
 // ─── Health endpoint (always registered) ─────────────────────────────────────
 router.get('/health', async (ctx) => {
@@ -85,6 +84,15 @@ export async function requestHandler(req, res) {
     // Match route and compose route-level handler chain
     const match = router.match(ctx);
     if (!match) return; // 404/405 already written
+
+    // Parse JSON body for mutation requests if not parsed
+    if (['POST', 'PUT', 'PATCH'].includes(ctx.method)) {
+      const contentType = req.headers['content-type'] || '';
+      if (contentType.includes('application/json')) {
+        const { parseJson } = await import('./core/body.js');
+        await parseJson(ctx);
+      }
+    }
 
     const routePipeline = compose([sanitiseBody, ...match.handlers]);
     await routePipeline(ctx);

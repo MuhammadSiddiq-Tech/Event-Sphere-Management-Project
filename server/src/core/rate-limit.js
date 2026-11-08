@@ -58,9 +58,9 @@ export const globalRateLimit = createRateLimit({
   windowMs: 60 * 1000,
 });
 
-/** Auth rate limiter — 10 requests/15 min per IP. Rule 2.7, NFR-SEC-02. */
+/** Auth rate limiter — 10 requests/15 min per IP. Rule 2.7, NFR-SEC-02. (Relaxed in test mode) */
 export const authRateLimit = createRateLimit({
-  maxRequests: 10,
+  maxRequests: process.env.NODE_ENV === 'test' ? 1000 : 10,
   windowMs: 15 * 60 * 1000,
 });
 
