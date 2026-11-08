@@ -79,10 +79,10 @@
 - [x] **T-2.10** App shell: providers, router, layouts per role, `ProtectedRoute`, 403/404 pages — **M** _(FR-AUTH-03)_
 - [x] **T-2.11** Axios instance + single-flight refresh interceptor; `AuthContext` bootstrap (refresh → me) — **M** 🧪
 - [x] **T-2.12** Core UI components: Button, Input, PasswordInput(+strength), Card, Badge, Modal/ConfirmDialog, Toast, Skeleton, EmptyState — **L** _(design §6)_
-- [ ] **T-2.13** Pages: Login, Register (role + consent), Forgot, Reset — validation + a11y — **M** 🧪 _(FR-AUTH-01/02/04)_
-- [ ] **T-2.14** Profile & account page (edit, change password) — **S** _(FR-AUTH-06)_
+- [x] **T-2.13** Pages: Login, Register (role + consent), Forgot, Reset — validation + a11y — **M** 🧪 _(FR-AUTH-01/02/04)_
+- [x] **T-2.14** Profile & account page (edit, change password) — **S** _(FR-AUTH-06)_
 
-**Exit (M1):** register → login → role redirect → logout → reset password works end-to-end; E2E journey (d) green. 📄
+**Exit (M1):** register → login → role redirect → logout → reset password works end-to-end; E2E journey (d) green. [Complete] 📄
 
 ---
 
