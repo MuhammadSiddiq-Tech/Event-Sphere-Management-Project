@@ -427,6 +427,18 @@ export default function AdminExposPage() {
                               </Button>
                             )}
 
+                            <Button
+                              as={Link}
+                              to={`/admin/expos/${expoId}/floor-plan`}
+                              variant="outline-primary"
+                              size="sm"
+                              title="Floor Plan Editor"
+                              className="d-none d-md-inline-flex align-items-center"
+                            >
+                              <i className="bi bi-grid-3x3-gap me-1" />
+                              Floor Plan
+                            </Button>
+
                             <Dropdown align="end">
                               <Dropdown.Toggle
                                 variant="light"
@@ -441,6 +453,11 @@ export default function AdminExposPage() {
                                 <Dropdown.Item onClick={() => handleOpenEdit(expo)}>
                                   <i className="bi bi-pencil me-2 text-primary" />
                                   Edit Metadata
+                                </Dropdown.Item>
+
+                                <Dropdown.Item as={Link} to={`/admin/expos/${expoId}/floor-plan`}>
+                                  <i className="bi bi-grid-3x3-gap me-2 text-primary" />
+                                  Floor Plan Editor
                                 </Dropdown.Item>
 
                                 <Dropdown.Item as={Link} to={`/expos/${expo.slug || expoId}`}>

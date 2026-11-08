@@ -13,8 +13,8 @@
 | ----: | --------------------------------------------- | --------- | -------------------------- |
 |     0 | Project setup & tooling                       | M1        | ✅ Done                    |
 |     1 | Backend foundation                            | M1        | ✅ Done                    |
-|     2 | Authentication & users                        | M1        | 🔄 In progress (T-2.1–T-2.12 ✅) |
-|     3 | Expos, floor plan, booths                     | M2        | ⬜                         |
+|     2 | Authentication & users                        | M1        | ✅ Done                    |
+|     3 | Expos, floor plan, booths                     | M2        | 🔄 In progress (T-3.1–T-3.13 ✅) |
 |     4 | Exhibitor profiles & applications             | M2        | ⬜                         |
 |     5 | Schedule & sessions                           | M3        | ⬜                         |
 |     6 | Attendee features                             | M3        | ⬜                         |
@@ -105,7 +105,7 @@
 - [x] **T-3.10** Public home + expos list (search, filters) + expo detail shell with tabs — **M** _(FR-ATT-01)_
 - [x] **T-3.11** Admin: expo list + create/edit form (banner upload, dates, venue) + delete confirm (type title) — **L** 🧪 _(FR-EXPO-01/02)_
 - [x] **T-3.12** `FloorPlan` SVG component — **view** mode (pan/zoom, legend, status colours, a11y labels) — **L** _(design §8)_
-- [ ] **T-3.13** `FloorPlan` **edit** mode (add/drag/resize/delete, grid snap, side panel, save) — **XL** _(FR-EXPO-03/04)_
+- [x] **T-3.13** `FloorPlan` **edit** mode (add/drag/resize/delete, grid snap, side panel, save) — **XL** _(FR-EXPO-03/04)_
 - [ ] **T-3.14** `FloorPlan` **select** mode for exhibitors (select → confirm reserve; 409 UX) — **M** _(FR-EXP-03/04)_
 
 **Exit:** admin designs a floor plan; booths persist; reserve race-safe. 📄

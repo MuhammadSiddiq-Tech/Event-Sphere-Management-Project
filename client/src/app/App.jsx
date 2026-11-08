@@ -29,6 +29,7 @@ import ResetPasswordPage from '../pages/auth/ResetPasswordPage.jsx';
 import ProfilePage from '../pages/account/ProfilePage.jsx';
 import AdminDashboardPage from '../pages/admin/AdminDashboardPage.jsx';
 import AdminExposPage from '../pages/admin/AdminExposPage.jsx';
+import AdminFloorPlanEditorPage from '../pages/admin/AdminFloorPlanEditorPage.jsx';
 import ExhibitorDashboardPage from '../pages/exhibitor/ExhibitorDashboardPage.jsx';
 import AttendeeDashboardPage from '../pages/attendee/AttendeeDashboardPage.jsx';
 import ExposListPage from '../pages/expos/ExposListPage.jsx';
@@ -74,6 +75,7 @@ export default function App() {
               <Route path="/admin" element={<AdminLayout />}>
                 <Route index element={<AdminDashboardPage />} />
                 <Route path="expos" element={<AdminExposPage />} />
+                <Route path="expos/:id/floor-plan" element={<AdminFloorPlanEditorPage />} />
                 <Route path="applications" element={<AdminDashboardPage />} />
                 <Route path="schedule" element={<AdminDashboardPage />} />
                 <Route path="analytics" element={<AdminDashboardPage />} />

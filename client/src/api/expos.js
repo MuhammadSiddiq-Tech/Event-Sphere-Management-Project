@@ -121,6 +121,32 @@ export async function deleteExpo(id) {
 }
 
 /**
+ * Admin atomically replaces all booths for a DRAFT expo floor plan.
+ * PUT /api/v1/expos/:id/booths
+ * @param {string} expoId
+ * @param {Array<Object>} booths
+ * @returns {Promise<{ created: number, booths: Object[] }>}
+ */
+export async function saveFloorPlanBooths(expoId, booths) {
+  // Sanitize payload to match backend bulkBoothItemSchema
+  const payload = booths.map((b) => ({
+    code: b.code.toUpperCase().trim(),
+    label: b.label || undefined,
+    description: b.description || undefined,
+    size: b.size || 'medium',
+    pricePerDay: Number(b.pricePerDay) || 0,
+    geometry: {
+      x: Number(b.geometry.x),
+      y: Number(b.geometry.y),
+      w: Number(b.geometry.w),
+      h: Number(b.geometry.h),
+    },
+  }));
+  const res = await apiClient.put(`/expos/${expoId}/booths`, { booths: payload });
+  return res.data.data;
+}
+
+/**
  * Upload an expo banner or image.
  * POST /api/v1/upload
  * @param {File} file

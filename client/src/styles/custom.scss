@@ -100,7 +100,26 @@ $border-radius-lg: 16px;
     }
   }
 
+  &.is-overlapping {
+    .booth-shape {
+      stroke: #dc2626 !important;
+      stroke-width: 3.5px !important;
+      stroke-dasharray: 5 3 !important;
+    }
+  }
+
   &.is-dimmed {
     opacity: 0.25;
   }
+}
+
+.booth-resize-handle {
+  transition: transform 0.1s ease;
+  &:hover {
+    transform: scale(1.2);
+  }
+}
+
+.floor-plan-wrapper.mode-edit {
+  background-color: #f8fafc;
 }
