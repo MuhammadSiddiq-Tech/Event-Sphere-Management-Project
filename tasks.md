@@ -13,7 +13,7 @@
 | ----: | --------------------------------------------- | --------- | -------------------------- |
 |     0 | Project setup & tooling                       | M1        | ✅ Done                    |
 |     1 | Backend foundation                            | M1        | ✅ Done                    |
-|     2 | Authentication & users                        | M1        | 🔄 In progress (T-2.1–T-2.3 ✅) |
+|     2 | Authentication & users                        | M1        | 🔄 In progress (T-2.1–T-2.5 ✅) |
 |     3 | Expos, floor plan, booths                     | M2        | ⬜                         |
 |     4 | Exhibitor profiles & applications             | M2        | ⬜                         |
 |     5 | Schedule & sessions                           | M3        | ⬜                         |
@@ -67,8 +67,8 @@
 - [x] **T-2.1** `User` model (role enum, consent, indexes, `passwordHash select:false`, `toJSON` transform) — **S** 🧪 _(FR-AUTH-05)_
 - [x] **T-2.2** Register endpoint: roles exhibitor/attendee only, consent required, duplicate-email 409, bcrypt cost 12 — **M** 🧪 _(FR-AUTH-01, BR-1)_
 - [x] **T-2.3** Login + JWT access token + rotating refresh (httpOnly cookie, hashed storage, reuse detection) — **L** 🧪 _(FR-AUTH-02, NFR-SEC-02)_
-- [ ] **T-2.4** Refresh / logout / `GET /auth/me` — **M** 🧪
-- [ ] **T-2.5** `requireAuth`, `requireRole`, ownership helper — **S** 🧪 _(FR-AUTH-03, NFR-SEC-03)_
+- [x] **T-2.4** Refresh / logout / `GET /auth/me` — **M** 🧪
+- [x] **T-2.5** `requireAuth`, `requireRole`, ownership helper — **S** 🧪 _(FR-AUTH-03, NFR-SEC-03)_
 - [ ] **T-2.6** Forgot/reset password (hashed token, 30-min expiry, single-use, revoke sessions, no enumeration) — **M** 🧪 _(FR-AUTH-04)_
 - [ ] **T-2.7** Auth rate limiting (10/15 min per IP+email) — **S** 🧪
 - [ ] **T-2.8** Users: `PATCH /users/me`, change password — **S** 🧪 _(FR-AUTH-06)_

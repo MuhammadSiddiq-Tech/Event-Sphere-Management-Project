@@ -5,10 +5,12 @@
  */
 
 import bcrypt from 'bcryptjs';
-import { randomUUID } from 'node:crypto';
+import { randomUUID, randomBytes } from 'node:crypto';
 import { User } from '../../models/user.model.js';
+import { PasswordResetToken } from '../../models/password-reset-token.model.js';
 import { ConflictError, UnauthenticatedError } from '../../core/errors.js';
 import { env } from '../../config/env.js';
+import { sendPasswordResetEmail } from '../../services/mailer.service.js';
 import {
   generateAccessToken,
   generateRefreshTokenString,
@@ -184,5 +186,81 @@ export const authService = {
       tokenDoc.isRevoked = true;
       await user.save();
     }
+  },
+
+  /**
+   * Issue a password reset token and dispatch reset email.
+   * Always returns without error — never reveals whether email exists (no enumeration).
+   * @param {string} email
+   * @param {string} clientUrl - Base URL for the reset link
+   */
+  async forgotPassword(email, clientUrl) {
+    const user = await User.findOne({ email });
+
+    // No enumeration: silently return if user not found or deactivated
+    if (!user || !user.isActive) return;
+
+    // Revoke any existing tokens for this user (one active token at a time)
+    await PasswordResetToken.deleteMany({ userId: user._id });
+
+    // Generate opaque 32-byte random token
+    const rawToken = randomBytes(32).toString('hex');
+    const tokenHash = hashToken(rawToken);
+
+    const expiresAt = new Date(Date.now() + 30 * 60 * 1000); // 30 minutes
+
+    await PasswordResetToken.create({
+      userId: user._id,
+      tokenHash,
+      expiresAt,
+    });
+
+    const resetUrl = `${clientUrl}/reset-password?token=${rawToken}`;
+    // Non-blocking — mailer failures never fail the user action
+    await sendPasswordResetEmail(user.email, resetUrl);
+  },
+
+  /**
+   * Validate reset token, update password, and revoke all sessions.
+   * @param {string} rawToken
+   * @param {string} newPassword
+   */
+  async resetPassword(rawToken, newPassword) {
+    if (!rawToken) {
+      throw new UnauthenticatedError('Reset token is required');
+    }
+
+    const tokenHash = hashToken(rawToken);
+    const tokenDoc = await PasswordResetToken.findOne({ tokenHash });
+
+    if (!tokenDoc) {
+      throw new UnauthenticatedError('Invalid or expired password reset token');
+    }
+
+    if (tokenDoc.consumed) {
+      throw new UnauthenticatedError('This reset link has already been used');
+    }
+
+    if (new Date() > tokenDoc.expiresAt) {
+      await PasswordResetToken.deleteOne({ _id: tokenDoc._id });
+      throw new UnauthenticatedError('Password reset link has expired');
+    }
+
+    const user = await User.findById(tokenDoc.userId);
+    if (!user || !user.isActive) {
+      throw new UnauthenticatedError('Invalid or expired password reset token');
+    }
+
+    // Update password hash
+    user.passwordHash = await bcrypt.hash(newPassword, env.BCRYPT_ROUNDS);
+
+    // Revoke ALL refresh token sessions (security: new password invalidates all sessions)
+    user.refreshTokens = [];
+
+    await user.save();
+
+    // Mark token as consumed (single-use — prevents replay)
+    tokenDoc.consumed = true;
+    await tokenDoc.save();
   },
 };

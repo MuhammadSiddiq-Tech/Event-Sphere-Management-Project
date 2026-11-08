@@ -7,7 +7,12 @@ import { router } from '../../core/router.js';
 import { validate } from '../../middleware/validate.js';
 import { requireAuth } from '../../middleware/auth.js';
 import { authRateLimit } from '../../core/rate-limit.js';
-import { registerSchema, loginSchema } from './auth.schema.js';
+import {
+  registerSchema,
+  loginSchema,
+  forgotPasswordSchema,
+  resetPasswordSchema,
+} from './auth.schema.js';
 import { authController } from './auth.controller.js';
 
 // POST /api/v1/auth/register
@@ -43,4 +48,20 @@ router.get(
   '/api/v1/auth/me',
   requireAuth,
   authController.me
+);
+
+// POST /api/v1/auth/forgot-password  (always 200 — no enumeration)
+router.post(
+  '/api/v1/auth/forgot-password',
+  authRateLimit,
+  validate(forgotPasswordSchema),
+  authController.forgotPassword
+);
+
+// POST /api/v1/auth/reset-password
+router.post(
+  '/api/v1/auth/reset-password',
+  authRateLimit,
+  validate(resetPasswordSchema),
+  authController.resetPassword
 );

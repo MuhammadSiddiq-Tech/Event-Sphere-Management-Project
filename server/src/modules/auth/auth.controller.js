@@ -112,4 +112,26 @@ export const authController = {
   async me(ctx) {
     ctx.json(200, ctx.user.toJSON());
   },
+
+  /**
+   * Initiate forgot-password flow. Always returns 200 (no enumeration).
+   * @param {import('../../core/context.js').Ctx} ctx
+   */
+  async forgotPassword(ctx) {
+    const { email } = ctx.body;
+    const clientUrl = ctx.req.headers['origin'] || env.CLIENT_URL;
+    // Fire-and-forget: service handles no-op for unknown emails
+    await authService.forgotPassword(email, clientUrl);
+    ctx.json(200, { message: 'If that email is registered you will receive a reset link shortly.' });
+  },
+
+  /**
+   * Reset password using a valid reset token.
+   * @param {import('../../core/context.js').Ctx} ctx
+   */
+  async resetPassword(ctx) {
+    const { token, password } = ctx.body;
+    await authService.resetPassword(token, password);
+    ctx.json(200, { message: 'Password updated successfully. Please log in with your new password.' });
+  },
 };
