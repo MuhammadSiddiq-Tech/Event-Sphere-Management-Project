@@ -26,6 +26,7 @@ import LoginPage from '../pages/auth/LoginPage.jsx';
 import RegisterPage from '../pages/auth/RegisterPage.jsx';
 import ForgotPasswordPage from '../pages/auth/ForgotPasswordPage.jsx';
 import ResetPasswordPage from '../pages/auth/ResetPasswordPage.jsx';
+import ProfilePage from '../pages/account/ProfilePage.jsx';
 import AdminDashboardPage from '../pages/admin/AdminDashboardPage.jsx';
 import ExhibitorDashboardPage from '../pages/exhibitor/ExhibitorDashboardPage.jsx';
 import AttendeeDashboardPage from '../pages/attendee/AttendeeDashboardPage.jsx';
@@ -54,6 +55,13 @@ export default function App() {
               <Route path="/forgot-password" element={<ForgotPasswordPage />} />
               <Route path="/reset-password" element={<ResetPasswordPage />} />
               <Route path="/403" element={<ForbiddenPage />} />
+            </Route>
+
+            {/* Authenticated Profile Route */}
+            <Route element={<ProtectedRoute />}>
+              <Route element={<PublicLayout />}>
+                <Route path="/profile" element={<ProfilePage />} />
+              </Route>
             </Route>
 
             {/* Admin Protected Routes */}
