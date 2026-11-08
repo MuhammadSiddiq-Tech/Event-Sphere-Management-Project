@@ -30,7 +30,12 @@ import ProfilePage from '../pages/account/ProfilePage.jsx';
 import AdminDashboardPage from '../pages/admin/AdminDashboardPage.jsx';
 import AdminExposPage from '../pages/admin/AdminExposPage.jsx';
 import AdminFloorPlanEditorPage from '../pages/admin/AdminFloorPlanEditorPage.jsx';
+import AdminApplicationsPage from '../pages/admin/AdminApplicationsPage.jsx';
 import ExhibitorDashboardPage from '../pages/exhibitor/ExhibitorDashboardPage.jsx';
+import ExhibitorProfilePage from '../pages/exhibitor/ExhibitorProfilePage.jsx';
+import ApplicationWizardPage from '../pages/exhibitor/ApplicationWizardPage.jsx';
+import ExhibitorApplicationsPage from '../pages/exhibitor/ExhibitorApplicationsPage.jsx';
+import ExhibitorBoothsPage from '../pages/exhibitor/ExhibitorBoothsPage.jsx';
 import AttendeeDashboardPage from '../pages/attendee/AttendeeDashboardPage.jsx';
 import ExposListPage from '../pages/expos/ExposListPage.jsx';
 import ExpoDetailPage from '../pages/expos/ExpoDetailPage.jsx';
@@ -56,6 +61,7 @@ export default function App() {
               <Route path="/" element={<HomePage />} />
               <Route path="/expos" element={<ExposListPage />} />
               <Route path="/expos/:idOrSlug" element={<ExpoDetailPage />} />
+              <Route path="/expos/:idOrSlug/apply" element={<ApplicationWizardPage />} />
               <Route path="/login" element={<LoginPage />} />
               <Route path="/register" element={<RegisterPage />} />
               <Route path="/forgot-password" element={<ForgotPasswordPage />} />
@@ -76,7 +82,7 @@ export default function App() {
                 <Route index element={<AdminDashboardPage />} />
                 <Route path="expos" element={<AdminExposPage />} />
                 <Route path="expos/:id/floor-plan" element={<AdminFloorPlanEditorPage />} />
-                <Route path="applications" element={<AdminDashboardPage />} />
+                <Route path="applications" element={<AdminApplicationsPage />} />
                 <Route path="schedule" element={<AdminDashboardPage />} />
                 <Route path="analytics" element={<AdminDashboardPage />} />
                 <Route path="users" element={<AdminDashboardPage />} />
@@ -88,9 +94,10 @@ export default function App() {
             <Route element={<ProtectedRoute allowedRoles={['exhibitor']} />}>
               <Route path="/exhibitor" element={<ExhibitorLayout />}>
                 <Route index element={<ExhibitorDashboardPage />} />
-                <Route path="profile" element={<ExhibitorDashboardPage />} />
-                <Route path="applications" element={<ExhibitorDashboardPage />} />
-                <Route path="booths" element={<ExhibitorDashboardPage />} />
+                <Route path="profile" element={<ExhibitorProfilePage />} />
+                <Route path="applications" element={<ExhibitorApplicationsPage />} />
+                <Route path="apply/:idOrSlug" element={<ApplicationWizardPage />} />
+                <Route path="booths" element={<ExhibitorBoothsPage />} />
                 <Route path="messages" element={<ExhibitorDashboardPage />} />
               </Route>
             </Route>

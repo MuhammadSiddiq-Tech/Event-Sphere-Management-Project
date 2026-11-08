@@ -269,6 +269,18 @@ export default function ExpoDetailPage() {
                       </div>
                       <StatusPill status={status} />
                     </div>
+
+                    {['published', 'ongoing'].includes(status) && (
+                      <div className="pt-2 border-top">
+                        <Link
+                          to={`/expos/${expo.slug || expoId}/apply`}
+                          className="btn btn-primary w-100 fw-bold"
+                        >
+                          <i className="bi bi-pencil-square me-2" aria-hidden="true" />
+                          Apply to Exhibit
+                        </Link>
+                      </div>
+                    )}
                   </div>
                 </Col>
               </Row>

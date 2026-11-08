@@ -125,13 +125,13 @@
 
 ### Frontend
 
-- [ ] **T-4.7** Exhibitor profile page (logo, description, contacts, staff, completeness meter) — **M** 🧪 _(FR-EXP-02)_
-- [ ] **T-4.8** Application wizard (5 steps, doc upload, booth prefs on mini floor plan) — **L** 🧪 _(FR-EXP-01)_
-- [ ] **T-4.9** Exhibitor dashboard: applications list + statuses + withdraw — **M** _(FR-EXP-08)_
-- [ ] **T-4.10** Booth management page: details, products, staff, neighbours — **M** _(FR-EXP-05/07)_
-- [ ] **T-4.11** Admin applications table + review drawer (approve with booth / reject with reason) — **L** 🧪 _(FR-EXH-01/02/03)_
+- [x] **T-4.7** Exhibitor profile page (logo, description, contacts, staff, completeness meter) — **M** 🧪 _(FR-EXP-02)_
+- [x] **T-4.8** Application wizard (5 steps, doc upload, booth prefs on mini floor plan) — **L** 🧪 _(FR-EXP-01)_
+- [x] **T-4.9** Exhibitor dashboard: applications list + statuses + withdraw — **M** _(FR-EXP-08)_
+- [x] **T-4.10** Booth management page: details, products, staff, neighbours — **M** _(FR-EXP-05/07)_
+- [x] **T-4.11** Admin applications table + review drawer (approve with booth / reject with reason) — **L** 🧪 _(FR-EXH-01/02/03)_
 
-**Exit (M2):** E2E journey (b) apply → approve → reserve green (live update added in Phase 7). 📄
+**Exit (M2):** E2E journey (b) apply → approve → reserve green (live update added in Phase 7). [Complete] 📄
 
 ---
 
