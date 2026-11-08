@@ -42,12 +42,12 @@
 | Task plan                  | ✅ Baseline v1.0 | `tasks.md`                                         |
 | Repo scaffolding           | ✅ Done          | Phase 0 complete — committed & pushed to main      |
 | Backend                    | ✅ Done          | Phase 1 complete (T-1.1–T-1.10, 117 tests passing) |
-| Authentication & Users     | 🔄 In progress   | T-2.1–T-2.11 complete (181 backend tests + 7 client tests passing); T-2.12 (Core UI components) next |
+| Authentication & Users     | 🔄 In progress   | T-2.1–T-2.12 complete (181 backend tests + 15 client tests passing); T-2.13 (Auth pages) next |
 | Testing                    | ⬜ Not started   |                                                    |
 | Documentation (user/dev)   | ⬜ Not started   |                                                    |
 | Demo video                 | ⬜ Not started   |                                                    |
 
-**Current phase:** Phase 2 🔄 in progress (T-2.1–T-2.11 done).
+**Current phase:** Phase 2 🔄 in progress (T-2.1–T-2.12 done).
 **Next action:** T-2.4 (Refresh / logout / `GET /auth/me`), T-2.5 (`requireAuth`, `requireRole`, ownership helpers).
 
 ---
@@ -230,7 +230,24 @@ _(Full details in `rules.md`.)_
   - Configured `client/vite.config.js` with test environment and `/api` dev proxy.
 - **Testing:** 7/7 Vitest tests passing in client; production build compiles cleanly without errors (`dist/index.html` + chunks generated). 181 backend Jest tests pass.
 - **Git:** Staged, committed with conventional commits, and pushed directly to `origin/main`.
-- **Next:** T-2.12 (Core UI components: Button, Input, PasswordInput with strength meter, Card, Badge, Modal, Toast, Skeleton, EmptyState).
+- **Next:** Frontend Phase 2: T-2.13 (Auth pages: Login, Register, Forgot, Reset), T-2.14 (Profile page).
+
+### Session 6 — Nov 8 2026 — Phase 2: T-2.12 Complete (Core UI Component Library)
+- **Goal:** Implement reusable, accessible UI component library based on React-Bootstrap and design tokens.
+- **Done:**
+  - `T-2.12`: Created `client/src/components/ui/`:
+    - `Button`: Variant styles (`primary`, `secondary`, `outline-*`, `danger`, `ghost`), size, inline loading spinner with `aria-busy`, and optional Bootstrap Icon.
+    - `Input`: Integrated `Form.Label`, `Form.Control`, validation feedback with `aria-invalid`, helper text, and forwardRef for React Hook Form.
+    - `PasswordInput`: Show/hide toggle with eye/eye-slash icons, optional strength calculation with visual `ProgressBar` and color coding.
+    - `StatusPill`: Semantics and color tokens for booth statuses (`available`, `reserved`, `allocated`, `blocked`), application statuses (`pending`, `approved`, `rejected`), and roles (`admin`, `exhibitor`, `attendee`).
+    - `Card`: Structured header, body, footer slots, with optional hover elevation `.card-hover`.
+    - `ConfirmDialog`: Modal confirmation for destructive actions, supporting optional typed-text match (e.g. typing "CONFIRM" or resource title).
+    - `ToastProvider` / `useToast`: Accessible feedback toast context with auto-dismiss (`show`, `success`, `error`, `info`, `warning`).
+    - `Skeleton`: `Placeholder` with glow animation for text lines, cards, table rows, and avatars to prevent layout shift.
+    - `EmptyState`: Centered icon, title, description, and action button.
+- **Testing:** 15 client Vitest tests passing green across 3 test files. 181 backend Jest tests pass.
+- **Git:** Staged, committed with conventional commits, and pushed directly to `origin/main`.
+- **Next:** T-2.13 (Auth pages: Login, Register with role + consent, ForgotPassword, ResetPassword).
 
 
 ---
