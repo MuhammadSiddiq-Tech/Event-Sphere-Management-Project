@@ -24,6 +24,7 @@ import './modules/auth/auth.routes.js';
 import './modules/users/users.routes.js';
 import './modules/expos/expos.routes.js';
 import './modules/expos/booths.routes.js';
+import './modules/upload/upload.routes.js';
 
 // ─── Health endpoint (always registered) ─────────────────────────────────────
 router.get('/health', async (ctx) => {

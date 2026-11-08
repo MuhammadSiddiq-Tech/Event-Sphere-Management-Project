@@ -64,3 +64,73 @@ export async function fetchExpoBooths(expoId) {
   const res = await apiClient.get(`/expos/${expoId}/booths`);
   return res.data.data ?? [];
 }
+
+/**
+ * Admin creates a new expo (Draft).
+ * POST /api/v1/expos
+ * @param {Object} data
+ * @returns {Promise<Object>}
+ */
+export async function createExpo(data) {
+  const res = await apiClient.post('/expos', data);
+  return res.data.data;
+}
+
+/**
+ * Admin updates an expo's metadata.
+ * PATCH /api/v1/expos/:id
+ * @param {string} id
+ * @param {Object} data
+ * @returns {Promise<Object>}
+ */
+export async function updateExpo(id, data) {
+  const res = await apiClient.patch(`/expos/${id}`, data);
+  return res.data.data;
+}
+
+/**
+ * Admin publishes an expo (Draft -> Published).
+ * POST /api/v1/expos/:id/publish
+ * @param {string} id
+ * @returns {Promise<Object>}
+ */
+export async function publishExpo(id) {
+  const res = await apiClient.post(`/expos/${id}/publish`);
+  return res.data.data;
+}
+
+/**
+ * Admin unpublishes an expo (Published -> Draft).
+ * POST /api/v1/expos/:id/unpublish
+ * @param {string} id
+ * @returns {Promise<Object>}
+ */
+export async function unpublishExpo(id) {
+  const res = await apiClient.post(`/expos/${id}/unpublish`);
+  return res.data.data;
+}
+
+/**
+ * Admin deletes an expo (with cascade or block validation).
+ * DELETE /api/v1/expos/:id
+ * @param {string} id
+ * @returns {Promise<void>}
+ */
+export async function deleteExpo(id) {
+  await apiClient.delete(`/expos/${id}`);
+}
+
+/**
+ * Upload an expo banner or image.
+ * POST /api/v1/upload
+ * @param {File} file
+ * @returns {Promise<{ url: string, filename: string }>}
+ */
+export async function uploadBanner(file) {
+  const formData = new FormData();
+  formData.append('file', file);
+  const res = await apiClient.post('/upload', formData, {
+    headers: { 'Content-Type': 'multipart/form-data' },
+  });
+  return res.data.data;
+}

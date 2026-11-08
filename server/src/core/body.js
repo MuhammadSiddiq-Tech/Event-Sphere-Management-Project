@@ -9,7 +9,7 @@ import { createWriteStream } from 'node:fs';
 import { mkdir } from 'node:fs/promises';
 import { join, extname } from 'node:path';
 import { randomUUID } from 'node:crypto';
-import { UnsupportedMediaError } from './errors.js';
+import { UnsupportedMediaError, ValidationError } from './errors.js';
 import { env } from '../config/env.js';
 
 const JSON_LIMIT_BYTES = 1 * 1024 * 1024; // 1 MB
@@ -68,6 +68,7 @@ export async function parseMultipart(ctx, opts = {}) {
     const bb = busboy({ headers: ctx.req.headers, limits: { fileSize: DOC_LIMIT_BYTES, files: 5 } });
     const fields = {};
     const files = [];
+    const filePromises = [];
 
     bb.on('field', (name, val) => {
       fields[name] = val;
@@ -83,7 +84,7 @@ export async function parseMultipart(ctx, opts = {}) {
       if (!allowedMimes.has(mimeType)) {
         stream.resume();
         return reject(
-          Object.assign(new Error('File type not allowed'), { status: 400, code: 'VALIDATION_ERROR' })
+          new ValidationError([{ path: fieldname, message: `File type '${mimeType}' not allowed` }])
         );
       }
 
@@ -93,26 +94,40 @@ export async function parseMultipart(ctx, opts = {}) {
       const ws = createWriteStream(savePath);
       let size = 0;
 
-      stream.on('data', (chunk) => {
-        size += chunk.length;
-        if (size > sizeLimit) {
-          stream.destroy();
-          ws.destroy();
-          reject(Object.assign(new Error('File too large'), { status: 400, code: 'VALIDATION_ERROR' }));
-        }
+      const filePromise = new Promise((resFile, rejFile) => {
+        stream.on('data', (chunk) => {
+          size += chunk.length;
+          if (size > sizeLimit) {
+            stream.destroy();
+            ws.destroy();
+            rejFile(
+              new ValidationError([
+                { path: fieldname, message: `File size exceeds limit of ${sizeLimit / (1024 * 1024)} MB` },
+              ])
+            );
+          }
+        });
+
+        stream.pipe(ws);
+        ws.on('finish', () => {
+          files.push({ fieldname, filename, path: savePath, mimetype: mimeType, size });
+          resFile();
+        });
+        ws.on('error', rejFile);
       });
 
-      stream.pipe(ws);
-      ws.on('finish', () => {
-        files.push({ fieldname, filename, path: savePath, mimetype: mimeType, size });
-      });
-      ws.on('error', reject);
+      filePromises.push(filePromise);
     });
 
-    bb.on('finish', () => {
-      ctx.body = fields;
-      ctx.files = files;
-      resolve();
+    bb.on('finish', async () => {
+      try {
+        await Promise.all(filePromises);
+        ctx.body = fields;
+        ctx.files = files;
+        resolve();
+      } catch (err) {
+        reject(err);
+      }
     });
 
     bb.on('error', reject);

@@ -28,6 +28,7 @@ import ForgotPasswordPage from '../pages/auth/ForgotPasswordPage.jsx';
 import ResetPasswordPage from '../pages/auth/ResetPasswordPage.jsx';
 import ProfilePage from '../pages/account/ProfilePage.jsx';
 import AdminDashboardPage from '../pages/admin/AdminDashboardPage.jsx';
+import AdminExposPage from '../pages/admin/AdminExposPage.jsx';
 import ExhibitorDashboardPage from '../pages/exhibitor/ExhibitorDashboardPage.jsx';
 import AttendeeDashboardPage from '../pages/attendee/AttendeeDashboardPage.jsx';
 import ExposListPage from '../pages/expos/ExposListPage.jsx';
@@ -72,7 +73,7 @@ export default function App() {
             <Route element={<ProtectedRoute allowedRoles={['admin']} />}>
               <Route path="/admin" element={<AdminLayout />}>
                 <Route index element={<AdminDashboardPage />} />
-                <Route path="expos" element={<AdminDashboardPage />} />
+                <Route path="expos" element={<AdminExposPage />} />
                 <Route path="applications" element={<AdminDashboardPage />} />
                 <Route path="schedule" element={<AdminDashboardPage />} />
                 <Route path="analytics" element={<AdminDashboardPage />} />
