@@ -5,6 +5,7 @@
  */
 
 import { parseCookies, serialiseCookie } from './cookies.js';
+import { successResponse } from '../utils/response.js';
 
 /**
  * @typedef {Object} Ctx
@@ -66,11 +67,7 @@ export function buildCtx(req, res, requestId, log) {
      * @param {unknown} [raw] - bypass envelope, send raw object
      */
     json(status, data, meta, raw) {
-      const payload = raw ?? {
-        success: true,
-        ...(data !== undefined && data !== null ? { data } : {}),
-        ...(meta != null ? { meta } : {}),
-      };
+      const payload = raw ?? successResponse(data, meta);
       const body = JSON.stringify(payload);
       res.writeHead(status, {
         'Content-Type': 'application/json; charset=utf-8',

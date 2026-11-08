@@ -4,6 +4,7 @@
  */
 
 import { ERROR_CODES } from '../config/constants.js';
+import { errorResponse } from '../utils/response.js';
 
 /**
  * Base application error. All intentional HTTP errors extend this.
@@ -91,11 +92,7 @@ export function errorHandler(err, ctx) {
 
   if (err instanceof ApiError) {
     // Expected errors — do NOT log as error (rule 3.6.3)
-    const body = {
-      success: false,
-      error: { code: err.code, message: err.message },
-    };
-    if (err.details) body.error.details = err.details;
+    const body = errorResponse(err.code, err.message, err.details);
     ctx.json(err.status, null, null, body);
     return;
   }
