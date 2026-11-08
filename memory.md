@@ -187,13 +187,12 @@ _(Full details in `rules.md`.)_
 - **Assumptions:** Q-01 → Q-08 recorded in §8.
 - **Next:** Phase 0 scaffolding.
 
-### Session 2 — Oct 31 2026 — Phase 0 + T-1.10 scaffold
-
-- **Goal:** Scaffold full monorepo, tooling, and HTTP core.
-- **Done:** T-0.1, T-0.2, T-0.3, T-0.4, T-0.5, T-0.6, T-0.7, T-0.8, T-0.9, T-1.10
-- **Decisions:** Jest ESM setup via `node --experimental-vm-modules ../node_modules/jest/bin/jest.js` (hoisted in workspace); `jest.config.cjs` without `extensionsToTreatAsEsm` (`.js` already inferred from `"type":"module"`).
-- **Problems / blockers:** PowerShell execution policy required `cmd /c` wrapper for npm; `.bin/jest` shell wrapper not runnable on Windows — must call `jest/bin/jest.js` directly via node.
-- **Next:** T-1.1 Mongo connection + /health, then T-1.2–T-1.9 to complete Phase 1 backend foundation.
+### Session 2 — Nov 8 2026 — Phase 0 + T-1.10 scaffold and test verification
+- **Goal:** Complete repo scaffolding, client/server setup, in-house native HTTP core, and verify test harness.
+- **Done:** T-0.1 to T-0.9 (monorepo, Vite React Bootstrap client, plain Node.js server, Zod env validation, docker-compose) and T-1.10 (native HTTP core: router, pipeline, context, body, cookies, security, rate-limit, static, compress).
+- **Testing:** 9 test suites, 72/72 tests passing green.
+- **Git:** Staged, committed with conventional commits, and pushed directly to `origin/main` (`MuhammadSiddiq-Tech/Event-Sphere-Management-Project`).
+- **Next:** Phase 1 foundation: T-1.1 (Mongo connection + `/health`), T-1.2, T-1.3–T-1.9.
 - **Goal:** Apply owner's stack choice: React + Bootstrap, plain Node.js without Express; rest unchanged.
 - **Done:** Updated all six docs (architecture §4/§5.3/§11/ADRs, design §5/§6.1/§11, rules §3/§4/§5, tasks Phase 0–1, prd header, this file).
 - **Decisions:** D-013, D-014, D-015; D-008 revised.
