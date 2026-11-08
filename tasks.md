@@ -13,7 +13,7 @@
 | ----: | --------------------------------------------- | --------- | -------------------------- |
 |     0 | Project setup & tooling                       | M1        | ✅ Done                    |
 |     1 | Backend foundation                            | M1        | ✅ Done                    |
-|     2 | Authentication & users                        | M1        | 🔄 In progress (T-2.1–T-2.5 ✅) |
+|     2 | Authentication & users                        | M1        | 🔄 In progress (T-2.1–T-2.8 ✅) |
 |     3 | Expos, floor plan, booths                     | M2        | ⬜                         |
 |     4 | Exhibitor profiles & applications             | M2        | ⬜                         |
 |     5 | Schedule & sessions                           | M3        | ⬜                         |
@@ -69,9 +69,9 @@
 - [x] **T-2.3** Login + JWT access token + rotating refresh (httpOnly cookie, hashed storage, reuse detection) — **L** 🧪 _(FR-AUTH-02, NFR-SEC-02)_
 - [x] **T-2.4** Refresh / logout / `GET /auth/me` — **M** 🧪
 - [x] **T-2.5** `requireAuth`, `requireRole`, ownership helper — **S** 🧪 _(FR-AUTH-03, NFR-SEC-03)_
-- [ ] **T-2.6** Forgot/reset password (hashed token, 30-min expiry, single-use, revoke sessions, no enumeration) — **M** 🧪 _(FR-AUTH-04)_
-- [ ] **T-2.7** Auth rate limiting (10/15 min per IP+email) — **S** 🧪
-- [ ] **T-2.8** Users: `PATCH /users/me`, change password — **S** 🧪 _(FR-AUTH-06)_
+- [x] **T-2.6** Forgot/reset password (hashed token, 30-min expiry, single-use, revoke sessions, no enumeration) — **M** 🧪 _(FR-AUTH-04)_
+- [x] **T-2.7** Auth rate limiting (10/15 min per IP+email) — **S** 🧪
+- [x] **T-2.8** Users: `PATCH /users/me`, change password — **S** 🧪 _(FR-AUTH-06)_
 - [ ] **T-2.9** Admin seed script (idempotent) + sample users — **S**
 
 ### Frontend

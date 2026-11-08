@@ -42,12 +42,12 @@
 | Task plan                  | ✅ Baseline v1.0 | `tasks.md`                                         |
 | Repo scaffolding           | ✅ Done          | Phase 0 complete — committed & pushed to main      |
 | Backend                    | ✅ Done          | Phase 1 complete (T-1.1–T-1.10, 117 tests passing) |
-| Authentication & Users     | 🔄 In progress   | T-2.1, T-2.2, T-2.3 done (129 tests passing); T-2.4 next |
+| Authentication & Users     | 🔄 In progress   | T-2.1–T-2.8 complete (179 tests passing); T-2.9 (Admin seed) next |
 | Testing                    | ⬜ Not started   |                                                    |
 | Documentation (user/dev)   | ⬜ Not started   |                                                    |
 | Demo video                 | ⬜ Not started   |                                                    |
 
-**Current phase:** Phase 2 🔄 in progress (T-2.1, T-2.2, T-2.3 done).
+**Current phase:** Phase 2 🔄 in progress (T-2.1–T-2.8 done).
 **Next action:** T-2.4 (Refresh / logout / `GET /auth/me`), T-2.5 (`requireAuth`, `requireRole`, ownership helpers).
 
 ---
@@ -199,14 +199,17 @@ _(Full details in `rules.md`.)_
 - **Open:** Q-09 (is Node-only backend acceptable for the brief's "MERN"?).
 - **Next:** Phase 0 scaffolding, then T-1.10 (HTTP core) before other Phase 1 tasks.
 
-<!-- TEMPLATE
-### Session N — <date> — <short title>
-- **Goal:**
-- **Done:** (link task IDs, e.g. T-2.3, T-2.4)
-- **Decisions:** (new D-IDs)
-- **Problems / blockers:**
-- **Next:**
--->
+### Session 3 — Nov 8 2026 — Phase 2: T-2.4 through T-2.8 Complete
+- **Goal:** Complete T-2.4 (Refresh token rotation & logout), T-2.5 (Auth & RBAC middleware, /me endpoint), T-2.6 (Forgot & reset password with hashed single-use tokens and session revocation), T-2.7 (Auth rate-limit verification), and T-2.8 (Users profile update & password change).
+- **Done:**
+  - `T-2.4` + `T-2.5`: Refresh token rotation endpoint `POST /api/v1/auth/refresh`, logout `POST /api/v1/auth/logout`, profile endpoint `GET /api/v1/auth/me`, middleware `requireAuth`, `requireRole`, `assertOwnership`.
+  - `T-2.6`: `PasswordResetToken` model with 30-min TTL, `POST /api/v1/auth/forgot-password` (no email enumeration), `POST /api/v1/auth/reset-password` (bcrypt rehash, session invalidation, replay prevention).
+  - `T-2.7`: Unit test suite verifying 10 req/15min auth rate limiter, headers, Retry-After, and keyFn.
+  - `T-2.8`: Users module (`server/src/modules/users/`) with `PATCH /api/v1/users/me` (name, phone, avatarUrl updates) and `PATCH /api/v1/users/me/password` (current password verification, bcrypt hash, session purge).
+- **Testing:** 25 test suites, 179/179 tests passing green.
+- **Git:** Staged, committed with conventional commits, and pushed directly to `origin/main` (`MuhammadSiddiq-Tech/Event-Sphere-Management-Project`).
+- **Next:** T-2.9 (Admin seed script) followed by Frontend Phase 2 tasks (T-2.10 to T-2.14).
+
 
 ---
 
