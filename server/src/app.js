@@ -22,6 +22,8 @@ import openapiSpec from './docs/openapi.json' with { type: 'json' };
 // ─── Import and register all route modules ───────────────────────────────────
 import './modules/auth/auth.routes.js';
 import './modules/users/users.routes.js';
+import './modules/expos/expos.routes.js';
+import './modules/expos/booths.routes.js';
 
 // ─── Health endpoint (always registered) ─────────────────────────────────────
 router.get('/health', async (ctx) => {
