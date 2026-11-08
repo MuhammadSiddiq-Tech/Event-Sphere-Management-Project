@@ -16,6 +16,8 @@ import { router } from './core/router.js';
 import { logger } from './config/logger.js';
 import { isDbHealthy } from './config/db.js';
 import { env } from './config/env.js';
+import { renderSwaggerUi } from './docs/swaggerUi.js';
+import openapiSpec from './docs/openapi.json' with { type: 'json' };
 
 // ─── Import and register all route modules ───────────────────────────────────
 // Routes are registered as a side-effect of import (calling router.get/post/…)
@@ -33,11 +35,16 @@ router.get('/health', async (ctx) => {
   ctx.json(dbOk ? 200 : 503, payload);
 });
 
-// ─── API docs placeholder (dev only) ─────────────────────────────────────────
+// ─── API docs & OpenAPI spec (dev only) ──────────────────────────────────────
 if (env.NODE_ENV !== 'production') {
+  router.get('/api/openapi.json', async (ctx) => {
+    ctx.res.writeHead(200, { 'Content-Type': 'application/json' });
+    ctx.res.end(JSON.stringify(openapiSpec));
+  });
+
   router.get('/api/docs', async (ctx) => {
     ctx.res.writeHead(200, { 'Content-Type': 'text/html' });
-    ctx.res.end('<h1>EventSphere API Docs — OpenAPI scaffold (T-1.8)</h1>');
+    ctx.res.end(renderSwaggerUi('/api/openapi.json'));
   });
 }
 
