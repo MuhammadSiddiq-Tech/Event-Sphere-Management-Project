@@ -20,11 +20,10 @@ export const logger = pino({
     ],
     censor: '[REDACTED]',
   },
-  ...(env.NODE_ENV !== 'production'
+  ...(env.NODE_ENV === 'development'
     ? {
         transport: {
-          target: 'pino-pretty',
-          options: { colorize: true, translateTime: 'SYS:standard' },
+          target: 'pino/file',
         },
       }
     : {}),

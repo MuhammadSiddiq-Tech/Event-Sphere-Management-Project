@@ -45,7 +45,7 @@
 
 ## Phase 1 — Backend Foundation _(M1)_
 
-- [ ] **T-1.1** Mongo connection module with retry/graceful shutdown; `/health` endpoint — **S**
+- [x] **T-1.1** Mongo connection module with retry/graceful shutdown; `/health` endpoint — **S** 🧪 _(NFR-REL-01)_
 - [ ] **T-1.2** Utilities: `ApiError` hierarchy, response helpers (`ctx.json`), pagination helper — **S** 🧪
 - [ ] **T-1.3** Middleware: `validate(zod)`, `errorHandler`, `notFound`, request-ID + `pino-http`, log redaction — **M** 🧪
 - [ ] **T-1.4** Security middleware (in-house `core/security.js`, `core/rate-limit.js`): secure headers, CORS + preflight, NoSQL-key sanitiser, query normaliser, gzip via `zlib`, rate limiters (pluggable store) — **M** 🧪 (NFR-SEC-04)
