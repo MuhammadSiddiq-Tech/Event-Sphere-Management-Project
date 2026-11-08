@@ -49,6 +49,15 @@ let _env;
 export function getEnv() {
   if (_env) return _env;
 
+  // Auto-load .env if available in native Node.js 20+
+  if (typeof process.loadEnvFile === 'function') {
+    try {
+      process.loadEnvFile();
+    } catch {
+      // .env missing or already provided via environment
+    }
+  }
+
   const result = envSchema.safeParse(process.env);
   if (!result.success) {
     const issues = result.error.issues

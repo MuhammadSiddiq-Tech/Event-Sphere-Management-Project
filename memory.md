@@ -42,12 +42,12 @@
 | Task plan                  | ✅ Baseline v1.0 | `tasks.md`                                         |
 | Repo scaffolding           | ✅ Done          | Phase 0 complete — committed & pushed to main      |
 | Backend                    | ✅ Done          | Phase 1 complete (T-1.1–T-1.10, 117 tests passing) |
-| Authentication & Users     | 🔄 In progress   | T-2.1–T-2.8 complete (179 tests passing); T-2.9 (Admin seed) next |
+| Authentication & Users     | 🔄 In progress   | Backend complete (T-2.1–T-2.9, 181 tests passing); Frontend T-2.10–T-2.14 next |
 | Testing                    | ⬜ Not started   |                                                    |
 | Documentation (user/dev)   | ⬜ Not started   |                                                    |
 | Demo video                 | ⬜ Not started   |                                                    |
 
-**Current phase:** Phase 2 🔄 in progress (T-2.1–T-2.8 done).
+**Current phase:** Phase 2 🔄 in progress (Backend T-2.1–T-2.9 done).
 **Next action:** T-2.4 (Refresh / logout / `GET /auth/me`), T-2.5 (`requireAuth`, `requireRole`, ownership helpers).
 
 ---
@@ -208,7 +208,16 @@ _(Full details in `rules.md`.)_
   - `T-2.8`: Users module (`server/src/modules/users/`) with `PATCH /api/v1/users/me` (name, phone, avatarUrl updates) and `PATCH /api/v1/users/me/password` (current password verification, bcrypt hash, session purge).
 - **Testing:** 25 test suites, 179/179 tests passing green.
 - **Git:** Staged, committed with conventional commits, and pushed directly to `origin/main` (`MuhammadSiddiq-Tech/Event-Sphere-Management-Project`).
-- **Next:** T-2.9 (Admin seed script) followed by Frontend Phase 2 tasks (T-2.10 to T-2.14).
+- **Next:** Frontend Phase 2 tasks (T-2.10 to T-2.14).
+
+### Session 4 — Nov 8 2026 — Phase 2: T-2.9 Complete (Backend Phase 2 100% Finished)
+- **Goal:** Implement idempotent seed script for default admin, exhibitor, and attendee accounts.
+- **Done:**
+  - `T-2.9`: Implemented `server/seed/index.js` with `seedDatabase()` creating `admin@eventsphere.test` (Admin), `exhibitor@eventsphere.test` (Exhibitor), and `attendee@eventsphere.test` (Attendee) using bcrypt hashing. Verified CLI execution via `npm run seed -w server` and cross-platform native `.env` loading in `server/src/config/env.js`.
+  - Added integration test suite `server/tests/seed/seed.test.js` validating first-time creation and multi-run idempotency.
+- **Testing:** 26 test suites, 181/181 tests passing green.
+- **Git:** Staged, committed with conventional commits, and pushed directly to `origin/main`.
+- **Next:** Frontend Phase 2: T-2.10 (App shell, layouts per role, ProtectedRoute, 403/404 pages).
 
 
 ---
