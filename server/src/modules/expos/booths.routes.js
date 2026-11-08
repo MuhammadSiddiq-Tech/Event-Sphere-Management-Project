@@ -25,6 +25,7 @@ import {
   listBoothsSchema,
   expoIdSchema,
   boothIdSchema,
+  reserveBoothSchema,
 } from './booths.schema.js';
 import { boothsController } from './booths.controller.js';
 
@@ -84,4 +85,24 @@ router.put(
   validate(expoIdSchema),
   validate(bulkReplaceBoothsSchema),
   boothsController.bulkReplace
+);
+
+// ─── Exhibitor reservation endpoints (T-3.6, Rule BR-3, BR-4) ────────────────
+
+// POST /api/v1/booths/:id/reserve
+router.post(
+  '/api/v1/booths/:id/reserve',
+  requireAuth,
+  requireRole('exhibitor'),
+  validate(reserveBoothSchema),
+  boothsController.reserve
+);
+
+// POST /api/v1/expos/:id/booths/:boothId/reserve
+router.post(
+  '/api/v1/expos/:id/booths/:boothId/reserve',
+  requireAuth,
+  requireRole('exhibitor'),
+  validate(boothIdSchema),
+  boothsController.reserve
 );

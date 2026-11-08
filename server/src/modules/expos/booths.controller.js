@@ -57,4 +57,15 @@ export const boothsController = {
     const result = await boothService.bulkReplace(ctx.params.id, booths);
     ctx.json(200, result);
   },
+
+  /**
+   * POST /api/v1/booths/:id/reserve (and /api/v1/expos/:id/booths/:boothId/reserve)
+   * Exhibitor reserves an available booth atomically.
+   * T-3.6. FR-EXP-04.
+   */
+  async reserve(ctx) {
+    const boothId = ctx.params.boothId || ctx.params.id;
+    const booth = await boothService.reserve(ctx.user, boothId);
+    ctx.json(200, booth);
+  },
 };

@@ -9,8 +9,9 @@
 import mongoose from 'mongoose';
 import { Booth } from '../../models/booth.model.js';
 import { Expo } from '../../models/expo.model.js';
+import { Application } from '../../models/application.model.js';
 import { NotFoundError, ConflictError, ForbiddenError } from '../../core/errors.js';
-import { EXPO_STATUS, BOOTH_STATUS } from '../../config/constants.js';
+import { EXPO_STATUS, BOOTH_STATUS, APPLICATION_STATUS } from '../../config/constants.js';
 import { parsePagination, buildPaginationMeta } from '../../utils/pagination.js';
 
 /**
@@ -331,5 +332,91 @@ export const boothService = {
     }
 
     return { created: createdBooths.length, booths: createdBooths };
+  },
+
+  /**
+   * Atomic booth reservation by an approved exhibitor.
+   * T-3.6. FR-EXP-04, Rules BR-3, BR-4, §3.3.5.
+   *  - BR-3: Requires approved application for this expo.
+   *  - BR-4: Max 1 booth held per exhibitor per expo.
+   *  - Atomic conditional update: findOneAndUpdate({ _id, status: 'available' })
+   * @param {Object} user - ctx.user (exhibitor)
+   * @param {string} boothId
+   * @returns {Promise<Object>} Reserved booth document
+   */
+  async reserve(user, boothId) {
+    const booth = await Booth.findById(boothId);
+    if (!booth) {
+      throw new NotFoundError('Booth');
+    }
+
+    const expo = await Expo.findOne({ _id: booth.expo, isDeleted: { $ne: true } });
+    if (!expo) {
+      throw new NotFoundError('Expo');
+    }
+
+    // Reservation only allowed for published or ongoing expos
+    if (expo.status !== EXPO_STATUS.PUBLISHED && expo.status !== EXPO_STATUS.ONGOING) {
+      throw new ForbiddenError(
+        `Booths can only be reserved for published or ongoing expos (current status: ${expo.status}).`
+      );
+    }
+
+    const userId = user._id ? user._id.toString() : user.id;
+
+    // Rule BR-3: Exhibitor must have an approved application for this expo
+    const application = await Application.findOne({
+      expo: expo._id,
+      exhibitor: userId,
+      status: APPLICATION_STATUS.APPROVED,
+    });
+
+    if (!application) {
+      throw new ForbiddenError(
+        'An approved application for this expo is required before reserving a booth (Rule BR-3).'
+      );
+    }
+
+    // Rule BR-4: Maximum 1 booth per exhibitor per expo
+    const existingHeldBooth = await Booth.findOne({
+      expo: expo._id,
+      _id: { $ne: boothId },
+      $or: [{ reservedBy: userId }, { assignedTo: userId }],
+    });
+
+    if (existingHeldBooth) {
+      throw new ConflictError(
+        'You already hold a booth in this expo. Maximum 1 booth allowed per exhibitor (Rule BR-4).'
+      );
+    }
+
+    // Atomic conditional update (Rule 3.3.5)
+    // If status is not 'available', returns null immediately -> 409 Conflict
+    const reservedBooth = await Booth.findOneAndUpdate(
+      {
+        _id: boothId,
+        status: BOOTH_STATUS.AVAILABLE,
+      },
+      {
+        $set: {
+          status: BOOTH_STATUS.RESERVED,
+          reservedBy: userId,
+          reservedAt: new Date(),
+        },
+      },
+      { new: true, runValidators: true }
+    );
+
+    if (!reservedBooth) {
+      throw new ConflictError(
+        'That booth was just reserved or is no longer available. Please select another booth.'
+      );
+    }
+
+    // Keep application assignedBooth in sync
+    application.assignedBooth = reservedBooth._id;
+    await application.save();
+
+    return reservedBooth.toJSON();
   },
 };
