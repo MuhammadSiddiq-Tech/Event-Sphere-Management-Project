@@ -5,6 +5,7 @@
 
 import { router } from '../../core/router.js';
 import { validate } from '../../middleware/validate.js';
+import { requireAuth } from '../../middleware/auth.js';
 import { authRateLimit } from '../../core/rate-limit.js';
 import { registerSchema, loginSchema } from './auth.schema.js';
 import { authController } from './auth.controller.js';
@@ -23,4 +24,23 @@ router.post(
   authRateLimit,
   validate(loginSchema),
   authController.login
+);
+
+// POST /api/v1/auth/refresh
+router.post(
+  '/api/v1/auth/refresh',
+  authController.refresh
+);
+
+// POST /api/v1/auth/logout
+router.post(
+  '/api/v1/auth/logout',
+  authController.logout
+);
+
+// GET /api/v1/auth/me
+router.get(
+  '/api/v1/auth/me',
+  requireAuth,
+  authController.me
 );

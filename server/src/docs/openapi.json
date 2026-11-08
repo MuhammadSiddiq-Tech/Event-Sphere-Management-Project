@@ -84,6 +84,61 @@
           }
         }
       }
+    },
+    "/auth/register": {
+      "post": {
+        "tags": ["Auth"],
+        "summary": "Register attendee or exhibitor",
+        "description": "Registers a new user and sets a rotating httpOnly refresh token cookie.",
+        "responses": {
+          "201": { "description": "User registered successfully" },
+          "400": { "description": "Validation error" },
+          "409": { "description": "Email already exists" }
+        }
+      }
+    },
+    "/auth/login": {
+      "post": {
+        "tags": ["Auth"],
+        "summary": "Log in with email and password",
+        "description": "Authenticates credentials and sets a rotating httpOnly refresh token cookie.",
+        "responses": {
+          "200": { "description": "Authenticated successfully" },
+          "401": { "description": "Invalid credentials" }
+        }
+      }
+    },
+    "/auth/refresh": {
+      "post": {
+        "tags": ["Auth"],
+        "summary": "Rotate refresh token",
+        "description": "Rotates httpOnly refresh cookie and issues a new access token. Enforces reuse detection.",
+        "responses": {
+          "200": { "description": "Token rotated successfully" },
+          "401": { "description": "Invalid, expired, or reused token" }
+        }
+      }
+    },
+    "/auth/logout": {
+      "post": {
+        "tags": ["Auth"],
+        "summary": "Logout and revoke session",
+        "description": "Revokes active refresh token and clears httpOnly cookie.",
+        "responses": {
+          "204": { "description": "Logged out successfully" }
+        }
+      }
+    },
+    "/auth/me": {
+      "get": {
+        "tags": ["Auth"],
+        "summary": "Get current user profile",
+        "security": [{ "bearerAuth": [] }],
+        "responses": {
+          "200": { "description": "Current user profile" },
+          "401": { "description": "Unauthorized" }
+        }
+      }
     }
   }
 }

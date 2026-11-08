@@ -98,9 +98,10 @@ export function buildCtx(req, res, requestId, log) {
     /**
      * Clear a cookie by setting Max-Age=0.
      * @param {string} name
+     * @param {import('./cookies.js').CookieOptions} [opts]
      */
-    clearCookie(name) {
-      ctx.setCookie(name, '', { maxAge: 0, path: '/', httpOnly: true, sameSite: 'Strict' });
+    clearCookie(name, opts = {}) {
+      ctx.setCookie(name, '', { maxAge: 0, path: '/', httpOnly: true, sameSite: 'Strict', ...opts });
     },
   };
 

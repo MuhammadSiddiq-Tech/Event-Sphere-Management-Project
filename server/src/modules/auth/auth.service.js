@@ -168,4 +168,21 @@ export const authService = {
       user: user.toJSON(),
     };
   },
+
+  /**
+   * Revoke refresh token on logout.
+   * @param {string} rawRefreshToken
+   */
+  async logout(rawRefreshToken) {
+    if (!rawRefreshToken) return;
+    const tokenHash = hashToken(rawRefreshToken);
+    const user = await User.findOne({ 'refreshTokens.tokenHash': tokenHash });
+    if (!user) return;
+
+    const tokenDoc = user.refreshTokens.find((t) => t.tokenHash === tokenHash);
+    if (tokenDoc) {
+      tokenDoc.isRevoked = true;
+      await user.save();
+    }
+  },
 };

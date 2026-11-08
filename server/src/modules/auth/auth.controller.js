@@ -68,4 +68,48 @@ export const authController = {
       accessToken: result.accessToken,
     });
   },
+
+  /**
+   * Rotate refresh token and issue new access token.
+   * @param {import('../../core/context.js').Ctx} ctx
+   */
+  async refresh(ctx) {
+    const rawRefreshToken = ctx.cookies[REFRESH_COOKIE_NAME];
+    const ip = ctx.req.socket?.remoteAddress;
+    const userAgent = ctx.req.headers['user-agent'];
+
+    const result = await authService.rotateRefreshToken(rawRefreshToken, { ip, userAgent });
+
+    ctx.setCookie(REFRESH_COOKIE_NAME, result.newRawRefreshToken, {
+      httpOnly: true,
+      secure: env.NODE_ENV === 'production',
+      sameSite: 'Strict',
+      path: '/api/v1/auth',
+      maxAge: 7 * 24 * 60 * 60,
+    });
+
+    ctx.json(200, {
+      user: result.user,
+      accessToken: result.accessToken,
+    });
+  },
+
+  /**
+   * Logout and revoke refresh token.
+   * @param {import('../../core/context.js').Ctx} ctx
+   */
+  async logout(ctx) {
+    const rawRefreshToken = ctx.cookies[REFRESH_COOKIE_NAME];
+    await authService.logout(rawRefreshToken);
+    ctx.clearCookie(REFRESH_COOKIE_NAME, { path: '/api/v1/auth' });
+    ctx.noContent();
+  },
+
+  /**
+   * Get current authenticated user profile.
+   * @param {import('../../core/context.js').Ctx} ctx
+   */
+  async me(ctx) {
+    ctx.json(200, ctx.user.toJSON());
+  },
 };

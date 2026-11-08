@@ -4,7 +4,7 @@
  */
 
 import jwt from 'jsonwebtoken';
-import { createHash, randomBytes } from 'node:crypto';
+import { createHash, randomBytes, randomUUID } from 'node:crypto';
 import { env } from '../config/env.js';
 
 /**
@@ -24,6 +24,7 @@ export function generateAccessToken(user) {
     env.JWT_ACCESS_SECRET,
     {
       expiresIn: env.ACCESS_TOKEN_TTL,
+      jwtid: randomUUID(),
     }
   );
 }
