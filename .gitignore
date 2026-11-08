@@ -1,0 +1,17 @@
+node_modules/
+dist/
+build/
+.env
+*.env.local
+uploads/
+*.log
+coverage/
+.nyc_output/
+*.pem
+*.key
+*.crt
+.DS_Store
+Thumbs.db
+*.mp4
+*.mov
+*.zip

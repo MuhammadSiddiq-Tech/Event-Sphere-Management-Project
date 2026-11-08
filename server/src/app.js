@@ -1,0 +1,91 @@
+/**
+ * @fileoverview Application request handler factory.
+ * Builds the full middleware pipeline and returns a node:http-compatible
+ * requestListener function. No listen() call here — that's server.js.
+ * Architecture §5.1, §5.3.
+ */
+
+import { randomUUID } from 'node:crypto';
+import { buildCtx } from './core/context.js';
+import { compose } from './core/pipeline.js';
+import { secureHeaders, cors, sanitiseBody, normaliseQuery } from './core/security.js';
+import { globalRateLimit } from './core/rate-limit.js';
+import { compress } from './core/compress.js';
+import { serveStatic } from './core/static.js';
+import { router } from './core/router.js';
+import { logger } from './config/logger.js';
+import { isDbHealthy } from './config/db.js';
+import { env } from './config/env.js';
+
+// ─── Import and register all route modules ───────────────────────────────────
+// Routes are registered as a side-effect of import (calling router.get/post/…)
+// import './modules/auth/auth.routes.js'; // Phase 2
+
+// ─── Health endpoint (always registered) ─────────────────────────────────────
+router.get('/health', async (ctx) => {
+  const dbOk = await isDbHealthy();
+  const payload = {
+    status: dbOk ? 'ok' : 'degraded',
+    timestamp: new Date().toISOString(),
+    version: '1.0.0',
+    db: dbOk ? 'connected' : 'unavailable',
+  };
+  ctx.json(dbOk ? 200 : 503, payload);
+});
+
+// ─── API docs placeholder (dev only) ─────────────────────────────────────────
+if (env.NODE_ENV !== 'production') {
+  router.get('/api/docs', async (ctx) => {
+    ctx.res.writeHead(200, { 'Content-Type': 'text/html' });
+    ctx.res.end('<h1>EventSphere API Docs — OpenAPI scaffold (T-1.8)</h1>');
+  });
+}
+
+// ─── Global middleware pipeline ───────────────────────────────────────────────
+const globalPipeline = compose([
+  secureHeaders,
+  cors,
+  globalRateLimit,
+  normaliseQuery,
+  compress,
+  serveStatic,
+]);
+
+/**
+ * The main request listener — compatible with http.createServer.
+ * @param {import('node:http').IncomingMessage} req
+ * @param {import('node:http').ServerResponse} res
+ */
+export async function requestHandler(req, res) {
+  const requestId = req.headers['x-request-id'] ?? randomUUID();
+  res.setHeader('X-Request-ID', requestId);
+
+  const childLogger = logger.child({ requestId, method: req.method, url: req.url });
+  const ctx = buildCtx(req, res, requestId, childLogger);
+
+  childLogger.info('→ request received');
+
+  try {
+    // Run global middleware
+    await globalPipeline(ctx);
+
+    // If the response has already been sent (e.g., static file, CORS preflight) — stop
+    if (res.headersSent) return;
+
+    // Body sanitisation (applied after body is available — controllers parse body themselves)
+    // sanitiseBody is applied per-route after body parsing via middleware
+
+    // Match route and compose route-level handler chain
+    const match = router.match(ctx);
+    if (!match) return; // 404/405 already written
+
+    const routePipeline = compose([sanitiseBody, ...match.handlers]);
+    await routePipeline(ctx);
+  } catch (err) {
+    if (!res.headersSent) {
+      childLogger.error({ err }, 'Unhandled top-level error');
+      res.writeHead(500, { 'Content-Type': 'application/json' });
+      res.end(JSON.stringify({ success: false, error: { code: 'INTERNAL_ERROR', message: 'Internal server error' } }));
+    }
+  }
+}
