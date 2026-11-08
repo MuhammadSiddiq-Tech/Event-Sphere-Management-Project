@@ -189,10 +189,10 @@ _(Full details in `rules.md`.)_
 
 ### Session 2 — Nov 8 2026 — Phase 0 + T-1.10 scaffold and test verification
 - **Goal:** Complete repo scaffolding, client/server setup, in-house native HTTP core, and verify test harness.
-- **Done:** T-0.1 to T-0.9 (monorepo, Vite React Bootstrap client, plain Node.js server, Zod env validation, docker-compose), T-1.10 (native HTTP core), T-1.1 (Mongo connection with retry, graceful shutdown, and `/health`), T-1.2 (ApiError hierarchy, response helpers success/error envelopes, pagination helper), and T-1.3 (Zod validation middleware, errorHandler, notFound, request-ID correlation, and pino log redaction).
-- **Testing:** 13 test suites, 90/90 tests passing green.
+- **Done:** T-0.1 to T-0.9 (monorepo, Vite React Bootstrap client, plain Node.js server, Zod env validation, docker-compose), T-1.10 (native HTTP core), T-1.1 (Mongo connection with retry, graceful shutdown, and `/health`), T-1.2 (ApiError hierarchy, response helpers success/error envelopes, pagination helper), T-1.3 (Zod validation middleware, errorHandler, notFound, request-ID correlation, and pino log redaction), and T-1.4 (security headers, strict CORS & preflight, NoSQL injection sanitiser, query normaliser, gzip/brotli compression, sliding window rate limiter).
+- **Testing:** 14 test suites, 94/94 tests passing green.
 - **Git:** Staged, committed with conventional commits, and pushed directly to `origin/main` (`MuhammadSiddiq-Tech/Event-Sphere-Management-Project`).
-- **Next:** Phase 1 foundation: T-1.4 (security middleware & rate-limit testing), T-1.5–T-1.9.
+- **Next:** Phase 1 foundation: T-1.5 (constants module), T-1.6 (mailer service), T-1.7 (upload middleware & storage adapter), T-1.8, T-1.9.
 - **Goal:** Apply owner's stack choice: React + Bootstrap, plain Node.js without Express; rest unchanged.
 - **Done:** Updated all six docs (architecture §4/§5.3/§11/ADRs, design §5/§6.1/§11, rules §3/§4/§5, tasks Phase 0–1, prd header, this file).
 - **Decisions:** D-013, D-014, D-015; D-008 revised.
