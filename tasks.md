@@ -116,12 +116,12 @@
 
 ### Backend
 
-- [ ] **T-4.1** `ExhibitorProfile` model + `GET/PUT /exhibitors/me` + document upload — **M** 🧪 _(FR-EXP-02)_
-- [ ] **T-4.2** Public exhibitor search/filter (`q`, category, expo; text index; pagination) + public profile DTO — **M** 🧪 _(FR-ATT-03/04)_
-- [ ] **T-4.3** `Application` model (unique `{expo, exhibitor}`, snapshot, prefs) — **S** 🧪
-- [ ] **T-4.4** Submit / list-mine / withdraw application — **M** 🧪 _(FR-EXP-01/08)_
-- [ ] **T-4.5** Admin list/filter applications — **S** 🧪 _(FR-EXH-01)_
-- [ ] **T-4.6** Review endpoint: approve/reject (+booth) in a **transaction**; reason required on reject; notification + email — **L** 🧪 _(FR-EXH-02, rules 3.3.6)_
+- [x] **T-4.1** `ExhibitorProfile` model + `GET/PUT /exhibitors/me` + document upload — **M** 🧪 _(FR-EXP-02)_
+- [x] **T-4.2** Public exhibitor search/filter (`q`, category, expo; text index; pagination) + public profile DTO — **M** 🧪 _(FR-ATT-03/04)_
+- [x] **T-4.3** `Application` model (unique `{expo, exhibitor}`, snapshot, prefs) — **S** 🧪
+- [x] **T-4.4** Submit / list-mine / withdraw application — **M** 🧪 _(FR-EXP-01/08)_
+- [x] **T-4.5** Admin list/filter applications — **S** 🧪 _(FR-EXH-01)_
+- [x] **T-4.6** Review endpoint: approve/reject (+booth) in a **transaction**; reason required on reject; notification + email — **L** 🧪 _(FR-EXH-02, rules 3.3.6)_
 
 ### Frontend
 
