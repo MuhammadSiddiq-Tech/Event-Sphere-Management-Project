@@ -111,6 +111,15 @@ $border-radius-lg: 16px;
   &.is-dimmed {
     opacity: 0.25;
   }
+
+  &.is-selectable {
+    cursor: pointer;
+    &:hover .booth-shape {
+      stroke: #16a34a !important;
+      stroke-width: 3px !important;
+      filter: drop-shadow(0 0 6px rgba(22, 163, 74, 0.35));
+    }
+  }
 }
 
 .booth-resize-handle {

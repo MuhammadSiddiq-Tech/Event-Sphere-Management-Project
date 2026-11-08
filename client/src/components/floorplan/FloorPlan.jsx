@@ -19,11 +19,14 @@ const MAX_ZOOM = 3.0;
 
 export function FloorPlan({
   booths = [],
-  mode = 'view', // 'view' | 'edit'
+  mode = 'view', // 'view' | 'edit' | 'select'
   selectedBoothId = null,
   onSelectBooth = null,
   onBoothsChange = null,
   onDeleteBooth = null,
+  onReserveClick = null,
+  reserveActionLabel = 'Reserve Booth',
+  actionLoading = false,
   gridSize = DEFAULT_GRID_SIZE,
   className = '',
   height = 550,
@@ -298,7 +301,7 @@ export function FloorPlan({
     e.stopPropagation();
     const boothId = booth.id || booth._id || booth.code;
 
-    if (mode === 'view') {
+    if (mode === 'view' || mode === 'select') {
       setActiveBooth(booth);
       setDrawerOpen(true);
       setAnnouncement(`Selected booth ${booth.code}, status ${booth.status}, ${booth.size} size.`);
@@ -313,7 +316,7 @@ export function FloorPlan({
     const boothId = booth.id || booth._id || booth.code;
     const geom = booth.geometry || { x: 0, y: 0, w: 2, h: 2 };
 
-    if (mode === 'view') {
+    if (mode === 'view' || mode === 'select') {
       if (e.key === 'Enter' || e.key === ' ') {
         e.preventDefault();
         handleBoothClick(booth, e);
@@ -520,7 +523,9 @@ export function FloorPlan({
                   transform={`translate(${bx}, ${by})`}
                   className={`booth-group ${isSelected ? 'is-selected' : ''} ${
                     isFiltered ? 'is-dimmed' : ''
-                  } ${isOverlapping ? 'is-overlapping' : ''}`}
+                  } ${isOverlapping ? 'is-overlapping' : ''} ${
+                    mode === 'select' && status === 'available' ? 'is-selectable' : ''
+                  }`}
                   onClick={(e) => handleBoothClick(booth, e)}
                   onMouseDown={(e) => handleBoothMouseDown(booth, e)}
                   onKeyDown={(e) => handleBoothKeyDown(booth, e)}
@@ -626,12 +631,23 @@ export function FloorPlan({
         </svg>
       </div>
 
-      {/* ── Booth Details Drawer (View Mode) ── */}
-      {mode === 'view' && (
+      {/* ── Booth Details Drawer (View & Select Mode) ── */}
+      {mode !== 'edit' && (
         <BoothDetailsDrawer
           show={drawerOpen}
           onHide={() => setDrawerOpen(false)}
           booth={activeBooth}
+          actionLabel={
+            mode === 'select' && activeBooth?.status === 'available'
+              ? reserveActionLabel
+              : undefined
+          }
+          onAction={() => {
+            if (onReserveClick && activeBooth) {
+              onReserveClick(activeBooth);
+            }
+          }}
+          actionLoading={actionLoading}
         />
       )}
     </div>

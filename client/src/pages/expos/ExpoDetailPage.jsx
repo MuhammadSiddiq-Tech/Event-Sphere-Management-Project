@@ -17,10 +17,11 @@ import {
   Button,
   Spinner,
 } from 'react-bootstrap';
-import { useQuery } from '@tanstack/react-query';
-import { fetchExpoById, fetchExpoBySlug, fetchExpoBooths } from '../../api/expos.js';
-import { StatusPill, Skeleton } from '../../components/ui/index.js';
-import { FloorPlan } from '../../components/floorplan/index.js';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { fetchExpoById, fetchExpoBySlug, fetchExpoBooths, reserveBooth } from '../../api/expos.js';
+import { StatusPill, Skeleton, useToast } from '../../components/ui/index.js';
+import { FloorPlan, BoothReservationModal } from '../../components/floorplan/index.js';
+import { useAuth } from '../../context/AuthContext.jsx';
 import { formatExpoDateRange, formatDate, relativeDays } from '../../lib/dateUtils.js';
 
 /** Determine if the idOrSlug param looks like a MongoDB ObjectId */
@@ -291,9 +292,9 @@ export default function ExpoDetailPage() {
               </div>
             </Tab.Pane>
 
-            {/* ── Floor Plan (view mode — T-3.12 will fill this fully) ── */}
+            {/* ── Floor Plan (view & select mode — T-3.12, T-3.14) ── */}
             <Tab.Pane eventKey="floorplan">
-              <FloorPlanTab expoId={expoId} booths={booths} isLoading={boothsLoading} />
+              <FloorPlanTab expo={expo} expoId={expoId} booths={booths} isLoading={boothsLoading} />
             </Tab.Pane>
           </Tab.Content>
         </Tab.Container>
@@ -304,11 +305,61 @@ export default function ExpoDetailPage() {
 
 /**
  * Floor Plan Tab — interactive SVG component with pan/zoom, legend, status colors,
- * booth details drawer, and an accessible table alternative view.
- * T-3.12. Design §8.
+ * booth details drawer, exhibitor booth reservation, 409 conflict handling,
+ * and an accessible table alternative view.
+ * T-3.12, T-3.14. Design §8, FR-EXP-03/04.
  */
-function FloorPlanTab({ expoId, booths, isLoading }) {
+function FloorPlanTab({ expo, expoId, booths, isLoading }) {
   const [viewFormat, setViewFormat] = useState('svg'); // 'svg' | 'table'
+  const { user } = useAuth();
+  const queryClient = useQueryClient();
+  const toast = useToast();
+
+  const isExhibitor = user?.role === 'exhibitor';
+  const isOngoingOrPublished = expo?.status === 'published' || expo?.status === 'ongoing';
+  const canSelectBooth = isExhibitor && isOngoingOrPublished;
+
+  // Reservation modal state
+  const [reservingBooth, setReservingBooth] = useState(null);
+  const [reservationModalOpen, setReservationModalOpen] = useState(false);
+  const [reservationError, setReservationError] = useState(null);
+
+  // Check if current user already holds a booth in this expo
+  const myHeldBooth = booths.find((b) => {
+    const userId = user?.id || user?._id;
+    if (!userId) return false;
+    const reservedId = b.reservedBy?.id || b.reservedBy?._id || b.reservedBy;
+    const assignedId = b.assignedTo?.id || b.assignedTo?._id || b.assignedTo;
+    return reservedId === userId || assignedId === userId;
+  });
+
+  const reserveMutation = useMutation({
+    mutationFn: (booth) => reserveBooth(booth.id || booth._id),
+    onSuccess: (data, booth) => {
+      queryClient.invalidateQueries({ queryKey: ['expoBooths', expoId] });
+      setReservationModalOpen(false);
+      setReservingBooth(null);
+      setReservationError(null);
+      toast?.success?.(`Booth ${booth.code} reserved successfully!`);
+    },
+    onError: (err, booth) => {
+      // Immediately invalidate to refresh floor plan statuses (essential for 409 race conditions)
+      queryClient.invalidateQueries({ queryKey: ['expoBooths', expoId] });
+      const status = err.response?.status;
+      const msg = err.response?.data?.error?.message || err.response?.data?.message || err.message;
+      setReservationError({ status, message: msg });
+    },
+  });
+
+  const handleOpenReserve = (booth) => {
+    setReservingBooth(booth);
+    setReservationError(null);
+    setReservationModalOpen(true);
+  };
+
+  const handleConfirmReserve = (booth) => {
+    reserveMutation.mutate(booth);
+  };
 
   if (isLoading) {
     return (
@@ -333,6 +384,36 @@ function FloorPlanTab({ expoId, booths, isLoading }) {
 
   return (
     <div>
+      {/* ── Exhibitor / Attendee Helper Banners ── */}
+      {isExhibitor ? (
+        myHeldBooth ? (
+          <Alert variant="success" className="d-flex align-items-center gap-2 mb-3">
+            <i className="bi bi-patch-check-fill fs-5" />
+            <div>
+              <strong>Booth Space Confirmed:</strong> Your organization currently holds{' '}
+              <strong>Booth {myHeldBooth.code}</strong> in this expo.
+            </div>
+          </Alert>
+        ) : isOngoingOrPublished ? (
+          <Alert variant="info" className="d-flex align-items-center gap-2 mb-3">
+            <i className="bi bi-info-circle-fill fs-5" />
+            <div>
+              <strong>Exhibitor Selection Mode:</strong> Click any available green booth on the floor
+              plan to view specifications and reserve space for your company.
+            </div>
+          </Alert>
+        ) : null
+      ) : !user ? (
+        <div className="bg-light rounded p-2.5 mb-3 small d-flex justify-content-between align-items-center border">
+          <span className="text-muted">
+            <i className="bi bi-briefcase me-1 text-primary" /> Are you an approved exhibitor looking to reserve booth space?
+          </span>
+          <Link to="/login" className="btn btn-outline-primary btn-sm py-1 px-3">
+            Log in to Reserve
+          </Link>
+        </div>
+      ) : null}
+
       {/* Format Switcher */}
       <div className="d-flex justify-content-between align-items-center mb-3">
         <div>
@@ -364,11 +445,18 @@ function FloorPlanTab({ expoId, booths, isLoading }) {
       </div>
 
       {viewFormat === 'svg' ? (
-        <FloorPlan booths={booths} mode="view" height={520} />
+        <FloorPlan
+          booths={booths}
+          mode={canSelectBooth && !myHeldBooth ? 'select' : 'view'}
+          height={520}
+          onReserveClick={handleOpenReserve}
+          reserveActionLabel="Reserve This Booth"
+          actionLoading={reserveMutation.isPending}
+        />
       ) : (
         <div className="bg-white rounded-3 shadow-sm overflow-hidden border">
           <div className="table-responsive">
-            <table className="table table-hover mb-0" aria-label="Booth list">
+            <table className="table table-hover align-middle mb-0" aria-label="Booth list">
               <thead className="table-light small">
                 <tr>
                   <th scope="col">Code</th>
@@ -377,6 +465,7 @@ function FloorPlanTab({ expoId, booths, isLoading }) {
                   <th scope="col">Status</th>
                   <th scope="col">Price / Day</th>
                   <th scope="col">Label</th>
+                  {canSelectBooth && !myHeldBooth && <th scope="col" className="text-end">Action</th>}
                 </tr>
               </thead>
               <tbody>
@@ -394,6 +483,21 @@ function FloorPlanTab({ expoId, booths, isLoading }) {
                       {booth.pricePerDay > 0 ? `$${booth.pricePerDay.toLocaleString()}` : 'Free'}
                     </td>
                     <td className="text-muted small">{booth.label || '—'}</td>
+                    {canSelectBooth && !myHeldBooth && (
+                      <td className="text-end">
+                        {booth.status === 'available' ? (
+                          <Button
+                            variant="outline-success"
+                            size="sm"
+                            onClick={() => handleOpenReserve(booth)}
+                          >
+                            Reserve
+                          </Button>
+                        ) : (
+                          <span className="text-muted small">—</span>
+                        )}
+                      </td>
+                    )}
                   </tr>
                 ))}
               </tbody>
@@ -401,6 +505,21 @@ function FloorPlanTab({ expoId, booths, isLoading }) {
           </div>
         </div>
       )}
+
+      {/* ── Reservation Confirmation Modal ── */}
+      <BoothReservationModal
+        show={reservationModalOpen}
+        onHide={() => {
+          setReservationModalOpen(false);
+          setReservationError(null);
+        }}
+        booth={reservingBooth}
+        expo={expo}
+        onConfirm={handleConfirmReserve}
+        isLoading={reserveMutation.isPending}
+        error={reservationError}
+        onDismissError={() => setReservationError(null)}
+      />
     </div>
   );
 }

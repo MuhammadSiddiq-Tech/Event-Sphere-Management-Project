@@ -160,3 +160,14 @@ export async function uploadBanner(file) {
   });
   return res.data.data;
 }
+
+/**
+ * Exhibitor atomically reserves an available booth for an expo.
+ * POST /api/v1/booths/:id/reserve
+ * @param {string} boothId
+ * @returns {Promise<Object>} Reserved booth
+ */
+export async function reserveBooth(boothId) {
+  const res = await apiClient.post(`/booths/${boothId}/reserve`);
+  return res.data.data;
+}

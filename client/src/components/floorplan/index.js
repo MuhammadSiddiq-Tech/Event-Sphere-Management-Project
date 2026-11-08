@@ -7,3 +7,6 @@ export { FloorPlan } from './FloorPlan.jsx';
 export { FloorPlanControls } from './FloorPlanControls.jsx';
 export { FloorPlanLegend, STATUS_PALETTE } from './FloorPlanLegend.jsx';
 export { BoothDetailsDrawer } from './BoothDetailsDrawer.jsx';
+export { FloorPlanSidePanel } from './FloorPlanSidePanel.jsx';
+export { BoothReservationModal } from './BoothReservationModal.jsx';
+export * from './floorplanUtils.js';
