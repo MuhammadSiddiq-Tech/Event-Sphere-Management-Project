@@ -30,6 +30,7 @@ import './modules/applications/applications.routes.js';
 import './modules/sessions/sessions.routes.js';
 import './modules/attendee/attendee.routes.js';
 import './modules/notifications/notifications.routes.js';
+import './modules/conversations/conversations.routes.js';
 
 // ─── Health endpoint (always registered) ─────────────────────────────────────
 router.get('/health', async (ctx) => {

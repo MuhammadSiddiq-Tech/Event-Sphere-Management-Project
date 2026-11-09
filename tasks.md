@@ -192,9 +192,9 @@
 
 ### Messaging
 
-- [ ] **T-7.8** `Conversation`/`Message` models + REST + role rules (BR-9, same-expo neighbours) — **L** 🧪 _(FR-EXP-06/07, FR-ATT-05)_
-- [ ] **T-7.9** Socket chat: send, typing, read receipts, unread counts — **M** 🧪
-- [ ] **T-7.10** Messaging UI (two-pane / mobile stack), entry points from profile, booth popover, "Contact organizer" — **L** 🧪
+- [x] **T-7.8** `Conversation`/`Message` models + REST + role rules (BR-9, same-expo neighbours) — **L** 🧪 _(FR-EXP-06/07, FR-ATT-05)_
+- [x] **T-7.9** Socket chat: send, typing, read receipts, unread counts — **M** 🧪
+- [x] **T-7.10** Messaging UI (two-pane / mobile stack), entry points from profile, booth popover, "Contact organizer" — **L** 🧪
 
 ### Feedback
 

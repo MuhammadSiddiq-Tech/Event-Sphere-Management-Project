@@ -19,6 +19,7 @@ import {
 } from 'react-bootstrap';
 import { useQuery } from '@tanstack/react-query';
 import { fetchPublicExhibitorById } from '../../api/exhibitors.js';
+import { startConversation } from '../../api/conversations.js';
 import { Button, StatusPill, Skeleton } from '../../components/ui/index.js';
 
 export default function PublicExhibitorProfilePage() {
@@ -70,6 +71,20 @@ export default function PublicExhibitorProfilePage() {
 
   const companyName = profile.companyName || profile.user?.name || 'Exhibitor';
   const booth = profile.booth || profile.assignedBooth;
+
+  const handleContactExhibitor = async () => {
+    const targetUserId = profile.user?._id || profile.user?.id || profile.user;
+    if (!targetUserId) return;
+    try {
+      const conv = await startConversation({
+        recipientId: targetUserId,
+        type: 'exhibitor-attendee',
+      });
+      navigate(`/messages?conversationId=${conv.id}`);
+    } catch {
+      navigate('/messages');
+    }
+  };
 
   return (
     <div className="public-exhibitor-profile-page py-4">
@@ -141,7 +156,15 @@ export default function PublicExhibitorProfilePage() {
             </div>
 
             {/* Quick Actions */}
-            <div className="d-flex gap-2">
+            <div className="d-flex flex-wrap gap-2">
+              <Button
+                variant="primary"
+                size="sm"
+                className="fw-semibold"
+                onClick={handleContactExhibitor}
+              >
+                <i className="bi bi-chat-dots me-1" /> Contact Exhibitor
+              </Button>
               {profile.website && (
                 <a
                   href={profile.website}

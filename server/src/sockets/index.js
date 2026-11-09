@@ -156,6 +156,20 @@ export function initSockets(io) {
       if (typeof callback === 'function') callback({ success: true });
     });
 
+    // ─── Chat typing indicator (T-7.9) ────────────────────────────────────────
+    socket.on('message:typing', (data) => {
+      const conversationId = data?.conversationId;
+      const isTyping = Boolean(data?.isTyping);
+      if (conversationId) {
+        socket.to(`conversation:${conversationId}`).emit('message:typing', {
+          conversationId,
+          userId: user.id,
+          userName: user.name,
+          isTyping,
+        });
+      }
+    });
+
     socket.on('disconnect', (reason) => {
       logger.debug({ socketId: socket.id, reason }, 'Socket client disconnected');
     });

@@ -132,12 +132,19 @@ export function SocketProvider({ children }) {
       queryClient.invalidateQueries({ queryKey: ['unreadNotificationsCount'] });
     };
 
+    const handleGlobalMessageNew = (payload) => {
+      queryClient.invalidateQueries({ queryKey: ['conversations'] });
+      announce(`New message from ${payload.sender?.name || 'chat'}`);
+    };
+
     socket.on('application:reviewed', handleApplicationReviewed);
     socket.on('notification:new', handleNotificationNew);
+    socket.on('message:new', handleGlobalMessageNew);
 
     return () => {
       socket.off('application:reviewed', handleApplicationReviewed);
       socket.off('notification:new', handleNotificationNew);
+      socket.off('message:new', handleGlobalMessageNew);
     };
   }, [socket, isAuthenticated, queryClient, announce]);
 
@@ -325,4 +332,87 @@ export function useRealtimeAdmin(expoId) {
   }, [socket, expoId, queryClient, announce]);
 
   return { isConnected };
+}
+
+/**
+ * Hook for chat views to subscribe to conversation room events, typing indicators, and message events.
+ * Architecture §6.2, T-7.9, T-7.10.
+ *
+ * @param {string} conversationId
+ */
+export function useConversationChat(conversationId) {
+  const { socket, isConnected } = useSocket();
+  const queryClient = useQueryClient();
+  const [typingUsers, setTypingUsers] = useState(new Map());
+  const typingTimeoutRef = useRef(new Map());
+
+  useEffect(() => {
+    if (!socket || !conversationId) return;
+
+    socket.emit('join:conversation', { conversationId });
+
+    const handleMessageNew = () => {
+      queryClient.invalidateQueries({ queryKey: ['conversationMessages', conversationId] });
+      queryClient.invalidateQueries({ queryKey: ['conversations'] });
+    };
+
+    const handleMessageRead = () => {
+      queryClient.invalidateQueries({ queryKey: ['conversationMessages', conversationId] });
+      queryClient.invalidateQueries({ queryKey: ['conversations'] });
+    };
+
+    const handleTyping = ({ userId, userName, isTyping }) => {
+      setTypingUsers((prev) => {
+        const next = new Map(prev);
+        if (isTyping) {
+          next.set(userId, userName);
+        } else {
+          next.delete(userId);
+        }
+        return next;
+      });
+
+      if (isTyping) {
+        if (typingTimeoutRef.current.has(userId)) {
+          clearTimeout(typingTimeoutRef.current.get(userId));
+        }
+        const timeout = setTimeout(() => {
+          setTypingUsers((prev) => {
+            const next = new Map(prev);
+            next.delete(userId);
+            return next;
+          });
+        }, 3000);
+        typingTimeoutRef.current.set(userId, timeout);
+      }
+    };
+
+    socket.on('message:new', handleMessageNew);
+    socket.on('message:read', handleMessageRead);
+    socket.on('message:typing', handleTyping);
+
+    return () => {
+      socket.emit('leave:conversation', { conversationId });
+      socket.off('message:new', handleMessageNew);
+      socket.off('message:read', handleMessageRead);
+      socket.off('message:typing', handleTyping);
+      typingTimeoutRef.current.forEach((t) => clearTimeout(t));
+      typingTimeoutRef.current.clear();
+    };
+  }, [socket, conversationId, queryClient]);
+
+  const sendTyping = useCallback(
+    (isTyping) => {
+      if (socket && conversationId) {
+        socket.emit('message:typing', { conversationId, isTyping });
+      }
+    },
+    [socket, conversationId]
+  );
+
+  return {
+    isConnected,
+    typingUsers: Array.from(typingUsers.values()),
+    sendTyping,
+  };
 }
