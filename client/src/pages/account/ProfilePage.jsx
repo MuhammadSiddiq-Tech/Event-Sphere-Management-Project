@@ -7,10 +7,13 @@
 import React, { useState } from 'react';
 import { Container, Row, Col, Form, Alert, Badge } from 'react-bootstrap';
 import { useForm, Controller } from 'react-hook-form';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext.jsx';
 import { apiClient } from '../../lib/axios.js';
 import { Button, Input, PasswordInput, Card, StatusPill, useToast } from '../../components/ui/index.js';
+import { exportUserData, updateUserConsent, deleteUserAccount } from '../../api/users.js';
+import { formatDate } from '../../lib/dateUtils.js';
+import { Modal } from 'react-bootstrap';
 
 export default function ProfilePage() {
   const { user, updateProfile, logout } = useAuth();
@@ -24,6 +27,22 @@ export default function ProfilePage() {
   const [isUpdatingPassword, setIsUpdatingPassword] = useState(false);
   const [passwordError, setPasswordError] = useState('');
   const [passwordSuccess, setPasswordSuccess] = useState('');
+
+  // Privacy & Consent state
+  const [marketingConsent, setMarketingConsent] = useState(user?.consent?.marketing || false);
+  const [analyticsConsent, setAnalyticsConsent] = useState(user?.consent?.analytics ?? true);
+  const [isUpdatingConsent, setIsUpdatingConsent] = useState(false);
+  const [consentSuccess, setConsentSuccess] = useState('');
+  const [consentError, setConsentError] = useState('');
+
+  // Data Export state
+  const [isExporting, setIsExporting] = useState(false);
+
+  // Account Deletion state
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [deletePassword, setDeletePassword] = useState('');
+  const [deleteError, setDeleteError] = useState('');
+  const [isDeleting, setIsDeleting] = useState(false);
 
   // Profile Form
   const {
@@ -54,6 +73,68 @@ export default function ProfilePage() {
   });
 
   const newPasswordValue = watchPassword('newPassword');
+
+  const onConsentSubmit = async (e) => {
+    e.preventDefault();
+    setConsentError('');
+    setConsentSuccess('');
+    try {
+      setIsUpdatingConsent(true);
+      await updateUserConsent({
+        marketing: marketingConsent,
+        analytics: analyticsConsent,
+      });
+      setConsentSuccess('Privacy preferences updated successfully.');
+      toast?.success?.('Privacy preferences saved.');
+    } catch (err) {
+      const msg = err.response?.data?.error?.message || 'Failed to update preferences.';
+      setConsentError(msg);
+      toast?.error?.(msg);
+    } finally {
+      setIsUpdatingConsent(false);
+    }
+  };
+
+  const handleExportData = async () => {
+    try {
+      setIsExporting(true);
+      const data = await exportUserData();
+      const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `eventsphere-export-${user?.id || 'me'}-${Date.now()}.json`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+      toast?.success?.('Your personal data export has started downloading.');
+    } catch (err) {
+      toast?.error?.(err.response?.data?.error?.message || 'Failed to export data.');
+    } finally {
+      setIsExporting(false);
+    }
+  };
+
+  const handleDeleteAccount = async () => {
+    if (!deletePassword) {
+      setDeleteError('Please enter your password to confirm deletion.');
+      return;
+    }
+    setDeleteError('');
+    try {
+      setIsDeleting(true);
+      await deleteUserAccount(deletePassword);
+      toast?.success?.('Your account has been deleted and personal data anonymized.');
+      await logout();
+      navigate('/');
+    } catch (err) {
+      const msg = err.response?.data?.error?.message || 'Incorrect password or deletion failed.';
+      setDeleteError(msg);
+    } finally {
+      setIsDeleting(false);
+    }
+  };
 
   // Submit profile updates
   const onProfileSubmit = async (data) => {
@@ -325,6 +406,180 @@ export default function ProfilePage() {
           </Card>
         </Col>
       </Row>
+
+      {/* Row 2: Privacy, Consent & Data Controls (GDPR T-9.1) */}
+      <Row className="g-4 mt-1">
+        {/* Consent Preferences */}
+        <Col lg={6}>
+          <Card
+            title="Privacy & Consent Preferences"
+            subtitle="Manage your communication and data processing consents."
+          >
+            {consentSuccess && (
+              <Alert variant="success" className="py-2 small" role="status">
+                <i className="bi bi-check-circle-fill me-2"></i>
+                {consentSuccess}
+              </Alert>
+            )}
+
+            {consentError && (
+              <Alert variant="danger" className="py-2 small" role="alert">
+                <i className="bi bi-exclamation-triangle-fill me-2"></i>
+                {consentError}
+              </Alert>
+            )}
+
+            <Form onSubmit={onConsentSubmit}>
+              <div className="mb-3 p-3 bg-light rounded border">
+                <div className="d-flex justify-content-between align-items-center mb-1">
+                  <span className="fw-semibold text-dark small">Privacy Policy</span>
+                  <Badge bg="success-subtle" text="success-emphasis" className="border">
+                    Accepted
+                  </Badge>
+                </div>
+                <div className="text-muted small">
+                  Accepted on {user?.consent?.acceptedAt ? formatDate(user.consent.acceptedAt) : 'registration'}.{' '}
+                  <Link to="/privacy" className="text-primary text-decoration-none">
+                    Read Privacy Policy →
+                  </Link>
+                </div>
+              </div>
+
+              <Form.Group className="mb-3">
+                <Form.Check
+                  type="switch"
+                  id="marketingConsentSwitch"
+                  label="Marketing & Event Announcements"
+                  checked={marketingConsent}
+                  onChange={(e) => setMarketingConsent(e.target.checked)}
+                />
+                <Form.Text className="text-muted small">
+                  Receive curated notifications about upcoming expos, workshops, and speaker announcements.
+                </Form.Text>
+              </Form.Group>
+
+              <Form.Group className="mb-4">
+                <Form.Check
+                  type="switch"
+                  id="analyticsConsentSwitch"
+                  label="Platform Analytics & Performance Tracking"
+                  checked={analyticsConsent}
+                  onChange={(e) => setAnalyticsConsent(e.target.checked)}
+                />
+                <Form.Text className="text-muted small">
+                  Allow anonymized interactions to help organizers optimize event schedules and booth layouts.
+                </Form.Text>
+              </Form.Group>
+
+              <div className="d-flex justify-content-end">
+                <Button
+                  type="submit"
+                  variant="primary"
+                  loading={isUpdatingConsent}
+                >
+                  Save Preferences
+                </Button>
+              </div>
+            </Form>
+          </Card>
+        </Col>
+
+        {/* Data Portability & Account Deletion */}
+        <Col lg={6}>
+          <Card
+            title="Your Data & Account Deletion"
+            subtitle="GDPR rights: download your information or permanently delete your account."
+          >
+            <div className="mb-4 p-3 bg-light rounded border">
+              <h6 className="fw-bold text-dark mb-1">
+                <i className="bi bi-download text-primary me-2" />
+                Data Portability (Export)
+              </h6>
+              <p className="text-muted small mb-2">
+                Download a complete JSON export of your personal information, registrations, applications, and bookmarks.
+              </p>
+              <Button
+                variant="outline-secondary"
+                size="sm"
+                onClick={handleExportData}
+                loading={isExporting}
+              >
+                <i className="bi bi-file-earmark-arrow-down me-1" />
+                Download My Data (JSON)
+              </Button>
+            </div>
+
+            <div className="p-3 bg-danger-subtle rounded border border-danger-subtle">
+              <h6 className="fw-bold text-danger mb-1">
+                <i className="bi bi-exclamation-triangle text-danger me-2" />
+                Delete Account (Right to Erasure)
+              </h6>
+              <p className="text-muted small mb-2">
+                Permanently delete your account. All personally identifiable information will be irreversibly anonymized.
+              </p>
+              <Button
+                variant="outline-danger"
+                size="sm"
+                onClick={() => {
+                  setDeleteError('');
+                  setDeletePassword('');
+                  setShowDeleteModal(true);
+                }}
+              >
+                <i className="bi bi-trash me-1" />
+                Delete Account…
+              </Button>
+            </div>
+          </Card>
+        </Col>
+      </Row>
+
+      {/* Delete Account Confirmation Modal */}
+      <Modal show={showDeleteModal} onHide={() => !isDeleting && setShowDeleteModal(false)} centered>
+        <Modal.Header closeButton={!isDeleting}>
+          <Modal.Title className="h5 fw-bold text-danger">Confirm Account Deletion</Modal.Title>
+        </Modal.Header>
+        <Modal.Body className="py-3">
+          <p className="text-muted small mb-3">
+            This action is <strong>irreversible</strong>. Your profile details, contact emails, and personal activity will be permanently anonymized in accordance with GDPR regulations.
+          </p>
+          {deleteError && (
+            <Alert variant="danger" className="py-2 small" role="alert">
+              <i className="bi bi-exclamation-triangle-fill me-2" />
+              {deleteError}
+            </Alert>
+          )}
+          <Form.Group className="mb-2">
+            <Form.Label className="small fw-semibold text-dark">
+              Confirm your password to proceed:
+            </Form.Label>
+            <Form.Control
+              type="password"
+              placeholder="Enter your current password"
+              value={deletePassword}
+              onChange={(e) => setDeletePassword(e.target.value)}
+              disabled={isDeleting}
+              autoFocus
+            />
+          </Form.Group>
+        </Modal.Body>
+        <Modal.Footer className="border-0 pt-0">
+          <Button
+            variant="outline-secondary"
+            onClick={() => setShowDeleteModal(false)}
+            disabled={isDeleting}
+          >
+            Cancel
+          </Button>
+          <Button
+            variant="danger"
+            onClick={handleDeleteAccount}
+            loading={isDeleting}
+          >
+            Permanently Delete Account
+          </Button>
+        </Modal.Footer>
+      </Modal>
     </Container>
   );
 }

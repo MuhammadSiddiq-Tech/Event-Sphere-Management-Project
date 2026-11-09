@@ -30,3 +30,23 @@ export const changePasswordBodySchema = z.object({
 export const changePasswordSchema = {
   body: changePasswordBodySchema,
 };
+
+export const updateConsentBodySchema = z.object({
+  marketing: z.boolean().optional(),
+  analytics: z.boolean().optional(),
+}).refine(
+  (data) => data.marketing !== undefined || data.analytics !== undefined,
+  { message: 'At least one consent option (marketing or analytics) must be provided' }
+);
+
+export const updateConsentSchema = {
+  body: updateConsentBodySchema,
+};
+
+export const deleteAccountBodySchema = z.object({
+  password: z.string().min(1, 'Password is required to confirm account deletion'),
+});
+
+export const deleteAccountSchema = {
+  body: deleteAccountBodySchema,
+};

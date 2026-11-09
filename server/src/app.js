@@ -99,7 +99,7 @@ export async function requestHandler(req, res) {
     if (!match) return; // 404/405 already written
 
     // Parse JSON body for mutation requests if not parsed
-    if (['POST', 'PUT', 'PATCH'].includes(ctx.method)) {
+    if (['POST', 'PUT', 'PATCH', 'DELETE'].includes(ctx.method)) {
       const contentType = req.headers['content-type'] || '';
       if (contentType.includes('application/json')) {
         const { parseJson } = await import('./core/body.js');

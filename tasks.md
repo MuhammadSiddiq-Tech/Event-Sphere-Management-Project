@@ -18,9 +18,9 @@
 |     4 | Exhibitor profiles & applications             | M2        | ✅ Done                    |
 |     5 | Schedule & sessions                           | M3        | ✅ Done                    |
 |     6 | Attendee features                             | M3        | ✅ Done                    |
-|     7 | Real-time, messaging, notifications, feedback | M4        | 🔄 In progress             |
-|     8 | Analytics & reports                           | M5        | ⬜                         |
-|     9 | Hardening: security, a11y, performance, QA    | M5        | ⬜                         |
+|     7 | Real-time, messaging, notifications, feedback | M4        | ✅ Done                    |
+|     8 | Analytics & reports                           | M5        | ✅ Done                    |
+|     9 | Hardening: security, a11y, performance, QA    | M5        | 🔄 In progress             |
 |    10 | Documentation, demo video, delivery           | M6        | ⬜                         |
 
 **Critical path:** 0 → 1 → 2 → 3 → 4 → (5 ∥ 6) → 7 → 8 → 9 → 10
@@ -223,10 +223,10 @@
 
 ### Privacy & security
 
-- [ ] **T-9.1** Privacy: policy page, consent management UI, `GET /users/me/export`, `DELETE /users/me` (anonymise) — **L** 🧪 _(FR-SYS-05, NFR-PRIV-01/02/03)_
-- [ ] **T-9.2** Authorization audit: matrix test per route × role (401/403/ownership) — **L** 🧪 _(NFR-SEC-03)_
-- [ ] **T-9.3** Security review: OWASP Top-10 checklist, `npm audit`, ZAP baseline, header review, upload abuse tests — **M** _(NFR-SEC-05)_
-- [ ] **T-9.4** Log redaction verification; error leakage check in prod mode — **S** 🧪
+- [x] **T-9.1** Privacy: policy page, consent management UI, `GET /users/me/export`, `DELETE /users/me` (anonymise) — **L** 🧪 _(FR-SYS-05, NFR-PRIV-01/02/03)_
+- [x] **T-9.2** Authorization audit: matrix test per route × role (401/403/ownership) — **L** 🧪 _(NFR-SEC-03)_
+- [x] **T-9.3** Security review: OWASP Top-10 checklist, `npm audit`, header review, upload abuse tests — **M** 📄 🧪 _(NFR-SEC-05)_
+- [x] **T-9.4** Log redaction verification; error leakage check in prod mode — **S** 🧪 _(NFR-SEC-04)_
 
 ### Quality
 

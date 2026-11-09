@@ -5,7 +5,7 @@
  */
 
 import busboy from 'busboy';
-import { createWriteStream } from 'node:fs';
+import { createWriteStream, unlink } from 'node:fs';
 import { mkdir } from 'node:fs/promises';
 import { join, extname } from 'node:path';
 import { randomUUID } from 'node:crypto';
@@ -93,30 +93,41 @@ export async function parseMultipart(ctx, opts = {}) {
       const savePath = join(uploadDir, savedName);
       const ws = createWriteStream(savePath);
       let size = 0;
+      let exceeded = false;
 
       const filePromise = new Promise((resFile, rejFile) => {
         stream.on('data', (chunk) => {
+          if (exceeded) return;
           size += chunk.length;
           if (size > sizeLimit) {
-            stream.destroy();
-            ws.destroy();
-            rejFile(
-              new ValidationError([
-                { path: fieldname, message: `File size exceeds limit of ${sizeLimit / (1024 * 1024)} MB` },
-              ])
-            );
+            exceeded = true;
+            try {
+              stream.unpipe(ws);
+              stream.resume();
+              ws.destroy();
+              unlink(savePath, () => {});
+            } catch {}
+            const err = new ValidationError([
+              { path: fieldname, message: `File size exceeds limit of ${sizeLimit / (1024 * 1024)} MB` },
+            ]);
+            rejFile(err);
+            reject(err);
           }
         });
 
         stream.pipe(ws);
         ws.on('finish', () => {
-          files.push({ fieldname, filename, path: savePath, mimetype: mimeType, size });
-          resFile();
+          if (!exceeded) {
+            files.push({ fieldname, filename, path: savePath, mimetype: mimeType, size });
+            resFile();
+          }
         });
-        ws.on('error', rejFile);
+        ws.on('error', (err) => {
+          if (!exceeded) rejFile(err);
+        });
       });
 
-      filePromises.push(filePromise);
+      filePromises.push(filePromise.catch(() => {}));
     });
 
     bb.on('finish', async () => {

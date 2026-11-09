@@ -63,6 +63,9 @@ const userSchema = new mongoose.Schema(
       privacyAccepted: { type: Boolean, required: true },
       acceptedAt: { type: Date, required: true, default: Date.now },
       marketing: { type: Boolean, default: false },
+      analytics: { type: Boolean, default: true },
+      updatedAt: { type: Date },
+      withdrawnAt: { type: Date },
     },
     refreshTokens: [refreshTokenSchema],
     lastLoginAt: {

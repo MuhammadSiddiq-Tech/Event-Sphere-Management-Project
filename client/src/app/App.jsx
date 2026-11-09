@@ -23,6 +23,7 @@ import AttendeeLayout from '../layouts/AttendeeLayout.jsx';
 import HomePage from '../pages/HomePage.jsx';
 import ForbiddenPage from '../pages/ForbiddenPage.jsx';
 import NotFoundPage from '../pages/NotFoundPage.jsx';
+import PrivacyPolicyPage from '../pages/PrivacyPolicyPage.jsx';
 import LoginPage from '../pages/auth/LoginPage.jsx';
 import RegisterPage from '../pages/auth/RegisterPage.jsx';
 import ForgotPasswordPage from '../pages/auth/ForgotPasswordPage.jsx';
@@ -81,6 +82,7 @@ export default function App() {
               <Route path="/register" element={<RegisterPage />} />
               <Route path="/forgot-password" element={<ForgotPasswordPage />} />
               <Route path="/reset-password" element={<ResetPasswordPage />} />
+              <Route path="/privacy" element={<PrivacyPolicyPage />} />
               <Route path="/403" element={<ForbiddenPage />} />
             </Route>
 
