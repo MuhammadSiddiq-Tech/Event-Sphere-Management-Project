@@ -49,6 +49,8 @@ import NotificationsPage from '../pages/notifications/NotificationsPage.jsx';
 import MessagesPage from '../pages/messages/MessagesPage.jsx';
 import FeedbackPage from '../pages/feedback/FeedbackPage.jsx';
 import AdminFeedbackPage from '../pages/admin/AdminFeedbackPage.jsx';
+import AdminAnalyticsPage from '../pages/admin/AdminAnalyticsPage.jsx';
+import AdminUsersPage from '../pages/admin/AdminUsersPage.jsx';
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -103,8 +105,8 @@ export default function App() {
                 <Route path="schedule" element={<AdminSchedulePage />} />
                 <Route path="messages" element={<MessagesPage />} />
                 <Route path="feedback" element={<AdminFeedbackPage />} />
-                <Route path="analytics" element={<AdminDashboardPage />} />
-                <Route path="users" element={<AdminDashboardPage />} />
+                <Route path="analytics" element={<AdminAnalyticsPage />} />
+                <Route path="users" element={<AdminUsersPage />} />
                 <Route path="settings" element={<AdminDashboardPage />} />
               </Route>
             </Route>

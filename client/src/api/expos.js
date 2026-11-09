@@ -32,6 +32,8 @@ export async function fetchPublicExpos(params = {}) {
   return { items: res.data.data ?? [], meta: res.data.meta ?? {} };
 }
 
+export const fetchAdminExpos = fetchPublicExpos;
+
 /**
  * Fetch a single published expo by ID.
  * GET /api/v1/expos/:id

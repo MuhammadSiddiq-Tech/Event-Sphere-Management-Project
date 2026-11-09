@@ -5,11 +5,12 @@
  * T-3.12, T-3.14. Design §8, FR-EXP-05, FR-ATT-04.
  */
 
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Offcanvas, Badge, Row, Col } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 import { StatusPill, Button } from '../ui/index.js';
 import { STATUS_PALETTE } from './FloorPlanLegend.jsx';
+import { trackEvent } from '../../api/analytics.js';
 
 export function BoothDetailsDrawer({
   show,
@@ -19,6 +20,20 @@ export function BoothDetailsDrawer({
   actionLabel,
   actionLoading = false,
 }) {
+  useEffect(() => {
+    if (show && booth) {
+      const boothId = booth._id || booth.id;
+      if (boothId) {
+        trackEvent({
+          type: 'booth_view',
+          expoId: booth.expo,
+          target: boothId,
+          targetModel: 'Booth',
+        });
+      }
+    }
+  }, [show, booth]);
+
   if (!booth) return null;
 
   const {

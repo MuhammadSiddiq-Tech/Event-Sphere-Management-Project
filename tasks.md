@@ -207,13 +207,13 @@
 
 ## Phase 8 — Analytics & Reports _(M5)_
 
-- [ ] **T-8.1** `AnalyticsEvent` model + `POST /analytics/events` (throttled, deduped) — **M** 🧪
-- [ ] **T-8.2** Instrument client: booth view/visit, profile view, session view/check-in, search — **M** 🧪
-- [ ] **T-8.3** Aggregation endpoints: summary KPIs, engagement over time, booth traffic ranking, session popularity — **L** 🧪 _(FR-ANA-01)_
-- [ ] **T-8.4** Admin dashboard UI: StatCards, line/bar/donut (Recharts), date range, "View as table" — **L** 🧪 _(FR-ANA-01)_
-- [ ] **T-8.5** Real-time KPI ticks via `admin:{expoId}` (throttled) — **M** 🧪 _(FR-ANA-02)_
-- [ ] **T-8.6** (P2) CSV export — **S** _(FR-ANA-03)_
-- [ ] **T-8.7** Admin: users list/deactivate — **S** 🧪 _(FR-ADM-01)_
+- [x] **T-8.1** `AnalyticsEvent` model + `POST /analytics/events` (throttled, deduped) — **M** 🧪
+- [x] **T-8.2** Instrument client: booth view/visit, profile view, session view/check-in, search — **M** 🧪
+- [x] **T-8.3** Aggregation endpoints: summary KPIs, engagement over time, booth traffic ranking, session popularity — **L** 🧪 _(FR-ANA-01)_
+- [x] **T-8.4** Admin dashboard UI: StatCards, line/bar/donut (Recharts), date range, "View as table" — **L** 🧪 _(FR-ANA-01)_
+- [x] **T-8.5** Real-time KPI ticks via `admin:{expoId}` (throttled) — **M** 🧪 _(FR-ANA-02)_
+- [x] **T-8.6** (P2) CSV export — **S** _(FR-ANA-03)_
+- [x] **T-8.7** Admin: users list/deactivate — **S** 🧪 _(FR-ADM-01)_
 
 **Exit:** dashboard reflects seeded + live activity accurately. 📄
 

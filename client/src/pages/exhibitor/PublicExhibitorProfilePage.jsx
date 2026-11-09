@@ -20,11 +20,14 @@ import {
 import { useQuery } from '@tanstack/react-query';
 import { fetchPublicExhibitorById } from '../../api/exhibitors.js';
 import { startConversation } from '../../api/conversations.js';
+import { useTrackEvent } from '../../hooks/useTrackEvent.js';
 import { Button, StatusPill, Skeleton } from '../../components/ui/index.js';
 
 export default function PublicExhibitorProfilePage() {
   const { id: exhibitorId } = useParams();
   const navigate = useNavigate();
+
+  useTrackEvent('profile_view', { target: exhibitorId, targetModel: 'ExhibitorProfile' });
 
   const { data: profile, isLoading, isError, error } = useQuery({
     queryKey: ['publicExhibitorProfile', exhibitorId],
