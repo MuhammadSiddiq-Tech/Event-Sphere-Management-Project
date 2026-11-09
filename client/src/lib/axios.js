@@ -104,6 +104,12 @@ apiClient.interceptors.response.use(
       setAccessToken(newAccessToken);
       processQueue(null, newAccessToken);
 
+      if (typeof window !== 'undefined') {
+        window.dispatchEvent(
+          new CustomEvent('auth:token-refreshed', { detail: { token: newAccessToken } })
+        );
+      }
+
       originalRequest.headers['Authorization'] = `Bearer ${newAccessToken}`;
       return apiClient(originalRequest);
     } catch (refreshError) {

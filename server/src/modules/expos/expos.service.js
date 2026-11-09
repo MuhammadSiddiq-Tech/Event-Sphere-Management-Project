@@ -15,6 +15,7 @@ import { Booth } from '../../models/booth.model.js';
 import { NotFoundError, ConflictError, ForbiddenError } from '../../core/errors.js';
 import { EXPO_STATUS, BOOTH_STATUS } from '../../config/constants.js';
 import { parsePagination, buildPaginationMeta } from '../../utils/pagination.js';
+import { emitToExpo } from '../../sockets/emitter.js';
 
 /** Convert a string to a URL-safe slug (lowercase, hyphens). */
 function toSlugBase(str) {
@@ -175,6 +176,7 @@ export const expoService = {
     if (updates.endDate !== undefined) expo.endDate = new Date(updates.endDate);
 
     await expo.save();
+    emitToExpo(id, 'expo:updated', { expoId: id, status: expo.status, changes: updates });
     return expo.toJSON();
   },
 
@@ -202,6 +204,7 @@ export const expoService = {
     expo.status = EXPO_STATUS.PUBLISHED;
     expo.publishedAt = new Date();
     await expo.save();
+    emitToExpo(id, 'expo:updated', { expoId: id, status: expo.status });
     return expo.toJSON();
   },
 
@@ -234,6 +237,7 @@ export const expoService = {
     expo.status = EXPO_STATUS.DRAFT;
     expo.publishedAt = undefined;
     await expo.save();
+    emitToExpo(id, 'expo:updated', { expoId: id, status: expo.status });
     return expo.toJSON();
   },
 
@@ -280,5 +284,6 @@ export const expoService = {
       expo.deletedAt = new Date();
       await expo.save();
     }
+    emitToExpo(id, 'expo:updated', { expoId: id, status: 'deleted' });
   },
 };

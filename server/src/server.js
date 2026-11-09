@@ -24,8 +24,8 @@ export const io = new SocketIOServer(httpServer, {
   // Socket.IO handles its own /socket.io/* path before the router sees it
 });
 
-// Socket auth + room setup will be registered in Phase 7 (sockets/index.js)
-// import './sockets/index.js';
+import { initSockets } from './sockets/index.js';
+initSockets(io);
 
 // ─── Startup ──────────────────────────────────────────────────────────────────
 async function start() {

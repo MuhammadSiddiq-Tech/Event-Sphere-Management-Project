@@ -132,3 +132,31 @@ $border-radius-lg: 16px;
 .floor-plan-wrapper.mode-edit {
   background-color: #f8fafc;
 }
+
+// ─── Real-Time Pulse & Live Highlighting (T-7.4) ─────────────────────────────
+@keyframes realtime-pulse-anim {
+  0% {
+    box-shadow: 0 0 0 0 rgba(13, 110, 253, 0.7);
+  }
+  60% {
+    box-shadow: 0 0 0 10px rgba(13, 110, 253, 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(13, 110, 253, 0);
+  }
+}
+
+.realtime-pulse {
+  animation: realtime-pulse-anim 1.6s cubic-bezier(0.4, 0, 0.6, 1) 2;
+  border-color: $primary !important;
+  transition: all 0.3s ease;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .realtime-pulse {
+    animation: none;
+    outline: 2px solid $primary;
+    outline-offset: 2px;
+  }
+}
+

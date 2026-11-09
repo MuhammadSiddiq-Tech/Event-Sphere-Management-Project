@@ -18,7 +18,7 @@
 |     4 | Exhibitor profiles & applications             | M2        | ✅ Done                    |
 |     5 | Schedule & sessions                           | M3        | ✅ Done                    |
 |     6 | Attendee features                             | M3        | ✅ Done                    |
-|     7 | Real-time, messaging, notifications, feedback | M4        | ⬜                         |
+|     7 | Real-time, messaging, notifications, feedback | M4        | 🔄 In progress             |
 |     8 | Analytics & reports                           | M5        | ⬜                         |
 |     9 | Hardening: security, a11y, performance, QA    | M5        | ⬜                         |
 |    10 | Documentation, demo video, delivery           | M6        | ⬜                         |
@@ -179,10 +179,10 @@
 
 ### Real-time
 
-- [ ] **T-7.1** Socket.IO server bootstrap, JWT handshake auth, room join rules — **M** 🧪 _(FR-SYS-01, rules 3.5)_
-- [ ] **T-7.2** Emit events from services after writes: `expo:updated`, `booth:updated`, `schedule:updated`, `application:*` — **M** 🧪
-- [ ] **T-7.3** Client `SocketProvider` (reconnect with refreshed token, connection banner) + query-invalidation hooks — **M** 🧪 _(FR-SYS-01)_
-- [ ] **T-7.4** Live highlight UX on changed booths/sessions; screen-reader live-region announcements — **S** _(design §8, §9)_
+- [x] **T-7.1** Socket.IO server bootstrap, JWT handshake auth, room join rules — **M** 🧪 _(FR-SYS-01, rules 3.5)_
+- [x] **T-7.2** Emit events from services after writes: `expo:updated`, `booth:updated`, `schedule:updated`, `application:*` — **M** 🧪
+- [x] **T-7.3** Client `SocketProvider` (reconnect with refreshed token, connection banner) + query-invalidation hooks — **M** 🧪 _(FR-SYS-01)_
+- [x] **T-7.4** Live highlight UX on changed booths/sessions; screen-reader live-region announcements — **S** _(design §8, §9)_
 
 ### Notifications
 

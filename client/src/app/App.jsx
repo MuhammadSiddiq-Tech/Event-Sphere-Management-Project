@@ -9,6 +9,7 @@ import React from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { AuthProvider } from '../context/AuthContext.jsx';
+import { SocketProvider } from '../context/SocketContext.jsx';
 import { ToastProvider } from '../components/ui/index.js';
 import { ProtectedRoute } from '../components/ProtectedRoute.jsx';
 
@@ -58,8 +59,9 @@ export default function App() {
   return (
     <QueryClientProvider client={queryClient}>
       <AuthProvider>
-        <ToastProvider>
-          <BrowserRouter>
+        <SocketProvider>
+          <ToastProvider>
+            <BrowserRouter>
           <Routes>
             {/* Public Layout Routes */}
             <Route element={<PublicLayout />}>
@@ -127,8 +129,9 @@ export default function App() {
             </Route>
           </Routes>
         </BrowserRouter>
-      </ToastProvider>
-    </AuthProvider>
-  </QueryClientProvider>
+          </ToastProvider>
+        </SocketProvider>
+      </AuthProvider>
+    </QueryClientProvider>
 );
 }

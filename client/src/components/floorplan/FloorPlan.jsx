@@ -7,11 +7,12 @@
  * Architecture §6.3, Design §5.3, §8. FR-ATT-01, FR-EXP-03, FR-EXPO-03, FR-EXPO-04.
  */
 
-import React, { useState, useRef, useMemo, useCallback, useEffect } from 'react';
+import React, { useState, useRef, useMemo, useCallback, useEffect, useContext } from 'react';
 import { FloorPlanControls } from './FloorPlanControls.jsx';
 import { FloorPlanLegend, STATUS_PALETTE } from './FloorPlanLegend.jsx';
 import { BoothDetailsDrawer } from './BoothDetailsDrawer.jsx';
 import { findOverlappingBoothIds } from './floorplanUtils.js';
+import { SocketContext } from '../../context/SocketContext.jsx';
 
 const DEFAULT_GRID_SIZE = 40;
 const MIN_ZOOM = 0.5;
@@ -57,6 +58,10 @@ export function FloorPlan({
 
   // Status highlight filter from legend (View Mode)
   const [activeStatusFilter, setActiveStatusFilter] = useState(null);
+
+  // Real-time update highlight (T-7.4)
+  const socketCtx = useContext(SocketContext);
+  const isBoothHighlighted = (id) => Boolean(socketCtx?.highlightedBooths?.has(id));
 
   // Screen reader announcement
   const [announcement, setAnnouncement] = useState('');
@@ -509,13 +514,14 @@ export function FloorPlan({
                 (typeof selectedBoothId === 'object' && selectedBoothId?.id === bId);
               const isFiltered = activeStatusFilter && activeStatusFilter !== status;
               const isOverlapping = activeOverlaps.has(bId);
+              const isHighlighted = isBoothHighlighted(bId);
 
               const isBlocked = status === 'blocked';
               const fillPattern = isBlocked ? 'url(#blocked-hatch)' : meta.fill;
 
               const accessibleLabel = `Booth ${booth.code}, ${booth.size || 'medium'} size, status: ${status}${
                 booth.label ? `, ${booth.label}` : ''
-              }${isOverlapping ? ', overlapping' : ''}`;
+              }${isOverlapping ? ', overlapping' : ''}${isHighlighted ? ', recently updated' : ''}`;
 
               return (
                 <g
@@ -525,7 +531,7 @@ export function FloorPlan({
                     isFiltered ? 'is-dimmed' : ''
                   } ${isOverlapping ? 'is-overlapping' : ''} ${
                     mode === 'select' && status === 'available' ? 'is-selectable' : ''
-                  }`}
+                  } ${isHighlighted ? 'realtime-pulse' : ''}`}
                   onClick={(e) => handleBoothClick(booth, e)}
                   onMouseDown={(e) => handleBoothMouseDown(booth, e)}
                   onKeyDown={(e) => handleBoothKeyDown(booth, e)}
@@ -543,13 +549,15 @@ export function FloorPlan({
                     ry="6"
                     fill={fillPattern}
                     stroke={
-                      isOverlapping
+                      isHighlighted
+                        ? '#0d6efd'
+                        : isOverlapping
                         ? '#dc2626'
                         : isSelected
                         ? '#312e81'
                         : meta.stroke
                     }
-                    strokeWidth={isSelected || isOverlapping ? 3.5 : 2}
+                    strokeWidth={isHighlighted ? 4 : isSelected || isOverlapping ? 3.5 : 2}
                     strokeDasharray={isOverlapping ? '5,3' : 'none'}
                     className="booth-shape"
                   />

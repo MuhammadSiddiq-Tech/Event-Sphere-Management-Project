@@ -26,6 +26,7 @@ import { ExhibitorsDirectory } from '../../components/exhibitor/ExhibitorsDirect
 import { TicketModal } from '../../components/attendee/TicketModal.jsx';
 import { registerForExpo, fetchMyExpoRegistration } from '../../api/attendee.js';
 import { useAuth } from '../../context/AuthContext.jsx';
+import { useRealtimeExpo } from '../../context/SocketContext.jsx';
 import { formatExpoDateRange, formatDate, relativeDays } from '../../lib/dateUtils.js';
 
 /** Determine if the idOrSlug param looks like a MongoDB ObjectId */
@@ -64,6 +65,9 @@ export default function ExpoDetailPage() {
   });
 
   const expoActualId = expo?.id || expo?._id;
+
+  // Real-time updates subscription for expo, booths, and schedule (T-7.3, T-7.4)
+  useRealtimeExpo(expoActualId);
 
   // Check attendee registration status (T-6.5)
   const { data: registrationData } = useQuery({

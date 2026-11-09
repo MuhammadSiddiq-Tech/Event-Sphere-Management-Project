@@ -25,6 +25,7 @@ import {
 } from '../../core/errors.js';
 import { EXPO_STATUS, BOOTH_STATUS } from '../../config/constants.js';
 import { parsePagination, buildPaginationMeta } from '../../utils/pagination.js';
+import { emitToAdmin, emitToUser } from '../../sockets/emitter.js';
 
 /**
  * Stub notification — logs only. Replace with real email/notification infra in later phase.
@@ -97,6 +98,11 @@ export const applicationsService = {
       throw err;
     }
 
+    emitToAdmin(expoId, 'application:new', {
+      expoId: expoId.toString(),
+      applicationId: application._id.toString(),
+      exhibitorId,
+    });
     return application.toJSON();
   },
 
@@ -333,6 +339,13 @@ export const applicationsService = {
       assignedBooth: result.assignedBooth ?? null,
     });
 
+    emitToUser(result.exhibitor, 'application:reviewed', {
+      expoId: result.expo.toString(),
+      applicationId: applicationId.toString(),
+      status: 'approved',
+      assignedBooth: result.assignedBooth ?? null,
+    });
+
     return result;
   },
 
@@ -381,6 +394,13 @@ export const applicationsService = {
       applicationId,
       exhibitorId: result.exhibitor,
       expoId: result.expo,
+      reason,
+    });
+
+    emitToUser(result.exhibitor, 'application:reviewed', {
+      expoId: result.expo.toString(),
+      applicationId: applicationId.toString(),
+      status: 'rejected',
       reason,
     });
 

@@ -23,6 +23,7 @@ import {
 } from '../../core/errors.js';
 import { SESSION_STATUS } from '../../config/constants.js';
 import { parsePagination, buildPaginationMeta } from '../../utils/pagination.js';
+import { emitToExpo } from '../../sockets/emitter.js';
 
 // ─── Stub notification ────────────────────────────────────────────────────────
 
@@ -135,6 +136,11 @@ export const sessionsService = {
       createdBy: adminUser._id,
     });
 
+    emitToExpo(expoId, 'schedule:updated', {
+      expoId: expoId.toString(),
+      sessionId: session._id.toString(),
+      action: 'created',
+    });
     return session.toJSON();
   },
 
@@ -256,6 +262,11 @@ export const sessionsService = {
       updatedBy: adminUser._id,
     });
 
+    emitToExpo(session.expo, 'schedule:updated', {
+      expoId: session.expo.toString(),
+      sessionId: sessionId.toString(),
+      action: 'updated',
+    });
     return result;
   },
 
@@ -292,6 +303,11 @@ export const sessionsService = {
       cancelledBy: adminUser._id,
     });
 
+    emitToExpo(session.expo, 'schedule:updated', {
+      expoId: session.expo.toString(),
+      sessionId: sessionId.toString(),
+      action: 'cancelled',
+    });
     return result;
   },
 
@@ -323,5 +339,11 @@ export const sessionsService = {
     await SessionEngagement.deleteMany({ session: sessionId });
 
     await Session.deleteOne({ _id: sessionId });
+
+    emitToExpo(session.expo, 'schedule:updated', {
+      expoId: session.expo.toString(),
+      sessionId: sessionId.toString(),
+      action: 'cancelled',
+    });
   },
 };

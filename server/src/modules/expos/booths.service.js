@@ -14,6 +14,7 @@ import { User } from '../../models/user.model.js';
 import { NotFoundError, ConflictError, ForbiddenError } from '../../core/errors.js';
 import { EXPO_STATUS, BOOTH_STATUS, APPLICATION_STATUS, ROLES } from '../../config/constants.js';
 import { parsePagination, buildPaginationMeta } from '../../utils/pagination.js';
+import { emitToExpo } from '../../sockets/emitter.js';
 
 /**
  * Check if two rectangles overlap (strict — touching edges is NOT overlap).
@@ -156,6 +157,11 @@ export const boothService = {
       expo: expoId,
     });
     await booth.save();
+    emitToExpo(expo._id, 'booth:updated', {
+      expoId: expo._id.toString(),
+      boothId: booth._id.toString(),
+      action: 'details-updated',
+    });
     return booth.toJSON();
   },
 
@@ -199,6 +205,11 @@ export const boothService = {
     }
 
     await booth.save();
+    emitToExpo(expo._id, 'booth:updated', {
+      expoId: expo._id.toString(),
+      boothId: booth._id.toString(),
+      action: 'details-updated',
+    });
     return booth.toJSON();
   },
 
@@ -332,6 +343,7 @@ export const boothService = {
       }
     }
 
+    emitToExpo(expoId, 'booth:updated', { expoId: expoId.toString(), action: 'bulk-replaced' });
     return { created: createdBooths.length, booths: createdBooths };
   },
 
@@ -418,6 +430,12 @@ export const boothService = {
     application.assignedBooth = reservedBooth._id;
     await application.save();
 
+    emitToExpo(expo._id, 'booth:updated', {
+      expoId: expo._id.toString(),
+      boothId: reservedBooth._id.toString(),
+      status: reservedBooth.status,
+      exhibitorId: userId,
+    });
     return reservedBooth.toJSON();
   },
 
@@ -485,6 +503,12 @@ export const boothService = {
       { $set: { assignedBooth: booth._id, status: APPLICATION_STATUS.APPROVED } }
     );
 
+    emitToExpo(expo._id, 'booth:updated', {
+      expoId: expo._id.toString(),
+      boothId: booth._id.toString(),
+      status: booth.status,
+      exhibitorId,
+    });
     return booth.toJSON();
   },
 
@@ -525,6 +549,12 @@ export const boothService = {
     booth.reservedAt = null;
     await booth.save();
 
+    emitToExpo(expo._id, 'booth:updated', {
+      expoId: expo._id.toString(),
+      boothId: booth._id.toString(),
+      status: booth.status,
+      exhibitorId: null,
+    });
     return booth.toJSON();
   },
 
@@ -577,6 +607,12 @@ export const boothService = {
     booth.details = { showcase: '', products: [], staff: [] };
     await booth.save();
 
+    emitToExpo(expo._id, 'booth:updated', {
+      expoId: expo._id.toString(),
+      boothId: booth._id.toString(),
+      status: booth.status,
+      exhibitorId: null,
+    });
     return booth.toJSON();
   },
 
@@ -619,6 +655,11 @@ export const boothService = {
     if (detailsData.staff !== undefined) booth.details.staff = detailsData.staff;
 
     await booth.save();
+    emitToExpo(expo._id, 'booth:updated', {
+      expoId: expo._id.toString(),
+      boothId: booth._id.toString(),
+      action: 'details-updated',
+    });
     return booth.toJSON();
   },
 };

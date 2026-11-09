@@ -13,7 +13,7 @@
  *   - Empty state when no sessions match filters
  */
 
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useContext } from 'react';
 import {
   Row,
   Col,
@@ -38,6 +38,7 @@ import {
 } from '../../api/attendee.js';
 import { StatusPill, Skeleton, EmptyState, Button, useToast } from '../ui/index.js';
 import { useAuth } from '../../context/AuthContext.jsx';
+import { SocketContext } from '../../context/SocketContext.jsx';
 import { generateIcsForSession, downloadIcsFile } from '../../lib/calendarExport.js';
 
 /**
@@ -97,6 +98,10 @@ export default function ScheduleTimeline({
   const [selectedRoom, setSelectedRoom] = useState('');
   const [searchQuery, setSearchQuery] = useState('');
   const [expandedDescriptions, setExpandedDescriptions] = useState({});
+
+  // Real-time update highlight (T-7.4)
+  const socketCtx = useContext(SocketContext);
+  const isSessionHighlighted = (id) => Boolean(socketCtx?.highlightedSessions?.has(id));
 
   // Attendee agenda & engagement state
   const { data: agendaData } = useQuery({
@@ -446,10 +451,14 @@ export default function ScheduleTimeline({
             const isDescExpanded = !!expandedDescriptions[session.id];
             const hasLongDesc = (session.description?.length ?? 0) > 160;
 
+            const isHighlighted = isSessionHighlighted(session.id);
+
             return (
               <BsCard
                 key={session.id}
                 className={`border shadow-sm transition-all ${
+                  isHighlighted ? 'realtime-pulse ' : ''
+                }${
                   isCancelled ? 'border-danger-subtle bg-danger-subtle bg-opacity-10' : ''
                 }`}
               >
