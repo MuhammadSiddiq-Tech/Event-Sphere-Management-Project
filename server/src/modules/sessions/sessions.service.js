@@ -14,6 +14,7 @@
 
 import { Session } from '../../models/session.model.js';
 import { Expo } from '../../models/expo.model.js';
+import { SessionEngagement } from '../../models/sessionEngagement.model.js';
 import {
   NotFoundError,
   ConflictError,
@@ -307,16 +308,19 @@ export const sessionsService = {
     const session = await Session.findById(sessionId);
     if (!session) throw new NotFoundError('Session');
 
-    // T-6.x stub: check SessionEngagement registrations
-    // When T-6.2 is built, replace this with:
-    //   const count = await SessionEngagement.countDocuments({ session: sessionId, kind: 'registered' });
-    //   if (count > 0) throw new ConflictError('Cannot delete a session with existing registrations.');
-    // For now, block deletion of CANCELLED sessions as a safety guard
-    // (cancellation means external comms may have gone out)
-    if (session.status === SESSION_STATUS.CANCELLED) {
-      // Allow delete — but only if no registrations (stubbed as 0 for now)
-      // This keeps the door open for T-6.x to plug in the real check
+    // BR-8: block hard-delete if attendee registrations exist
+    const regCount = await SessionEngagement.countDocuments({
+      session: sessionId,
+      kind: 'registered',
+    });
+    if (regCount > 0) {
+      throw new ConflictError(
+        'Cannot delete session: attendees are already registered. Cancel the session instead.'
+      );
     }
+
+    // Also remove any bookmarks for this session
+    await SessionEngagement.deleteMany({ session: sessionId });
 
     await Session.deleteOne({ _id: sessionId });
   },

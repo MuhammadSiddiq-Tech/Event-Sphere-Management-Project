@@ -25,6 +25,8 @@ import {
   listSessionsSchema,
 } from './sessions.schema.js';
 import { sessionsController } from './sessions.controller.js';
+import { attendeeController } from '../attendee/attendee.controller.js';
+import { listMySessionsSchema } from '../attendee/attendee.schema.js';
 
 // ─── Admin: create session for an expo ───────────────────────────────────────
 router.post(
@@ -40,6 +42,14 @@ router.get(
   '/api/v1/expos/:id/sessions',
   validate({ params: expoIdParamSchema, query: listSessionsSchema }),
   sessionsController.list
+);
+
+// ─── Attendee: My agenda (T-6.3) — MUST be before /api/v1/sessions/:id ────────
+router.get(
+  '/api/v1/sessions/me',
+  requireAuth,
+  validate({ query: listMySessionsSchema }),
+  attendeeController.getMyAgenda
 );
 
 // ─── Public: get single session ───────────────────────────────────────────────

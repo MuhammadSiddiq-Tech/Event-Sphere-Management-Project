@@ -17,7 +17,7 @@
 |     3 | Expos, floor plan, booths                     | M2        | ✅ Done                    |
 |     4 | Exhibitor profiles & applications             | M2        | ✅ Done                    |
 |     5 | Schedule & sessions                           | M3        | ✅ Done                    |
-|     6 | Attendee features                             | M3        | ⬜                         |
+|     6 | Attendee features                             | M3        | 🔄 In progress             |
 |     7 | Real-time, messaging, notifications, feedback | M4        | ⬜                         |
 |     8 | Analytics & reports                           | M5        | ⬜                         |
 |     9 | Hardening: security, a11y, performance, QA    | M5        | ⬜                         |
@@ -157,10 +157,10 @@
 
 ### Backend
 
-- [ ] **T-6.1** `ExpoRegistration` (ticket code, unique `{user, expo}`) + register/list-mine (idempotent) — **M** 🧪 _(FR-ATT-02)_
-- [ ] **T-6.2** `SessionEngagement`: register/unregister (needs expo registration, capacity atomic, conflict warning) — **L** 🧪 _(FR-ATT-02, BR-7)_
-- [ ] **T-6.3** Bookmark/unbookmark (idempotent) + `GET /sessions/me` — **S** 🧪 _(FR-ATT-06/08)_
-- [ ] **T-6.4** Reminder job (every minute; 15-min lead; `reminderSentAt`; reschedule on time change) — **M** 🧪 _(FR-ATT-07)_
+- [x] **T-6.1** `ExpoRegistration` (ticket code, unique `{user, expo}`) + register/list-mine (idempotent) — **M** 🧪 _(FR-ATT-02)_
+- [x] **T-6.2** `SessionEngagement`: register/unregister (needs expo registration, capacity atomic, conflict warning) — **L** 🧪 _(FR-ATT-02, BR-7)_
+- [x] **T-6.3** Bookmark/unbookmark (idempotent) + `GET /sessions/me` — **S** 🧪 _(FR-ATT-06/08)_
+- [x] **T-6.4** Reminder job (every minute; 15-min lead; `reminderSentAt`; reschedule on time change) — **M** 🧪 _(FR-ATT-07)_
 
 ### Frontend
 
