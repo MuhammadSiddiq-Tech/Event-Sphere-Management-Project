@@ -16,7 +16,7 @@
 |     2 | Authentication & users                        | M1        | ✅ Done                    |
 |     3 | Expos, floor plan, booths                     | M2        | ✅ Done                    |
 |     4 | Exhibitor profiles & applications             | M2        | ✅ Done                    |
-|     5 | Schedule & sessions                           | M3        | 🔄 In progress             |
+|     5 | Schedule & sessions                           | M3        | ✅ Done                    |
 |     6 | Attendee features                             | M3        | ⬜                         |
 |     7 | Real-time, messaging, notifications, feedback | M4        | ⬜                         |
 |     8 | Analytics & reports                           | M5        | ⬜                         |
@@ -146,10 +146,10 @@
 
 ### Frontend
 
-- [ ] **T-5.5** Admin schedule manager: day tabs, room×time grid (desktop) / list (mobile), add/edit modal, speakers repeater, conflict errors — **XL** 🧪 _(FR-SCH-01/02/03)_
-- [ ] **T-5.6** Public/attendee `ScheduleTimeline` with filters and status chips (updated/cancelled) — **M** 🧪 _(FR-ATT-06)_
+- [x] **T-5.5** Admin schedule manager: day tabs, room×time grid (desktop) / list (mobile), add/edit modal, speakers repeater, conflict errors — **XL** 🧪 _(FR-SCH-01/02/03)_
+- [x] **T-5.6** Public/attendee `ScheduleTimeline` with filters and status chips (updated/cancelled) — **M** 🧪 _(FR-ATT-06)_
 
-**Exit:** admin manages schedule; conflicts blocked; schedule visible publicly. 📄
+**Exit:** admin manages schedule; conflicts blocked; schedule visible publicly. [Complete] 📄
 
 ---
 

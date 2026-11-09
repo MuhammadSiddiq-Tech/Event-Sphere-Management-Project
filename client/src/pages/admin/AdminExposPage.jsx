@@ -460,6 +460,11 @@ export default function AdminExposPage() {
                                   Floor Plan Editor
                                 </Dropdown.Item>
 
+                                <Dropdown.Item as={Link} to={`/admin/expos/${expoId}/schedule`}>
+                                  <i className="bi bi-calendar3 me-2 text-primary" />
+                                  Schedule Manager
+                                </Dropdown.Item>
+
                                 <Dropdown.Item as={Link} to={`/expos/${expo.slug || expoId}`}>
                                   <i className="bi bi-box-arrow-up-right me-2 text-muted" />
                                   View Public Page

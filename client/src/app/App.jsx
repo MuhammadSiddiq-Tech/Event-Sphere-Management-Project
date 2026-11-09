@@ -31,6 +31,7 @@ import AdminDashboardPage from '../pages/admin/AdminDashboardPage.jsx';
 import AdminExposPage from '../pages/admin/AdminExposPage.jsx';
 import AdminFloorPlanEditorPage from '../pages/admin/AdminFloorPlanEditorPage.jsx';
 import AdminApplicationsPage from '../pages/admin/AdminApplicationsPage.jsx';
+import AdminSchedulePage from '../pages/admin/AdminSchedulePage.jsx';
 import ExhibitorDashboardPage from '../pages/exhibitor/ExhibitorDashboardPage.jsx';
 import ExhibitorProfilePage from '../pages/exhibitor/ExhibitorProfilePage.jsx';
 import ApplicationWizardPage from '../pages/exhibitor/ApplicationWizardPage.jsx';
@@ -82,8 +83,9 @@ export default function App() {
                 <Route index element={<AdminDashboardPage />} />
                 <Route path="expos" element={<AdminExposPage />} />
                 <Route path="expos/:id/floor-plan" element={<AdminFloorPlanEditorPage />} />
+                <Route path="expos/:id/schedule" element={<AdminSchedulePage />} />
                 <Route path="applications" element={<AdminApplicationsPage />} />
-                <Route path="schedule" element={<AdminDashboardPage />} />
+                <Route path="schedule" element={<AdminSchedulePage />} />
                 <Route path="analytics" element={<AdminDashboardPage />} />
                 <Route path="users" element={<AdminDashboardPage />} />
                 <Route path="settings" element={<AdminDashboardPage />} />

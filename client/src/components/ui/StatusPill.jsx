@@ -27,6 +27,16 @@ const STATUS_MAP = {
   // Generic
   active: { bg: 'success-subtle', text: 'success-emphasis', icon: 'bi-check-circle-fill', label: 'Active' },
   inactive: { bg: 'secondary-subtle', text: 'secondary-emphasis', icon: 'bi-dash-circle', label: 'Inactive' },
+
+  // Session status
+  scheduled: { bg: 'primary-subtle', text: 'primary-emphasis', icon: 'bi-calendar-check', label: 'Scheduled' },
+  updated: { bg: 'warning-subtle', text: 'warning-emphasis', icon: 'bi-pencil-square', label: 'Updated' },
+  cancelled: { bg: 'danger-subtle', text: 'danger-emphasis', icon: 'bi-calendar-x', label: 'Cancelled' },
+
+  // Session type
+  keynote: { bg: 'warning-subtle', text: 'warning-emphasis', icon: 'bi-star-fill', label: 'Keynote' },
+  session: { bg: 'info-subtle', text: 'info-emphasis', icon: 'bi-mic', label: 'Session' },
+  workshop: { bg: 'success-subtle', text: 'success-emphasis', icon: 'bi-tools', label: 'Workshop' },
 };
 
 export function StatusPill({ status, variant, icon, label, className = '' }) {

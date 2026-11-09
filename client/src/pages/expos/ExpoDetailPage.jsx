@@ -21,6 +21,7 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { fetchExpoById, fetchExpoBySlug, fetchExpoBooths, reserveBooth } from '../../api/expos.js';
 import { StatusPill, Skeleton, useToast } from '../../components/ui/index.js';
 import { FloorPlan, BoothReservationModal } from '../../components/floorplan/index.js';
+import { ScheduleTimeline } from '../../components/schedule/index.js';
 import { useAuth } from '../../context/AuthContext.jsx';
 import { formatExpoDateRange, formatDate, relativeDays } from '../../lib/dateUtils.js';
 
@@ -286,13 +287,9 @@ export default function ExpoDetailPage() {
               </Row>
             </Tab.Pane>
 
-            {/* ── Schedule (placeholder for T-5.x) ── */}
+            {/* ── Schedule (T-5.6) ── */}
             <Tab.Pane eventKey="schedule">
-              <div className="text-center py-5 text-muted">
-                <i className="bi bi-calendar3 display-3 mb-3 d-block opacity-50" aria-hidden="true" />
-                <h3 className="h5">Schedule Coming Soon</h3>
-                <p className="small">The session schedule for this expo will be available here once published.</p>
-              </div>
+              <ScheduleTimeline expoId={expo?.id || expo?._id} expo={expo} />
             </Tab.Pane>
 
             {/* ── Exhibitors (placeholder for T-4.x) ── */}
