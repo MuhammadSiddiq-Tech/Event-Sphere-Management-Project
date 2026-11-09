@@ -8,6 +8,7 @@ import React, { useState } from 'react';
 import { Outlet, Link, useLocation, useNavigate } from 'react-router-dom';
 import { Navbar, Nav, Container, Dropdown, Offcanvas, Button, Badge } from 'react-bootstrap';
 import { useAuth } from '../context/AuthContext.jsx';
+import NotificationBell from '../components/ui/NotificationBell.jsx';
 
 const ATTENDEE_LINKS = [
   { to: '/attendee', label: 'Dashboard', icon: 'bi-speedometer2', exact: true },
@@ -74,6 +75,7 @@ export default function AttendeeLayout() {
           </div>
 
           <div className="d-flex align-items-center gap-2">
+            <NotificationBell />
             <Dropdown align="end">
               <Dropdown.Toggle variant="light" id="attendee-user-menu" className="d-flex align-items-center gap-2 border">
                 <i className="bi bi-person-circle"></i>

@@ -3,7 +3,19 @@
  * T-3.10. Design §8 (timezone label), Rule 8.1 (UTC stored, format in venue tz).
  */
 
-import { format, parseISO, isValid } from 'date-fns';
+import { format, parseISO, isValid, formatDistanceToNow as dateFnsDistanceToNow } from 'date-fns';
+
+/**
+ * Returns a human-readable distance string like "2 minutes ago", "about 3 hours ago".
+ * @param {Date|string|null|undefined} dateInput
+ * @returns {string}
+ */
+export function formatDistanceToNow(dateInput) {
+  if (!dateInput) return '';
+  const d = typeof dateInput === 'string' ? parseISO(dateInput) : dateInput;
+  if (!isValid(d)) return '';
+  return dateFnsDistanceToNow(d, { addSuffix: true });
+}
 
 /**
  * Format a date string safely.

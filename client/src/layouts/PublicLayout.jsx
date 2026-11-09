@@ -7,6 +7,7 @@ import React from 'react';
 import { Outlet, Link, useNavigate } from 'react-router-dom';
 import { Navbar, Nav, Container, Button, Dropdown } from 'react-bootstrap';
 import { useAuth } from '../context/AuthContext.jsx';
+import NotificationBell from '../components/ui/NotificationBell.jsx';
 
 export default function PublicLayout() {
   const { user, isAuthenticated, logout } = useAuth();
@@ -40,7 +41,9 @@ export default function PublicLayout() {
             </Nav>
             <Nav className="align-items-lg-center gap-2">
               {isAuthenticated ? (
-                <Dropdown align="end">
+                <>
+                  <NotificationBell />
+                  <Dropdown align="end">
                   <Dropdown.Toggle variant="outline-primary" id="user-menu" className="d-flex align-items-center gap-2">
                     <i className="bi bi-person-circle"></i>
                     <span>{user.name}</span>
@@ -55,6 +58,7 @@ export default function PublicLayout() {
                     </Dropdown.Item>
                   </Dropdown.Menu>
                 </Dropdown>
+                </>
               ) : (
                 <>
                   <Button as={Link} to="/login" variant="outline-primary" size="sm">

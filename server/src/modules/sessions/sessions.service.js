@@ -21,9 +21,10 @@ import {
   ForbiddenError,
   ValidationError,
 } from '../../core/errors.js';
-import { SESSION_STATUS } from '../../config/constants.js';
+import { SESSION_STATUS, NOTIFICATION_TYPE, ENGAGEMENT_KIND } from '../../config/constants.js';
 import { parsePagination, buildPaginationMeta } from '../../utils/pagination.js';
 import { emitToExpo } from '../../sockets/emitter.js';
+import { notificationsService } from '../notifications/notifications.service.js';
 
 // ─── Stub notification ────────────────────────────────────────────────────────
 
@@ -267,6 +268,23 @@ export const sessionsService = {
       sessionId: sessionId.toString(),
       action: 'updated',
     });
+
+    // Notify registered attendees of session update
+    const registrations = await SessionEngagement.find({
+      session: session._id,
+      kind: ENGAGEMENT_KIND.REGISTERED,
+    }).select('user').lean();
+    await Promise.all(
+      registrations.map((r) =>
+        notificationsService.notify(r.user.toString(), NOTIFICATION_TYPE.SESSION_UPDATED, {
+          sessionId: session._id.toString(),
+          sessionTitle: session.title,
+          expoId: session.expo.toString(),
+          action: 'updated',
+        })
+      )
+    );
+
     return result;
   },
 
@@ -308,6 +326,23 @@ export const sessionsService = {
       sessionId: sessionId.toString(),
       action: 'cancelled',
     });
+
+    // Notify registered attendees of session cancellation
+    const registrations = await SessionEngagement.find({
+      session: session._id,
+      kind: ENGAGEMENT_KIND.REGISTERED,
+    }).select('user').lean();
+    await Promise.all(
+      registrations.map((r) =>
+        notificationsService.notify(r.user.toString(), NOTIFICATION_TYPE.SESSION_UPDATED, {
+          sessionId: session._id.toString(),
+          sessionTitle: session.title,
+          expoId: session.expo.toString(),
+          action: 'cancelled',
+        })
+      )
+    );
+
     return result;
   },
 

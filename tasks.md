@@ -186,9 +186,9 @@
 
 ### Notifications
 
-- [ ] **T-7.5** `Notification` model + service (`notify(user, type, payload)`) + REST (list, read, read-all) — **M** 🧪 _(FR-SYS-03)_
-- [ ] **T-7.6** Hook notifications into: application result, booth assigned/changed, session updated/cancelled, reminders, new message — **M** 🧪
-- [ ] **T-7.7** `NotificationBell` + notifications page — **M** 🧪
+- [x] **T-7.5** `Notification` model + service (`notify(user, type, payload)`) + REST (list, read, read-all) — **M** 🧪 _(FR-SYS-03)_
+- [x] **T-7.6** Hook notifications into: application result, booth assigned/changed, session updated/cancelled, reminders, new message — **M** 🧪
+- [x] **T-7.7** `NotificationBell` + notifications page — **M** 🧪
 
 ### Messaging
 

@@ -17,8 +17,9 @@ import {
   ForbiddenError,
   ValidationError,
 } from '../../core/errors.js';
-import { EXPO_STATUS, SESSION_STATUS, ENGAGEMENT_KIND } from '../../config/constants.js';
+import { EXPO_STATUS, SESSION_STATUS, ENGAGEMENT_KIND, NOTIFICATION_TYPE } from '../../config/constants.js';
 import { parsePagination, buildPaginationMeta } from '../../utils/pagination.js';
+import { notificationsService } from '../notifications/notifications.service.js';
 
 /**
  * Generate a cryptographically distinct, human-readable ticket code.
@@ -410,6 +411,15 @@ export const attendeeService = {
         userId: user._id || user.id,
         userEmail: user.email,
         sessionId: session._id || session.id,
+        sessionTitle: session.title,
+        startTime: session.startTime,
+        room: session.room,
+        kind: eng.kind,
+      });
+
+      const targetUserId = (user._id || user.id).toString();
+      await notificationsService.notify(targetUserId, NOTIFICATION_TYPE.SESSION_REMINDER, {
+        sessionId: (session._id || session.id).toString(),
         sessionTitle: session.title,
         startTime: session.startTime,
         room: session.room,

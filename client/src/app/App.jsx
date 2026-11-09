@@ -45,6 +45,7 @@ import ExhibitorsPage from '../pages/exhibitor/ExhibitorsPage.jsx';
 import PublicExhibitorProfilePage from '../pages/exhibitor/PublicExhibitorProfilePage.jsx';
 import ExposListPage from '../pages/expos/ExposListPage.jsx';
 import ExpoDetailPage from '../pages/expos/ExpoDetailPage.jsx';
+import NotificationsPage from '../pages/notifications/NotificationsPage.jsx';
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -82,6 +83,7 @@ export default function App() {
             <Route element={<ProtectedRoute />}>
               <Route element={<PublicLayout />}>
                 <Route path="/profile" element={<ProfilePage />} />
+                <Route path="/notifications" element={<NotificationsPage />} />
               </Route>
             </Route>
 

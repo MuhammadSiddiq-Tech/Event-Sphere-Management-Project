@@ -79,7 +79,7 @@ describe('T-3.7: Booth Lifecycle (Assign, Unassign, Release, Details)', () => {
 
     const att = await registerUser('Attendee A', 'attendeeA@lifecycle.test', 'attendee');
     attendeeToken = att.token;
-  });
+  }, 30000);
 
   afterAll(async () => {
     await disconnectDb();

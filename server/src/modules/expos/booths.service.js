@@ -15,6 +15,8 @@ import { NotFoundError, ConflictError, ForbiddenError } from '../../core/errors.
 import { EXPO_STATUS, BOOTH_STATUS, APPLICATION_STATUS, ROLES } from '../../config/constants.js';
 import { parsePagination, buildPaginationMeta } from '../../utils/pagination.js';
 import { emitToExpo } from '../../sockets/emitter.js';
+import { notificationsService } from '../notifications/notifications.service.js';
+import { NOTIFICATION_TYPE } from '../../config/constants.js';
 
 /**
  * Check if two rectangles overlap (strict — touching edges is NOT overlap).
@@ -162,6 +164,7 @@ export const boothService = {
       boothId: booth._id.toString(),
       action: 'details-updated',
     });
+
     return booth.toJSON();
   },
 
@@ -210,6 +213,7 @@ export const boothService = {
       boothId: booth._id.toString(),
       action: 'details-updated',
     });
+
     return booth.toJSON();
   },
 
@@ -509,6 +513,17 @@ export const boothService = {
       status: booth.status,
       exhibitorId,
     });
+
+    // Notify assigned exhibitor
+    if (booth.assignedTo) {
+      await notificationsService.notify(booth.assignedTo.toString(), NOTIFICATION_TYPE.BOOTH_CHANGED, {
+        boothId: booth._id.toString(),
+        boothCode: booth.code,
+        expoId: booth.expo.toString(),
+        action: 'assigned',
+      });
+    }
+
     return booth.toJSON();
   },
 
@@ -555,6 +570,16 @@ export const boothService = {
       status: booth.status,
       exhibitorId: null,
     });
+
+    if (prevHolder) {
+      await notificationsService.notify(prevHolder.toString(), NOTIFICATION_TYPE.BOOTH_CHANGED, {
+        boothId: booth._id.toString(),
+        boothCode: booth.code,
+        expoId: booth.expo.toString(),
+        action: 'unassigned',
+      });
+    }
+
     return booth.toJSON();
   },
 
@@ -613,6 +638,16 @@ export const boothService = {
       status: booth.status,
       exhibitorId: null,
     });
+
+    if (holder && holder.toString() !== userId) {
+      await notificationsService.notify(holder.toString(), NOTIFICATION_TYPE.BOOTH_CHANGED, {
+        boothId: booth._id.toString(),
+        boothCode: booth.code,
+        expoId: booth.expo.toString(),
+        action: 'released',
+      });
+    }
+
     return booth.toJSON();
   },
 
@@ -660,6 +695,16 @@ export const boothService = {
       boothId: booth._id.toString(),
       action: 'details-updated',
     });
+
+    if (booth.assignedTo && booth.assignedTo.toString() !== userId) {
+      await notificationsService.notify(booth.assignedTo.toString(), NOTIFICATION_TYPE.BOOTH_CHANGED, {
+        boothId: booth._id.toString(),
+        boothCode: booth.code,
+        expoId: booth.expo.toString(),
+        action: 'updated',
+      });
+    }
+
     return booth.toJSON();
   },
 };

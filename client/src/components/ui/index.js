@@ -12,3 +12,4 @@ export { ConfirmDialog } from './ConfirmDialog.jsx';
 export { ToastProvider, useToast } from './ToastProvider.jsx';
 export { Skeleton } from './Skeleton.jsx';
 export { EmptyState } from './EmptyState.jsx';
+export { default as NotificationBell } from './NotificationBell.jsx';

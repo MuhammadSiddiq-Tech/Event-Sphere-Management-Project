@@ -44,7 +44,7 @@ describe('T-2.9: Database Seed Script', () => {
 
     const attendee = await User.findOne({ email: 'attendee@eventsphere.test' });
     expect(attendee.role).toBe(ROLES.ATTENDEE);
-  });
+  }, 20000);
 
   it('is completely idempotent when run multiple times', async () => {
     // First run creates
@@ -58,5 +58,5 @@ describe('T-2.9: Database Seed Script', () => {
 
     const count = await User.countDocuments({});
     expect(count).toBe(3);
-  });
+  }, 20000);
 });

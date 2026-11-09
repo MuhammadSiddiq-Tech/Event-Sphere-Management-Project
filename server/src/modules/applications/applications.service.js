@@ -26,6 +26,8 @@ import {
 import { EXPO_STATUS, BOOTH_STATUS } from '../../config/constants.js';
 import { parsePagination, buildPaginationMeta } from '../../utils/pagination.js';
 import { emitToAdmin, emitToUser } from '../../sockets/emitter.js';
+import { notificationsService } from '../notifications/notifications.service.js';
+import { NOTIFICATION_TYPE } from '../../config/constants.js';
 
 /**
  * Stub notification — logs only. Replace with real email/notification infra in later phase.
@@ -331,11 +333,11 @@ export const applicationsService = {
     await application.save();
     const result = application.toJSON();
 
-    // Stub notification
-    stubNotify('application_approved', {
-      applicationId,
-      exhibitorId: result.exhibitor,
-      expoId: result.expo,
+    // Real notification: application approved
+    await notificationsService.notify(result.exhibitor.toString(), NOTIFICATION_TYPE.APPLICATION_RESULT, {
+      applicationId: applicationId.toString(),
+      expoId: result.expo.toString(),
+      status: 'approved',
       assignedBooth: result.assignedBooth ?? null,
     });
 
@@ -389,11 +391,11 @@ export const applicationsService = {
     await application.save();
     const result = application.toJSON();
 
-    // Stub notification
-    stubNotify('application_rejected', {
-      applicationId,
-      exhibitorId: result.exhibitor,
-      expoId: result.expo,
+    // Real notification: application rejected
+    await notificationsService.notify(result.exhibitor.toString(), NOTIFICATION_TYPE.APPLICATION_RESULT, {
+      applicationId: applicationId.toString(),
+      expoId: result.expo.toString(),
+      status: 'rejected',
       reason,
     });
 
