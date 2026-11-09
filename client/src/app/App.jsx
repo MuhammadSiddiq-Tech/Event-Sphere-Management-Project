@@ -47,6 +47,8 @@ import ExposListPage from '../pages/expos/ExposListPage.jsx';
 import ExpoDetailPage from '../pages/expos/ExpoDetailPage.jsx';
 import NotificationsPage from '../pages/notifications/NotificationsPage.jsx';
 import MessagesPage from '../pages/messages/MessagesPage.jsx';
+import FeedbackPage from '../pages/feedback/FeedbackPage.jsx';
+import AdminFeedbackPage from '../pages/admin/AdminFeedbackPage.jsx';
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -86,6 +88,7 @@ export default function App() {
                 <Route path="/profile" element={<ProfilePage />} />
                 <Route path="/notifications" element={<NotificationsPage />} />
                 <Route path="/messages" element={<MessagesPage />} />
+                <Route path="/feedback" element={<FeedbackPage />} />
               </Route>
             </Route>
 
@@ -99,6 +102,7 @@ export default function App() {
                 <Route path="applications" element={<AdminApplicationsPage />} />
                 <Route path="schedule" element={<AdminSchedulePage />} />
                 <Route path="messages" element={<MessagesPage />} />
+                <Route path="feedback" element={<AdminFeedbackPage />} />
                 <Route path="analytics" element={<AdminDashboardPage />} />
                 <Route path="users" element={<AdminDashboardPage />} />
                 <Route path="settings" element={<AdminDashboardPage />} />
@@ -114,6 +118,7 @@ export default function App() {
                 <Route path="apply/:idOrSlug" element={<ApplicationWizardPage />} />
                 <Route path="booths" element={<ExhibitorBoothsPage />} />
                 <Route path="messages" element={<MessagesPage />} />
+                <Route path="feedback" element={<FeedbackPage />} />
               </Route>
             </Route>
 
@@ -125,6 +130,7 @@ export default function App() {
                 <Route path="registrations" element={<AttendeeRegistrationsPage />} />
                 <Route path="exhibitors" element={<ExhibitorsPage />} />
                 <Route path="messages" element={<MessagesPage />} />
+                <Route path="feedback" element={<FeedbackPage />} />
               </Route>
             </Route>
 

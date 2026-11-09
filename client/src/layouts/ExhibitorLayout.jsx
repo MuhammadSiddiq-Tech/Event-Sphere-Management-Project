@@ -16,6 +16,7 @@ const EXHIBITOR_LINKS = [
   { to: '/exhibitor/applications', label: 'Expos & Applications', icon: 'bi-file-earmark-text' },
   { to: '/exhibitor/booths', label: 'Booth Management', icon: 'bi-grid-3x3-gap' },
   { to: '/exhibitor/messages', label: 'Messages', icon: 'bi-chat-dots' },
+  { to: '/exhibitor/feedback', label: 'Feedback / Support', icon: 'bi-question-circle' },
 ];
 
 export default function ExhibitorLayout() {

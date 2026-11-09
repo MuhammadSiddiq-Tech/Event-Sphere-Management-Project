@@ -37,6 +37,16 @@ const STATUS_MAP = {
   keynote: { bg: 'warning-subtle', text: 'warning-emphasis', icon: 'bi-star-fill', label: 'Keynote' },
   session: { bg: 'info-subtle', text: 'info-emphasis', icon: 'bi-mic', label: 'Session' },
   workshop: { bg: 'success-subtle', text: 'success-emphasis', icon: 'bi-tools', label: 'Workshop' },
+
+  // Feedback status
+  open: { bg: 'primary-subtle', text: 'primary-emphasis', icon: 'bi-inbox', label: 'Open' },
+  in_review: { bg: 'warning-subtle', text: 'warning-emphasis', icon: 'bi-search', label: 'In Review' },
+  resolved: { bg: 'success-subtle', text: 'success-emphasis', icon: 'bi-check-all', label: 'Resolved' },
+
+  // Feedback category
+  suggestion: { bg: 'info-subtle', text: 'info-emphasis', icon: 'bi-lightbulb', label: 'Suggestion' },
+  issue: { bg: 'danger-subtle', text: 'danger-emphasis', icon: 'bi-exclamation-triangle', label: 'Issue' },
+  support: { bg: 'secondary-subtle', text: 'secondary-emphasis', icon: 'bi-question-circle', label: 'Support' },
 };
 
 export function StatusPill({ status, variant, icon, label, className = '' }) {

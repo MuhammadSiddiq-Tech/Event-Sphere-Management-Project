@@ -16,6 +16,7 @@ const ATTENDEE_LINKS = [
   { to: '/attendee/registrations', label: 'My Tickets & Expos', icon: 'bi-ticket-perforated' },
   { to: '/attendee/exhibitors', label: 'Exhibitor Directory', icon: 'bi-grid' },
   { to: '/attendee/messages', label: 'Messages', icon: 'bi-chat-dots' },
+  { to: '/attendee/feedback', label: 'Feedback & Support', icon: 'bi-chat-heart' },
 ];
 
 export default function AttendeeLayout() {

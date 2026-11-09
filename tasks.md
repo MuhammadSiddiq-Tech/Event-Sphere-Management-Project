@@ -198,8 +198,8 @@
 
 ### Feedback
 
-- [ ] **T-7.11** `Feedback` model + submit + admin triage endpoints — **S** 🧪 _(FR-SYS-02, FR-ADM-01)_
-- [ ] **T-7.12** Feedback form (all roles) + admin inbox with status chips — **M** 🧪
+- [x] **T-7.11** `Feedback` model + submit + admin triage endpoints — **S** 🧪 _(FR-SYS-02, FR-ADM-01)_
+- [x] **T-7.12** Feedback form (all roles) + admin inbox with status chips — **M** 🧪
 
 **Exit (M4):** two browser contexts show live booth/schedule changes in < 2 s; chat & notifications work. 📄
 

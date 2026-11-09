@@ -16,6 +16,7 @@ const ADMIN_LINKS = [
   { to: '/admin/applications', label: 'Exhibitor Applications', icon: 'bi-clipboard-check' },
   { to: '/admin/schedule', label: 'Schedule Manager', icon: 'bi-calendar3' },
   { to: '/admin/messages', label: 'Support & Chat', icon: 'bi-chat-dots' },
+  { to: '/admin/feedback', label: 'Feedback Inbox', icon: 'bi-inbox' },
   { to: '/admin/analytics', label: 'Analytics & Reports', icon: 'bi-graph-up' },
   { to: '/admin/users', label: 'User Management', icon: 'bi-people' },
   { to: '/admin/settings', label: 'Settings', icon: 'bi-gear' },
