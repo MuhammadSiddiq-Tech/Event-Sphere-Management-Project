@@ -15,8 +15,8 @@
 |     1 | Backend foundation                            | M1        | ✅ Done                    |
 |     2 | Authentication & users                        | M1        | ✅ Done                    |
 |     3 | Expos, floor plan, booths                     | M2        | ✅ Done                    |
-|     4 | Exhibitor profiles & applications             | M2        | ⬜                         |
-|     5 | Schedule & sessions                           | M3        | ⬜                         |
+|     4 | Exhibitor profiles & applications             | M2        | ✅ Done                    |
+|     5 | Schedule & sessions                           | M3        | 🔄 In progress             |
 |     6 | Attendee features                             | M3        | ⬜                         |
 |     7 | Real-time, messaging, notifications, feedback | M4        | ⬜                         |
 |     8 | Analytics & reports                           | M5        | ⬜                         |
@@ -139,10 +139,10 @@
 
 ### Backend
 
-- [ ] **T-5.1** `Session` model (types, speakers, capacity, status, indexes) — **S** 🧪
-- [ ] **T-5.2** Session CRUD with validation: `end > start`, within expo dates, **no same-room overlap** (error names conflict) — **L** 🧪 _(FR-SCH-01/02, BR-6)_
-- [ ] **T-5.3** Update/cancel flow: status `updated`/`cancelled`, block hard delete if registrations exist — **M** 🧪 _(FR-SCH-03, BR-8)_
-- [ ] **T-5.4** Public schedule endpoint (filters: day, track, type, room) — **S** 🧪 _(FR-ATT-06)_
+- [x] **T-5.1** `Session` model (types, speakers, capacity, status, indexes) — **S** 🧪
+- [x] **T-5.2** Session CRUD with validation: `end > start`, within expo dates, **no same-room overlap** (error names conflict) — **L** 🧪 _(FR-SCH-01/02, BR-6)_
+- [x] **T-5.3** Update/cancel flow: status `updated`/`cancelled`, block hard delete if registrations exist — **M** 🧪 _(FR-SCH-03, BR-8)_
+- [x] **T-5.4** Public schedule endpoint (filters: day, track, type, room) — **S** 🧪 _(FR-ATT-06)_
 
 ### Frontend
 
