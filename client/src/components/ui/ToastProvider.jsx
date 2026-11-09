@@ -23,6 +23,7 @@ export function ToastProvider({ children }) {
 
   const toastMethods = {
     show: addToast,
+    addToast,
     success: (message, title = 'Success') => addToast({ title, message, variant: 'success' }),
     error: (message, title = 'Error') => addToast({ title, message, variant: 'danger' }),
     info: (message, title = 'Information') => addToast({ title, message, variant: 'info' }),
@@ -62,6 +63,8 @@ export function useToast() {
   if (!context) {
     return {
       showToast: () => {},
+      addToast: () => {},
+      show: () => {},
       success: () => {},
       error: () => {},
       info: () => {},

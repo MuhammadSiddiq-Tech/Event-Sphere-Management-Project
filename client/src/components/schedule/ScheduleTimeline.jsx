@@ -25,9 +25,20 @@ import {
   Card as BsCard,
   Collapse,
 } from 'react-bootstrap';
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { fetchExpoSessions } from '../../api/sessions.js';
-import { StatusPill, Skeleton, EmptyState, Button } from '../ui/index.js';
+import {
+  fetchMyAgenda,
+  registerForSession,
+  unregisterFromSession,
+  bookmarkSession,
+  unbookmarkSession,
+  fetchMyExpoRegistration,
+  registerForExpo,
+} from '../../api/attendee.js';
+import { StatusPill, Skeleton, EmptyState, Button, useToast } from '../ui/index.js';
+import { useAuth } from '../../context/AuthContext.jsx';
+import { generateIcsForSession, downloadIcsFile } from '../../lib/calendarExport.js';
 
 /**
  * Format ISO datetime into a friendly time string (e.g., "09:30 AM").
@@ -76,12 +87,131 @@ export default function ScheduleTimeline({
   onDeleteSession,
   className = '',
 }) {
+  const queryClient = useQueryClient();
+  const { user, isAuthenticated } = useAuth();
+  const { addToast } = useToast();
+
   const [selectedDay, setSelectedDay] = useState('all');
   const [selectedType, setSelectedType] = useState('');
   const [selectedTrack, setSelectedTrack] = useState('');
   const [selectedRoom, setSelectedRoom] = useState('');
   const [searchQuery, setSearchQuery] = useState('');
   const [expandedDescriptions, setExpandedDescriptions] = useState({});
+
+  // Attendee agenda & engagement state
+  const { data: agendaData } = useQuery({
+    queryKey: ['myAgenda', expoId],
+    queryFn: () => fetchMyAgenda({ expo: expoId }),
+    enabled: !!isAuthenticated && !isEditable && !!expoId,
+    staleTime: 10_000,
+  });
+
+  const myEngagements = agendaData?.items ?? [];
+  const registeredSessionIds = useMemo(
+    () =>
+      new Set(
+        myEngagements
+          .filter((e) => e.kind === 'registered')
+          .map((e) => e.session?.id || e.session?._id)
+          .filter(Boolean)
+      ),
+    [myEngagements]
+  );
+
+  const bookmarkedSessionIds = useMemo(
+    () =>
+      new Set(
+        myEngagements
+          .filter((e) => e.kind === 'bookmark')
+          .map((e) => e.session?.id || e.session?._id)
+          .filter(Boolean)
+      ),
+    [myEngagements]
+  );
+
+  // ── Attendee Mutations ──
+  const registerMutation = useMutation({
+    mutationFn: (sessionId) => registerForSession(sessionId),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['myAgenda', expoId] });
+      queryClient.invalidateQueries({ queryKey: ['expoSessions', expoId] });
+      addToast({
+        title: 'Seat Reserved',
+        message: 'You are successfully registered for this session!',
+        variant: 'success',
+      });
+    },
+    onError: (err) => {
+      const msg = err.response?.data?.error?.message || err.message || 'Failed to register.';
+      addToast({
+        title: 'Registration Notice',
+        message: msg,
+        variant: 'danger',
+      });
+    },
+  });
+
+  const unregisterMutation = useMutation({
+    mutationFn: (sessionId) => unregisterFromSession(sessionId),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['myAgenda', expoId] });
+      queryClient.invalidateQueries({ queryKey: ['expoSessions', expoId] });
+      addToast({
+        title: 'Seat Released',
+        message: 'You have unregistered from this session.',
+        variant: 'info',
+      });
+    },
+    onError: (err) => {
+      addToast({
+        title: 'Error',
+        message: err.message || 'Failed to unregister.',
+        variant: 'danger',
+      });
+    },
+  });
+
+  const bookmarkMutation = useMutation({
+    mutationFn: (sessionId) => bookmarkSession(sessionId),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['myAgenda', expoId] });
+      addToast({
+        title: 'Bookmarked',
+        message: 'Session added to your agenda wishlist.',
+        variant: 'success',
+      });
+    },
+  });
+
+  const unbookmarkMutation = useMutation({
+    mutationFn: (sessionId) => unbookmarkSession(sessionId),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['myAgenda', expoId] });
+      addToast({
+        title: 'Bookmark Removed',
+        message: 'Session removed from wishlist.',
+        variant: 'secondary',
+      });
+    },
+  });
+
+  const handleCalendarDownload = (session) => {
+    try {
+      const ics = generateIcsForSession(session, expo);
+      const safeTitle = (session.title || 'session')
+        .toLowerCase()
+        .replace(/[^a-z0-9]+/g, '-')
+        .slice(0, 30);
+      downloadIcsFile(`${safeTitle}.ics`, ics);
+      addToast({
+        title: 'Calendar File Downloaded',
+        message: 'Import the .ics file to your calendar app.',
+        variant: 'info',
+      });
+    } catch (e) {
+      addToast({ title: 'Export Failed', message: e.message, variant: 'danger' });
+    }
+  };
 
   // Calculate days for tabs
   const daysList = useMemo(() => {
@@ -382,6 +512,67 @@ export default function ScheduleTimeline({
                             <i className="bi bi-trash" />
                           </Button>
                         )}
+                      </div>
+                    )}
+
+                    {/* Attendee Actions (Register, Bookmark, Add to Calendar — T-6.6, T-6.10) */}
+                    {!isEditable && (
+                      <div className="d-inline-flex align-items-center gap-1.5">
+                        {/* Bookmark Toggle */}
+                        {isAuthenticated && (
+                          <Button
+                            variant={bookmarkedSessionIds.has(session.id) ? 'warning' : 'outline-secondary'}
+                            size="sm"
+                            className="p-1 px-2"
+                            onClick={() =>
+                              bookmarkedSessionIds.has(session.id)
+                                ? unbookmarkMutation.mutate(session.id)
+                                : bookmarkMutation.mutate(session.id)
+                            }
+                            title={bookmarkedSessionIds.has(session.id) ? 'Remove bookmark' : 'Bookmark session'}
+                            loading={bookmarkMutation.isPending || unbookmarkMutation.isPending}
+                          >
+                            <i
+                              className={`bi ${
+                                bookmarkedSessionIds.has(session.id) ? 'bi-star-fill text-dark' : 'bi-star'
+                              }`}
+                            />
+                          </Button>
+                        )}
+
+                        {/* Calendar .ics Export (T-6.10) */}
+                        <Button
+                          variant="outline-secondary"
+                          size="sm"
+                          className="p-1 px-2"
+                          onClick={() => handleCalendarDownload(session)}
+                          title="Add to Calendar (.ics)"
+                        >
+                          <i className="bi bi-calendar-plus" />
+                        </Button>
+
+                        {/* Register / Registered State (T-6.6) */}
+                        {!isCancelled &&
+                          (registeredSessionIds.has(session.id) ? (
+                            <Button
+                              variant="outline-success"
+                              size="sm"
+                              onClick={() => unregisterMutation.mutate(session.id)}
+                              loading={unregisterMutation.isPending}
+                              title="Click to cancel seat reservation"
+                            >
+                              <i className="bi bi-check-circle-fill me-1 text-success" /> Registered
+                            </Button>
+                          ) : (
+                            <Button
+                              variant="primary"
+                              size="sm"
+                              onClick={() => registerMutation.mutate(session.id)}
+                              loading={registerMutation.isPending}
+                            >
+                              <i className="bi bi-ticket me-1" /> Register
+                            </Button>
+                          ))}
                       </div>
                     )}
                   </div>

@@ -38,6 +38,10 @@ import ApplicationWizardPage from '../pages/exhibitor/ApplicationWizardPage.jsx'
 import ExhibitorApplicationsPage from '../pages/exhibitor/ExhibitorApplicationsPage.jsx';
 import ExhibitorBoothsPage from '../pages/exhibitor/ExhibitorBoothsPage.jsx';
 import AttendeeDashboardPage from '../pages/attendee/AttendeeDashboardPage.jsx';
+import AttendeeAgendaPage from '../pages/attendee/AttendeeAgendaPage.jsx';
+import AttendeeRegistrationsPage from '../pages/attendee/AttendeeRegistrationsPage.jsx';
+import ExhibitorsPage from '../pages/exhibitor/ExhibitorsPage.jsx';
+import PublicExhibitorProfilePage from '../pages/exhibitor/PublicExhibitorProfilePage.jsx';
 import ExposListPage from '../pages/expos/ExposListPage.jsx';
 import ExpoDetailPage from '../pages/expos/ExpoDetailPage.jsx';
 
@@ -63,6 +67,8 @@ export default function App() {
               <Route path="/expos" element={<ExposListPage />} />
               <Route path="/expos/:idOrSlug" element={<ExpoDetailPage />} />
               <Route path="/expos/:idOrSlug/apply" element={<ApplicationWizardPage />} />
+              <Route path="/exhibitors" element={<ExhibitorsPage />} />
+              <Route path="/exhibitors/:id" element={<PublicExhibitorProfilePage />} />
               <Route path="/login" element={<LoginPage />} />
               <Route path="/register" element={<RegisterPage />} />
               <Route path="/forgot-password" element={<ForgotPasswordPage />} />
@@ -108,9 +114,9 @@ export default function App() {
             <Route element={<ProtectedRoute allowedRoles={['attendee']} />}>
               <Route path="/attendee" element={<AttendeeLayout />}>
                 <Route index element={<AttendeeDashboardPage />} />
-                <Route path="agenda" element={<AttendeeDashboardPage />} />
-                <Route path="registrations" element={<AttendeeDashboardPage />} />
-                <Route path="exhibitors" element={<AttendeeDashboardPage />} />
+                <Route path="agenda" element={<AttendeeAgendaPage />} />
+                <Route path="registrations" element={<AttendeeRegistrationsPage />} />
+                <Route path="exhibitors" element={<ExhibitorsPage />} />
                 <Route path="messages" element={<AttendeeDashboardPage />} />
               </Route>
             </Route>

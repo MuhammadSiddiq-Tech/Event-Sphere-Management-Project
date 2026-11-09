@@ -22,6 +22,9 @@ import { fetchExpoById, fetchExpoBySlug, fetchExpoBooths, reserveBooth } from '.
 import { StatusPill, Skeleton, useToast } from '../../components/ui/index.js';
 import { FloorPlan, BoothReservationModal } from '../../components/floorplan/index.js';
 import { ScheduleTimeline } from '../../components/schedule/index.js';
+import { ExhibitorsDirectory } from '../../components/exhibitor/ExhibitorsDirectory.jsx';
+import { TicketModal } from '../../components/attendee/TicketModal.jsx';
+import { registerForExpo, fetchMyExpoRegistration } from '../../api/attendee.js';
 import { useAuth } from '../../context/AuthContext.jsx';
 import { formatExpoDateRange, formatDate, relativeDays } from '../../lib/dateUtils.js';
 
@@ -41,7 +44,11 @@ const TABS = [
 export default function ExpoDetailPage() {
   const { idOrSlug } = useParams();
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
+  const { user, isAuthenticated } = useAuth();
+  const { addToast } = useToast();
   const [activeTab, setActiveTab] = useState('overview');
+  const [ticketModalOpen, setTicketModalOpen] = useState(false);
 
   // Fetch expo by id or slug
   const {
@@ -54,6 +61,41 @@ export default function ExpoDetailPage() {
     queryFn: () =>
       isObjectId(idOrSlug) ? fetchExpoById(idOrSlug) : fetchExpoBySlug(idOrSlug),
     staleTime: 60_000,
+  });
+
+  const expoActualId = expo?.id || expo?._id;
+
+  // Check attendee registration status (T-6.5)
+  const { data: registrationData } = useQuery({
+    queryKey: ['myExpoRegistration', expoActualId],
+    queryFn: () => fetchMyExpoRegistration(expoActualId),
+    enabled: !!isAuthenticated && !!expoActualId,
+    staleTime: 30_000,
+  });
+
+  const isRegisteredForExpo = Boolean(registrationData?.registered);
+  const ticketCode = registrationData?.ticketCode;
+
+  // Expo Registration Mutation (T-6.5)
+  const registerForExpoMutation = useMutation({
+    mutationFn: () => registerForExpo(expoActualId),
+    onSuccess: (data) => {
+      queryClient.invalidateQueries({ queryKey: ['myExpoRegistration', expoActualId] });
+      queryClient.invalidateQueries({ queryKey: ['myExpoRegistrations'] });
+      setTicketModalOpen(true);
+      addToast({
+        title: 'Registration Confirmed!',
+        message: 'Your official event entry pass has been issued.',
+        variant: 'success',
+      });
+    },
+    onError: (err) => {
+      addToast({
+        title: 'Registration Error',
+        message: err.response?.data?.error?.message || err.message || 'Could not register for expo.',
+        variant: 'danger',
+      });
+    },
   });
 
   // Fetch booths for floor plan tab (lazy when tab is selected)
@@ -271,14 +313,52 @@ export default function ExpoDetailPage() {
                       <StatusPill status={status} />
                     </div>
 
+                    {/* Attendee Registration & Pass (T-6.5) */}
                     {['published', 'ongoing'].includes(status) && (
-                      <div className="pt-2 border-top">
+                      <div className="pt-2 border-top d-flex flex-column gap-2">
+                        {isRegisteredForExpo ? (
+                          <div className="bg-success-subtle border border-success-subtle rounded-3 p-3 text-center">
+                            <span className="badge bg-success text-white mb-1.5">
+                              <i className="bi bi-check-circle me-1" /> Registered Attendee
+                            </span>
+                            <div className="small text-muted mb-2 font-monospace fw-bold">
+                              {ticketCode}
+                            </div>
+                            <Button
+                              variant="outline-success"
+                              size="sm"
+                              className="w-100 fw-semibold"
+                              onClick={() => setTicketModalOpen(true)}
+                            >
+                              <i className="bi bi-qr-code me-1" /> View Entry Pass
+                            </Button>
+                          </div>
+                        ) : isAuthenticated ? (
+                          <Button
+                            variant="primary"
+                            className="w-100 fw-bold"
+                            onClick={() => registerForExpoMutation.mutate()}
+                            loading={registerForExpoMutation.isPending}
+                          >
+                            <i className="bi bi-ticket-perforated me-2" />
+                            Register to Attend (Free)
+                          </Button>
+                        ) : (
+                          <Link
+                            to={`/login?redirect=/expos/${expo.slug || expoId}`}
+                            className="btn btn-primary w-100 fw-bold"
+                          >
+                            <i className="bi bi-box-arrow-in-right me-2" />
+                            Login to Register
+                          </Link>
+                        )}
+
                         <Link
                           to={`/expos/${expo.slug || expoId}/apply`}
-                          className="btn btn-primary w-100 fw-bold"
+                          className="btn btn-outline-secondary w-100 small fw-semibold"
                         >
-                          <i className="bi bi-pencil-square me-2" aria-hidden="true" />
-                          Apply to Exhibit
+                          <i className="bi bi-pencil-square me-1" />
+                          Apply as Exhibitor
                         </Link>
                       </div>
                     )}
@@ -292,13 +372,14 @@ export default function ExpoDetailPage() {
               <ScheduleTimeline expoId={expo?.id || expo?._id} expo={expo} />
             </Tab.Pane>
 
-            {/* ── Exhibitors (placeholder for T-4.x) ── */}
+            {/* ── Exhibitors (T-6.7) ── */}
             <Tab.Pane eventKey="exhibitors">
-              <div className="text-center py-5 text-muted">
-                <i className="bi bi-briefcase display-3 mb-3 d-block opacity-50" aria-hidden="true" />
-                <h3 className="h5">Exhibitors List Coming Soon</h3>
-                <p className="small">The list of exhibitors and their profiles will appear here once approved.</p>
-              </div>
+              <ExhibitorsDirectory
+                expoId={expoActualId}
+                onShowOnFloorPlan={() => {
+                  setActiveTab('floorplan');
+                }}
+              />
             </Tab.Pane>
 
             {/* ── Floor Plan (view & select mode — T-3.12, T-3.14) ── */}
@@ -308,6 +389,15 @@ export default function ExpoDetailPage() {
           </Tab.Content>
         </Tab.Container>
       </Container>
+
+      {/* ── Attendee Ticket Pass Modal (T-6.5) ── */}
+      <TicketModal
+        show={ticketModalOpen}
+        onHide={() => setTicketModalOpen(false)}
+        expo={expo}
+        registration={registrationData}
+        user={user}
+      />
     </div>
   );
 }

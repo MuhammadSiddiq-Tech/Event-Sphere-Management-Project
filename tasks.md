@@ -17,7 +17,7 @@
 |     3 | Expos, floor plan, booths                     | M2        | ✅ Done                    |
 |     4 | Exhibitor profiles & applications             | M2        | ✅ Done                    |
 |     5 | Schedule & sessions                           | M3        | ✅ Done                    |
-|     6 | Attendee features                             | M3        | 🔄 In progress             |
+|     6 | Attendee features                             | M3        | ✅ Done                    |
 |     7 | Real-time, messaging, notifications, feedback | M4        | ⬜                         |
 |     8 | Analytics & reports                           | M5        | ⬜                         |
 |     9 | Hardening: security, a11y, performance, QA    | M5        | ⬜                         |
@@ -164,14 +164,14 @@
 
 ### Frontend
 
-- [ ] **T-6.5** Expo registration CTA + ticket view + "My registrations" — **M** 🧪 _(FR-ATT-02)_
-- [ ] **T-6.6** Session cards with Register/Bookmark actions, capacity badges — **M** 🧪
-- [ ] **T-6.7** Exhibitor directory: debounced search, category chips, pagination, empty state — **M** 🧪 _(FR-ATT-03)_
-- [ ] **T-6.8** Exhibitor profile page (public) with "Show on floor plan" (highlight booth) — **M** _(FR-ATT-04)_
-- [ ] **T-6.9** Attendee dashboard + **My agenda** (grouped by day, change/cancel banners) — **M** _(FR-ATT-08)_
-- [ ] **T-6.10** (P2) "Add to calendar" `.ics` export — **S**
+- [x] **T-6.5** Expo registration CTA + ticket view + "My registrations" — **M** 🧪 _(FR-ATT-02)_
+- [x] **T-6.6** Session cards with Register/Bookmark actions, capacity badges — **M** 🧪
+- [x] **T-6.7** Exhibitor directory: debounced search, category chips, pagination, empty state — **M** 🧪 _(FR-ATT-03)_
+- [x] **T-6.8** Exhibitor profile page (public) with "Show on floor plan" (highlight booth) — **M** _(FR-ATT-04)_
+- [x] **T-6.9** Attendee dashboard + **My agenda** (grouped by day, change/cancel banners) — **M** _(FR-ATT-08)_
+- [x] **T-6.10** (P2) "Add to calendar" `.ics` export — **S**
 
-**Exit (M3):** E2E journey (c) attendee register → bookmark → reminder green. 📄
+**Exit (M3):** E2E journey (c) attendee register → bookmark → reminder green. [Complete] 📄
 
 ---
 
