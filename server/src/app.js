@@ -47,6 +47,31 @@ router.get('/health', async (ctx) => {
   ctx.json(dbOk ? 200 : 503, payload);
 });
 
+// ─── Metrics endpoint (T-9.9, NFR-REL-01, NFR-OPS-01) ────────────────────────
+// Exposes lightweight process and memory metrics for operational monitoring.
+// Restricted to internal use; in production, protect with a sidecar or API gateway.
+router.get('/metrics', async (ctx) => {
+  const mem = process.memoryUsage();
+  const dbOk = await isDbHealthy();
+
+  const payload = {
+    uptime_seconds: Math.floor(process.uptime()),
+    db_connected: dbOk,
+    memory: {
+      rss_mb: (mem.rss / 1024 / 1024).toFixed(2),
+      heap_used_mb: (mem.heapUsed / 1024 / 1024).toFixed(2),
+      heap_total_mb: (mem.heapTotal / 1024 / 1024).toFixed(2),
+      external_mb: (mem.external / 1024 / 1024).toFixed(2),
+    },
+    nodejs_version: process.version,
+    platform: process.platform,
+    pid: process.pid,
+    timestamp: new Date().toISOString(),
+  };
+
+  ctx.json(200, payload);
+});
+
 // ─── API docs & OpenAPI spec (dev only) ──────────────────────────────────────
 if (env.NODE_ENV !== 'production') {
   router.get('/api/openapi.json', async (ctx) => {

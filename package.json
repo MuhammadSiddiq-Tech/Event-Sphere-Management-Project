@@ -12,9 +12,10 @@
     "dev:client": "npm run dev -w client",
     "build": "npm run build -w client",
     "lint": "npm run lint -w server & npm run lint -w client",
-    "test": "npm run test -w server",
+    "test": "npm run test:server",
     "test:server": "npm run test -w server",
     "test:client": "npm run test -w client",
+    "test:e2e": "npx playwright test -c client/playwright.config.js",
     "seed": "npm run seed -w server"
   },
   "engines": {

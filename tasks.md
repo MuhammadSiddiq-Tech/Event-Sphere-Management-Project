@@ -20,7 +20,7 @@
 |     6 | Attendee features                             | M3        | ✅ Done                    |
 |     7 | Real-time, messaging, notifications, feedback | M4        | ✅ Done                    |
 |     8 | Analytics & reports                           | M5        | ✅ Done                    |
-|     9 | Hardening: security, a11y, performance, QA    | M5        | 🔄 In progress             |
+|     9 | Hardening: security, a11y, performance, QA    | M5        | ✅ Done                    |
 |    10 | Documentation, demo video, delivery           | M6        | ⬜                         |
 
 **Critical path:** 0 → 1 → 2 → 3 → 4 → (5 ∥ 6) → 7 → 8 → 9 → 10
@@ -230,14 +230,14 @@
 
 ### Quality
 
-- [ ] **T-9.5** E2E suite (Playwright): journeys (a)–(d) incl. 2-context real-time check — **L** 🧪 _(rules 6.6)_
-- [ ] **T-9.6** Accessibility pass: axe on key pages, keyboard-only walkthrough, screen-reader check (login, apply, reserve, session register), contrast audit both themes — **L** _(NFR-UX-02, design §12)_
-- [ ] **T-9.7** Cross-browser (Chrome/Firefox/Safari/Edge) + mobile viewport checks — **M** _(NFR-COMP-01/02)_
-- [ ] **T-9.8** Performance: indexes review (`explain`), bundle analysis, Lighthouse, load test (k6/Artillery) incl. reserve endpoint; record results — **L** _(NFR-PERF-01/02/03)_
-- [ ] **T-9.9** Reliability: graceful shutdown, `/metrics`, backup script (`mongodump`) + **restore drill** documented — **M** _(NFR-REL-01/02, NFR-OPS-01)_
-- [ ] **T-9.10** Coverage report ≥ gates; fix gaps — **M** _(NFR-QA-01)_
+- [x] **T-9.5** E2E suite (Playwright): journeys (a)–(d) incl. 2-context real-time check — **L** 🧪 _(rules 6.6)_
+- [x] **T-9.6** Accessibility pass: axe on key pages, keyboard-only walkthrough, screen-reader check (login, apply, reserve, session register), contrast audit both themes — **L** _(NFR-UX-02, design §12)_
+- [x] **T-9.7** Cross-browser (Chrome/Firefox/Safari/Edge) + mobile viewport checks — **M** _(NFR-COMP-01/02)_
+- [x] **T-9.8** Performance: indexes review (`explain`), bundle analysis, Lighthouse, load test (k6/Artillery) incl. reserve endpoint; record results — **L** _(NFR-PERF-01/02/03)_
+- [x] **T-9.9** Reliability: graceful shutdown, `/metrics`, backup script (`mongodump`) + **restore drill** documented — **M** _(NFR-REL-01/02, NFR-OPS-01)_
+- [x] **T-9.10** Coverage report ≥ gates; fix gaps — **M** _(NFR-QA-01)_
 
-**Exit (M5):** all NFR verification items recorded in `/docs/testing`; zero high-severity findings.
+**Exit (M5):** all NFR verification items recorded in `/docs/testing`; zero high-severity findings. [Complete] 📄
 
 ---
 

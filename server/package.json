@@ -11,7 +11,9 @@
     "test:coverage": "node --experimental-vm-modules node_modules/jest/bin/jest.js --runInBand --coverage --forceExit",
     "lint": "eslint src tests seed --ext .js",
     "lint:fix": "eslint src tests seed --ext .js --fix",
-    "seed": "node seed/index.js"
+    "seed": "node seed/index.js",
+    "backup": "node scripts/backup.js",
+    "restore": "node scripts/restore.js"
   },
   "dependencies": {
     "bcryptjs": "^2.4.3",
