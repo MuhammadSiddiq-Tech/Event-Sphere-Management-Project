@@ -1,6 +1,6 @@
 # EventSphere Management — Product Requirements Document (PRD)
 
-> **Version:** 1.1 · **Type:** Web application — React + Bootstrap frontend, plain Node.js backend (no Express), MongoDB (Aptech eProject)
+> **Version:** 1.2 · **Type:** Web application — React 18 + Vite 5 + Bootstrap 5 frontend, plain Node.js backend (no Express), MongoDB Atlas (Aptech eProject)
 > **Related docs:** [architecture.md](./architecture.md) · [design.md](./design.md) · [rules.md](./rules.md) · [tasks.md](./tasks.md) · [memory.md](./memory.md)
 > **Requirement IDs** (e.g. `FR-AUTH-01`) are referenced by `tasks.md` for traceability.
 
@@ -302,14 +302,14 @@ Detailed personas and journeys: `design.md` §2 and §4.
 
 ## 10. Release Plan (High-Level)
 
-| Milestone | Scope | Exit criteria |
-|-----------|-------|---------------|
-| **M1 — Foundation** | Setup, auth, roles, base UI shell | Users can register/login/reset; role routing works |
-| **M2 — Core expo** | Expos, floor plan, booths, exhibitor profiles & applications | Apply → approve → reserve works end-to-end |
-| **M3 — Schedule & attendee** | Sessions, registrations, bookmarks, search, reminders | Attendee journey complete |
-| **M4 — Realtime & comms** | Socket events, messaging, notifications, feedback | Live updates verified with 2 clients |
-| **M5 — Analytics & hardening** | Dashboards, reports, security, a11y, performance | NFR checks pass |
-| **M6 — Docs & delivery** | User/dev docs, demo video, submission | Package delivered |
+| Milestone | Scope | Exit criteria | Status |
+|-----------|-------|---------------|--------|
+| **M1 — Foundation** | Setup, auth, roles, base UI shell | Users can register/login/reset; role routing works | ✅ Done |
+| **M2 — Core expo** | Expos, floor plan, booths, exhibitor profiles & applications | Apply → approve → reserve works end-to-end | ✅ Done |
+| **M3 — Schedule & attendee** | Sessions, registrations, bookmarks, search, reminders | Attendee journey complete | ✅ Done |
+| **M4 — Realtime & comms** | Socket events, messaging, notifications, feedback | Live updates verified with 2 clients | ✅ Done |
+| **M5 — Analytics & hardening** | Dashboards, reports, security, a11y, performance | NFR checks pass | ✅ Done |
+| **M6 — Docs & delivery** | User/dev docs, demo video, submission | Package delivered | 🔄 In progress |
 
 Detailed task breakdown: `tasks.md`.
 
@@ -327,6 +327,27 @@ Detailed task breakdown: `tasks.md`.
 | Email delivery in demo | Low | Med | Use Ethereal/MailHog + in-app fallback |
 
 **Dependencies:** MongoDB (replica set), SMTP provider, optional Cloudinary, Node 20.
+
+---
+
+## 11a. Implementation Status (as of Phase 10)
+
+| Area | Delivery Status | Notes |
+|------|----------------|-------|
+| Authentication (FR-AUTH-01…06) | ✅ Delivered | LoginPage & RegisterPage (split-screen, role selector); JWT + bcryptjs |
+| Public pages | ✅ Delivered | HomePage, ExposListPage, ExpoDetailPage |
+| Admin dashboard | ✅ Delivered | AdminDashboardPage with live Recharts from real API |
+| Exhibitor portal | ✅ Delivered | ExhibitorDashboardPage |
+| Attendee portal | ✅ Delivered | AttendeeDashboardPage |
+| Real-time (FR-SYS-01) | ✅ Delivered | Socket.IO 4; `< 2 s` propagation |
+| Analytics (FR-ANA-01/02) | ✅ Delivered | Recharts charts (line, bar, donut) |
+| Testing | ✅ Delivered | 134/134 Vitest client tests; 510/510 Jest server tests; Playwright E2E |
+| Design system | ✅ Delivered | Swiss-grid editorial system; Obsidian Navy / Royal Cobalt / Electric Lime / Ice Slate palette; Poppins/Syne/JetBrains Mono via Google Fonts |
+| Seed accounts | ✅ Delivered | admin@eventsphere.test / exhibitor@eventsphere.test / attendee@eventsphere.test |
+| Documentation (NFR-DOC-01/02) | 🔄 In progress | Phase 10 |
+| Demo video (NFR-DOC-03) | ⬜ Pending | Phase 10 |
+
+**Latest git commit:** `5ff9dd4` — `feat(ui): Swiss-grid editorial design system` (branch: `main`)
 
 ---
 

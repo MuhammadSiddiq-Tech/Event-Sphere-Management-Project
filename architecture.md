@@ -1,7 +1,7 @@
 # EventSphere Management — Architecture
 
-> **Project:** EventSphere Management (Aptech eProject) — React + Bootstrap, plain Node.js (no Express), MongoDB
-> **Document status:** v1.1 — stack revised: Bootstrap for UI, native Node.js `http` (no Express)
+> **Project:** EventSphere Management (Aptech eProject) — React 18 + Vite 5 + Bootstrap 5 frontend, plain Node.js backend (no Express), MongoDB Atlas
+> **Document status:** v1.2 — stack versions confirmed: React 18, Vite 5, Bootstrap 5; server port 5000, client port 5173
 > **Related docs:** [prd.md](./prd.md) · [design.md](./design.md) · [rules.md](./rules.md) · [tasks.md](./tasks.md) · [memory.md](./memory.md)
 
 ---
