@@ -84,14 +84,14 @@ Detailed personas and journeys: `design.md` §2 and §4.
 
 ### 4.1 Authentication (AUTH)
 
-| ID | Story | Priority |
-|----|-------|----------|
-| **FR-AUTH-01** | As a visitor, I can **register** as an exhibitor or attendee so that I can use the platform. | P0 |
-| **FR-AUTH-02** | As a user, I can **log in/out** securely. | P0 |
-| **FR-AUTH-03** | The system **differentiates roles** (admin/organizer, exhibitor, attendee) and routes me to my area. | P0 |
-| **FR-AUTH-04** | As a user, I can **reset a forgotten password** via email. | P0 |
-| **FR-AUTH-05** | Passwords are **encrypted** (hashed) at rest. | P0 |
-| **FR-AUTH-06** | As a user, I can update my profile and change my password. | P1 |
+| ID | Story | Priority | Status |
+|----|-------|----------|:------:|
+| **FR-AUTH-01** | As a visitor, I can **register** as an exhibitor or attendee so that I can use the platform. | P0 | ✅ Implemented |
+| **FR-AUTH-02** | As a user, I can **log in/out** securely. | P0 | ✅ Implemented |
+| **FR-AUTH-03** | The system **differentiates roles** (admin/organizer, exhibitor, attendee) and routes me to my area. | P0 | ✅ Implemented |
+| **FR-AUTH-04** | As a user, I can **reset a forgotten password** via email. | P0 | ✅ Implemented |
+| **FR-AUTH-05** | Passwords are **encrypted** (hashed) at rest. | P0 | ✅ Implemented |
+| **FR-AUTH-06** | As a user, I can update my profile and change my password. | P1 | ✅ Implemented |
 
 **Acceptance criteria**
 - AUTH-01: Given valid name/email/password/role(exhibitor|attendee) and accepted privacy consent, when I submit, then an account is created, I'm signed in, and landed on my role dashboard. Duplicate email → `409` with clear message. Role `admin` cannot be selected/submitted. Password ≥ 8 chars with letters + numbers.

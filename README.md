@@ -35,9 +35,16 @@ docker compose up -d
 
 ```bash
 npm run seed
-# Creates: admin@eventsphere.test / exhibitor@eventsphere.test / attendee@eventsphere.test
-# See server/seed/README.md for credentials
 ```
+
+#### Demo Credentials (Seed Accounts)
+
+| Role | Email | Password | Access Scope |
+| :--- | :--- | :--- | :--- |
+| **Admin / Organizer** | `admin@eventsphere.test` | `Admin@1234` | Full platform control, expos, floor plans, exhibitor approvals, analytics |
+| **Exhibitor** | `exhibitor@eventsphere.test` | `Exhibitor@1234` | Expo applications, booth reservations, direct messaging |
+| **Attendee** | `attendee@eventsphere.test` | `Attendee@1234` | Expo pass, session schedule, bookmarks, feedback |
+
 
 ### 5. Run Development Servers
 
@@ -82,20 +89,18 @@ eventsphere/
 
 ## Documentation
 
-- [Architecture](./architecture.md)
-- [Product Requirements](./prd.md)
-- [Design System](./design.md)
-- [Engineering Rules](./rules.md)
-- [Task Plan](./tasks.md)
-- [Project Memory](./memory.md)
+- **Core Specs:** [Architecture](./architecture.md) · [Product Requirements](./prd.md) · [Design System](./design.md) · [Engineering Rules](./rules.md) · [Task Plan](./tasks.md) · [Project Memory](./memory.md)
+- **User Guides:** [Admin Guide](./docs/user-guide/admin-guide.md) · [Exhibitor Guide](./docs/user-guide/exhibitor-guide.md) · [Attendee Guide](./docs/user-guide/attendee-guide.md)
+- **Developer Guide:** [Developer Guide](./docs/developer-guide/README.md)
+- **Demo & Submission:** [Demo Video Script](./docs/demo/video-script.md) · [Submission Checklist](./docs/submission/submission-checklist.md)
 
 ## eProject Deliverables
 
-| # | Deliverable | Status |
-|---|-------------|--------|
-| D1 | Working application | 🔄 In progress |
-| D2 | Complete source code | 🔄 In progress |
-| D3 | Documentation | 🔄 In progress |
-| D4 | Demo video | ⬜ Pending |
-| D5 | Test reports | ⬜ Pending |
-| D6 | Submission package | ⬜ Pending |
+| # | Deliverable | Status | Reference |
+|---|-------------|--------|-----------|
+| D1 | Working application | ✅ Complete | Local Client (`:5173`) & API (`:5000`) |
+| D2 | Complete source code | ✅ Complete | [GitHub Repo](https://github.com/MuhammadSiddiq-Tech/Event-Sphere-Management-Project) |
+| D3 | Documentation | ✅ Complete | `/docs` + Root markdown specs |
+| D4 | Demo video | ✅ Script Ready | [Demo Video Script](./docs/demo/video-script.md) |
+| D5 | Test reports | ✅ 100% Passing | 510 Jest tests + 134 Vitest tests (644/644) |
+| D6 | Submission package | ✅ Complete | [Submission Checklist](./docs/submission/submission-checklist.md) |

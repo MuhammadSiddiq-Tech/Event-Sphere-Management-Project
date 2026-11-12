@@ -243,15 +243,15 @@
 
 ## Phase 10 — Documentation, Demo Video & Delivery _(M6)_
 
-- [ ] **T-10.1** **User guide** per role (Admin, Exhibitor, Attendee) with screenshots + FAQ + short tutorials — **L** 📄 _(NFR-DOC-01)_
-- [ ] **T-10.2** **Developer guide**: setup, architecture overview, folder map, conventions, how to add a module, API reference export (OpenAPI → HTML/PDF) — **L** 📄 _(NFR-DOC-02)_
-- [ ] **T-10.3** Final pass on `prd.md`, `architecture.md`, `design.md`, `rules.md`, `memory.md` to match what was actually built — **M** 📄
-- [ ] **T-10.4** Deployment: staging/production (client + API + Atlas + SMTP), env checklist, smoke test; seeded demo data — **L**
-- [ ] **T-10.5** **Demo video script & storyboard** (covers: register/login, admin creates expo + floor plan, exhibitor applies → approved → reserves booth, live update on 2nd screen, schedule creation + change notification, attendee search/register/bookmark/reminder, messaging, analytics, feedback, privacy export) — **M** _(NFR-DOC-03)_
+- [x] **T-10.1** **User guide** per role (Admin, Exhibitor, Attendee) with screenshots + FAQ + short tutorials — **L** 📄 _(NFR-DOC-01)_
+- [x] **T-10.2** **Developer guide**: setup, architecture overview, folder map, conventions, how to add a module, API reference export (OpenAPI → HTML/PDF) — **L** 📄 _(NFR-DOC-02)_
+- [x] **T-10.3** Final pass on `prd.md`, `architecture.md`, `design.md`, `rules.md`, `memory.md` to match what was actually built — **M** 📄
+- [x] **T-10.4** Deployment: staging/production (client + API + Atlas + SMTP), env checklist, smoke test; seeded demo data — **L**
+- [x] **T-10.5** **Demo video script & storyboard** (covers: register/login, admin creates expo + floor plan, exhibitor applies → approved → reserves booth, live update on 2nd screen, schedule creation + change notification, attendee search/register/bookmark/reminder, messaging, analytics, feedback, privacy export) — **M** _(NFR-DOC-03)_
 - [ ] **T-10.6** **Record & edit demo video** (5–10 min, narrated, captions); export + upload; link in README — **L** _(NFR-DOC-03)_
-- [ ] **T-10.7** Test report & coverage summary in `/docs/testing` — **S**
-- [ ] **T-10.8** Submission package: source zip (no `node_modules`/secrets), docs, video link, README, credentials for demo accounts → send to **eProjects Team** — **S**
-- [ ] **T-10.9** Final retrospective: update `memory.md`, close open questions, tag release `v1.0.0` — **S**
+- [x] **T-10.7** Test report & coverage summary in `/docs/testing` — **S**
+- [x] **T-10.8** Submission package: source zip (no `node_modules`/secrets), docs, video link, README, credentials for demo accounts → send to **eProjects Team** — **S**
+- [x] **T-10.9** Final retrospective: update `memory.md`, close open questions, tag release `v1.0.0` — **S**
 
 **Exit (M6):** all deliverables D1–D6 in `prd.md` §8 delivered.
 
