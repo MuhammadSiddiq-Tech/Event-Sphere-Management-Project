@@ -6,12 +6,13 @@
  */
 
 import React, { useState, useMemo } from 'react';
-import { Container, Row, Col, Alert, Spinner } from 'react-bootstrap';
+import { Container, Row, Col, Alert } from 'react-bootstrap';
 import { useQuery } from '@tanstack/react-query';
 import { ExpoCard } from '../../components/expos/ExpoCard.jsx';
 import { ExpoFilters } from '../../components/expos/ExpoFilters.jsx';
 import { Skeleton, EmptyState } from '../../components/ui/index.js';
 import { fetchPublicExpos } from '../../api/expos.js';
+
 const PAGE_SIZE = 12;
 
 export default function ExposListPage() {
@@ -55,33 +56,59 @@ export default function ExposListPage() {
 
   return (
     <div>
-      {/* Page Hero */}
-      <section className="bg-primary text-white py-4">
-        <Container>
-          <Row className="align-items-center">
-            <Col>
-              <h1 className="fw-bold mb-1 h2">
-                <i className="bi bi-calendar-event me-2" aria-hidden="true" />
-                Discover Expos
+      {/* ── Editorial Obsidian Navy Page Hero ── */}
+      <section
+        className="bg-navy text-white py-5 position-relative overflow-hidden"
+        style={{
+          backgroundImage:
+            'radial-gradient(circle at 85% 25%, rgba(0, 87, 255, 0.35), transparent 45%), radial-gradient(circle at 10% 80%, rgba(217, 249, 91, 0.12), transparent 40%)',
+        }}
+      >
+        <Container className="py-2">
+          <Row className="align-items-end g-3">
+            <Col lg={8}>
+              <div className="d-inline-flex align-items-center gap-2 px-3 py-1 rounded-pill bg-white bg-opacity-10 border border-white border-opacity-10 small fw-medium mb-3">
+                <span
+                  className="rounded-circle bg-lime d-inline-block"
+                  style={{ width: '8px', height: '8px' }}
+                />
+                <span className="text-white-50 text-uppercase" style={{ letterSpacing: '0.06em' }}>
+                  Live Exhibition Directory
+                </span>
+              </div>
+              <h1
+                className="display-5 fw-bold text-white mb-2"
+                style={{ letterSpacing: '-0.03em' }}
+              >
+                Discover Expos<span className="text-lime">.</span>
               </h1>
-              <p className="mb-0 opacity-75">
-                Browse upcoming trade shows, conferences, and exhibitions.
+              <p className="text-white-50 mb-0 lead" style={{ maxWidth: '580px' }}>
+                Browse upcoming trade shows, global conferences, and interactive exhibitions.
               </p>
             </Col>
-            <Col xs="auto" className="d-none d-md-block text-end">
+
+            <Col lg={4} className="text-lg-end">
               {!isLoading && (
-                <span className="badge bg-white text-primary fs-6 fw-bold px-3 py-2">
-                  {totalCount} event{totalCount !== 1 ? 's' : ''}
-                </span>
+                <div className="d-inline-flex align-items-center gap-2 bg-white bg-opacity-10 border border-white border-opacity-15 rounded-pill px-4 py-2">
+                  <span className="badge bg-lime text-dark fw-bold rounded-pill px-3 py-1 font-monospace">
+                    {totalCount}
+                  </span>
+                  <span className="small fw-medium text-white">
+                    Published Event{totalCount !== 1 ? 's' : ''}
+                  </span>
+                </div>
               )}
             </Col>
           </Row>
         </Container>
       </section>
 
-      <Container className="py-4">
-        {/* Filters */}
-        <div className="mb-4 p-3 bg-white rounded-3 shadow-sm">
+      <Container className="py-4 py-md-5">
+        {/* ── Elevated Editorial Filter Bar ── */}
+        <div
+          className="mb-4 p-3 p-md-4 bg-white rounded-4 shadow-sm"
+          style={{ border: '1px solid rgba(10, 17, 40, 0.08)' }}
+        >
           <ExpoFilters
             search={search}
             status={status}
@@ -96,7 +123,7 @@ export default function ExposListPage() {
 
         {/* Error state */}
         {isError && (
-          <Alert variant="danger" className="d-flex align-items-center gap-2">
+          <Alert variant="danger" className="d-flex align-items-center gap-2 rounded-3 border-0 shadow-sm">
             <i className="bi bi-exclamation-triangle-fill" aria-hidden="true" />
             <span>
               Failed to load expos: {error?.response?.data?.error?.message || error?.message || 'Please try again.'}
@@ -133,12 +160,14 @@ export default function ExposListPage() {
               />
             ) : (
               <>
-                {/* Result count */}
-                <p className="text-muted small mb-3">
-                  Showing <strong>{expos.length}</strong>
-                  {totalCount > expos.length ? ` of ${totalCount}` : ''} expo{totalCount !== 1 ? 's' : ''}
-                  {search && <> matching <em>&ldquo;{search}&rdquo;</em></>}
-                </p>
+                {/* Result count bar */}
+                <div className="d-flex justify-content-between align-items-center mb-3">
+                  <p className="text-secondary small mb-0">
+                    Showing <strong className="text-dark">{expos.length}</strong>
+                    {totalCount > expos.length ? ` of ${totalCount}` : ''} expo{totalCount !== 1 ? 's' : ''}
+                    {search && <> matching <em className="text-primary">&ldquo;{search}&rdquo;</em></>}
+                  </p>
+                </div>
 
                 <Row className="g-4">
                   {expos.map((expo) => (
@@ -150,13 +179,13 @@ export default function ExposListPage() {
 
                 {/* Load more */}
                 {hasMore && (
-                  <div className="text-center mt-4">
+                  <div className="text-center mt-5">
                     <button
                       type="button"
-                      className="btn btn-outline-primary px-4"
+                      className="btn btn-dark rounded-pill px-5 py-2 fw-semibold"
                       onClick={() => setPage((p) => p + 1)}
                     >
-                      Load more
+                      Load More Expos
                       <i className="bi bi-chevron-down ms-2" aria-hidden="true" />
                     </button>
                   </div>

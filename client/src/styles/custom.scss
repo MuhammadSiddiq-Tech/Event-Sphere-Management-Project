@@ -1,15 +1,19 @@
-// 1. Override Bootstrap variables with Design System tokens (design.md §5.2)
-$primary: #4f46e5;
+// 1. Override Bootstrap variables with Editorial Event Theme
+$primary: #0057ff;       // Royal Cobalt Blue
 $secondary: #475569;
 $success: #16a34a;
 $info: #0284c7;
 $warning: #d97706;
 $danger: #dc2626;
-$light: #f8fafc;
-$dark: #0f172a;
+$light: #f4f7fb;         // Crisp Ice Slate
+$dark: #0a1128;          // Deep Obsidian Navy
 
-$body-bg: #f8fafc;
-$body-color: #0f172a;
+$body-bg: #f4f7fb;
+$body-color: #0a1128;
+
+// Typography (Poppins for UI, JetBrains Mono for codes/IDs)
+$font-family-sans-serif: 'Poppins', system-ui, -apple-system, sans-serif;
+$font-family-monospace: 'JetBrains Mono', monospace;
 
 // Border radii
 $border-radius-sm: 6px;
@@ -20,16 +24,93 @@ $border-radius-lg: 16px;
 @import "bootstrap/scss/bootstrap";
 @import "bootstrap-icons/font/bootstrap-icons.css";
 
-// 3. Custom utility classes and floor plan tokens
+// 3. Brand CSS Custom Properties & Utility Classes
+:root {
+  --es-cobalt: #0057ff;
+  --es-lime: #d9f95b;
+  --es-navy: #0a1128;
+  --es-ice: #dce8ff;
+}
+
+body {
+  font-family: 'Poppins', system-ui, -apple-system, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+.brand-logo-font {
+  font-family: 'Syne', sans-serif;
+  font-weight: 800;
+  letter-spacing: -0.03em;
+}
+
+.text-lime {
+  color: #d9f95b !important;
+}
+
+.bg-lime {
+  background-color: #d9f95b !important;
+  color: #0a1128 !important;
+}
+
+.bg-navy {
+  background-color: #0a1128 !important;
+  color: #ffffff !important;
+}
+
+.bg-ice {
+  background-color: #dce8ff !important;
+  color: #0a1128 !important;
+}
+
+.btn-lime {
+  background-color: #d9f95b;
+  color: #0a1128;
+  border: none;
+  font-weight: 600;
+  transition: transform 0.15s ease, background-color 0.15s ease;
+
+  &:hover,
+  &:focus {
+    background-color: #cbe94e;
+    color: #0a1128;
+    transform: translateY(-1px);
+  }
+}
+
+// 4. Dark Theme Overrides ([data-bs-theme="dark"])
+[data-bs-theme="dark"] {
+  --bs-body-bg: #060b19;
+  --bs-body-color: #f8fafc;
+  --bs-tertiary-bg: #0d152a;
+  --bs-border-color: #1e293b;
+  --bs-primary: #3b82f6;
+
+  .card {
+    background-color: #0d152a;
+    border-color: #1e293b;
+  }
+
+  .floor-plan-wrapper,
+  .floor-plan-wrapper.mode-edit {
+    background-color: #0d152a;
+  }
+}
+
+// 5. Card hover & interactive utilities
+.card {
+  border: 1px solid var(--bs-border-color);
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
 .card-hover {
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  transition: transform 0.2s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.2s ease;
   &:hover {
-    transform: translateY(-2px);
+    transform: translateY(-3px);
     box-shadow: $box-shadow;
   }
 }
 
-// Floor plan status badges & fills
+// 6. Floor plan status badges & fills
 .booth-available {
   background-color: #dcfce7;
   border-color: #16a34a;
@@ -44,8 +125,8 @@ $border-radius-lg: 16px;
 
 .booth-allocated {
   background-color: #e0e7ff;
-  border-color: #4f46e5;
-  color: #3730a3;
+  border-color: #0057ff;
+  color: #1e3a8a;
 }
 
 .booth-blocked {
@@ -58,7 +139,7 @@ $border-radius-lg: 16px;
 .floor-plan-wrapper {
   position: relative;
   overflow: hidden;
-  background-color: #f8fafc;
+  background-color: #f4f7fb;
   border-radius: $border-radius;
   box-shadow: $box-shadow-sm;
   outline: none;
@@ -87,7 +168,7 @@ $border-radius-lg: 16px;
   &:focus-visible {
     outline: none;
     .booth-shape {
-      stroke: #1e1b4b !important;
+      stroke: #0a1128 !important;
       stroke-width: 3px !important;
       stroke-dasharray: 4 2;
     }
@@ -95,7 +176,7 @@ $border-radius-lg: 16px;
 
   &.is-selected {
     .booth-shape {
-      stroke: #312e81 !important;
+      stroke: #0a1128 !important;
       stroke-width: 3.5px !important;
     }
   }
@@ -130,19 +211,19 @@ $border-radius-lg: 16px;
 }
 
 .floor-plan-wrapper.mode-edit {
-  background-color: #f8fafc;
+  background-color: #f4f7fb;
 }
 
-// ─── Real-Time Pulse & Live Highlighting (T-7.4) ─────────────────────────────
+// 7. Real-Time Pulse & Live Highlighting
 @keyframes realtime-pulse-anim {
   0% {
-    box-shadow: 0 0 0 0 rgba(13, 110, 253, 0.7);
+    box-shadow: 0 0 0 0 rgba(0, 87, 255, 0.7);
   }
   60% {
-    box-shadow: 0 0 0 10px rgba(13, 110, 253, 0);
+    box-shadow: 0 0 0 10px rgba(0, 87, 255, 0);
   }
   100% {
-    box-shadow: 0 0 0 0 rgba(13, 110, 253, 0);
+    box-shadow: 0 0 0 0 rgba(0, 87, 255, 0);
   }
 }
 
@@ -159,4 +240,3 @@ $border-radius-lg: 16px;
     outline-offset: 2px;
   }
 }
-
